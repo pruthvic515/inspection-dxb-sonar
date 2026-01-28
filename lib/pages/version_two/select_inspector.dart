@@ -38,7 +38,7 @@ class _SelectInspectorState extends State<SelectInspector> {
     if (widget.isPrimary) {
       selectedUsers.addAll(widget.primaryInspector ?? []);
     } else {
-      selectedUsers.addAll(widget.selectedUsers ?? []);
+      selectedUsers.addAll(widget.selectedUsers);
     }
 
     getAllUsers();
@@ -47,6 +47,7 @@ class _SelectInspectorState extends State<SelectInspector> {
 
   Future<void> getAllUsers() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api().getAPI(context, "Department/User/GetAllUser").then((value) async {
         setState(() {
@@ -228,11 +229,7 @@ class _SelectInspectorState extends State<SelectInspector> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        if (false) {
-                          Get.back();
-                        } else {
-                          Get.back(result: selectedUsers);
-                        }
+                        Get.back(result: selectedUsers);
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(

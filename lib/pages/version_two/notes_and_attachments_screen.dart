@@ -50,7 +50,7 @@ class NotesAndAttachmentsScreen extends StatefulWidget {
 
 class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
   var tabType = "notes";
-  TextEditingController _notes = TextEditingController();
+  final TextEditingController _notes = TextEditingController();
 
   var storeUserData = StoreUserData();
   EntityDetailModel? entity;
@@ -202,7 +202,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                     decoration: BoxDecoration(
                         color: AppTheme.white,
                         border: Border.all(color: AppTheme.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                        borderRadius: const BorderRadius.all(Radius.circular(10))),
                     child: CTextField(
                       textColor: AppTheme.text_color,
                       hint: "Notes here.....",
@@ -654,9 +654,10 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
 
   Future<void> completeTask(String notes) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api().callAPI(context, "Department/Task/UpdateTaskStatus", {
-        "mainTaskId": widget.mainTaskId ?? 0,
+        "mainTaskId": widget.mainTaskId,
         "inspectorId": storeUserData.getInt(USER_ID),
         "finalNotes": notes,
         "statusId": 7,
@@ -669,7 +670,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
               message: data["message"],
               onPressed: () {
                 Navigator.of(context).pop();
-                Get.offAll(transition: Transition.rightToLeft, HomeScreen());
+                Get.offAll(transition: Transition.rightToLeft, const HomeScreen());
               });
         } else {
           Utils().showAlert(
@@ -721,7 +722,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                     ),
                   ),
                   CText(
-                    padding: EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.only(top: 10),
                     text: "Please select reason for complete this task",
                     maxLines: 5,
                     fontSize: AppTheme.medium,
@@ -802,7 +803,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                             final reason = reasonList[index];
                             return RadioListTile<int>(
                               contentPadding: EdgeInsets.zero,
-                              value: index!,
+                              value: index,
                               groupValue: selectedIndex,
                               title: CText(
                                 text: reason["name"],

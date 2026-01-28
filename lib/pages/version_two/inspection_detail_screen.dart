@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_video_thumbnail_plus/flutter_video_thumbnail_plus.dart';
-import 'package:flutter_video_thumbnail_plus/flutter_video_thumbnail_plus_platform_interface.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:patrol_system/controls/LoadingIndicatorDialog.dart';
@@ -15,8 +14,6 @@ import 'package:patrol_system/utils/log_print.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-// import 'package:video_thumbnail/video_thumbnail.dart';
-
 import '../../model/area_model.dart';
 import '../../model/attachments.dart';
 import '../../model/entity_detail_model.dart';
@@ -32,7 +29,6 @@ import '../../utils/constants.dart';
 import '../../utils/utils.dart';
 import '../full_screen_image.dart';
 import '../video_player_screen.dart';
-import 'package:http/http.dart' as http;
 
 class InspectionDetailScreen extends StatefulWidget {
   final int inspectionId;
@@ -98,6 +94,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
 
   Future<void> getEntityDetail() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api().callAPI(
           context,
           "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${widget.task.mainTaskId}&entityId=${widget.task.entityID}",
@@ -120,6 +117,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
 
   Future<void> getInspectionDetail() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api().callAPI(context, "Mobile/Inspection/GetInspectionDetails", {
         "mainTaskId": widget.task.mainTaskId,
@@ -131,7 +129,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
             detail = data.data!;
             setState(() {
               getThumbnails(data.data!.attachments);
-              timer = Timer.periodic(Duration(seconds: 2), (timer) {
+              timer = Timer.periodic(const Duration(seconds: 2), (timer) {
                 if (attachmentList.length == data.data!.attachments.length) {
                   LoadingIndicatorDialog().dismiss();
                   timer.cancel();
@@ -1195,7 +1193,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
             CText(
               textAlign: TextAlign.start,
               padding: const EdgeInsets.only(right: 10),
-              text: "Notes : ${list[index].notes}" ?? "-",
+              text: "Notes : ${list[index].notes}",
               textColor: AppTheme.gray_Asparagus,
               fontFamily: AppTheme.Urbanist,
               fontSize: AppTheme.large,
@@ -1289,6 +1287,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
 
   Future<void> getEntityRole() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api().getAPI(context, "Mobile/Entity/GetEntityRole").then((value) async {
         var data = areaFromJson(value);
         if (data.data.isNotEmpty) {
@@ -1310,6 +1309,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
 
   Future<void> getLiquorSize() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api()
           .getAPI(context, "Mobile/ProduectDetail/GetLiquorSizeEnum")
           .then((value) async {
@@ -1333,6 +1333,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
 
   Future<void> getKnownProductCategories() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api()
           .getAPI(context, "Mobile/ProduectDetail/GetProductCategory")
           .then((value) async {
@@ -1358,11 +1359,12 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
 
   Future<void> getDownloadReport() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       // http://4.161.39.155:8096/inspectionApi/api/Department/Report/ViewReport?mainTaskId=4512&inspectionId=0
       Api()
           .getAPI(context,
-              "Department/Report/ViewReport?mainTaskId=${widget.task!.mainTaskId}&inspectionId=0")
+              "Department/Report/ViewReport?mainTaskId=${widget.task.mainTaskId}&inspectionId=0")
           .then((value) async {
         LoadingIndicatorDialog().dismiss();
         print("ViewReport $value");
@@ -1439,8 +1441,9 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
       }
     } catch (e) {
       print("Error: $e");
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to download and open PDF')),
+        const SnackBar(content: Text('Failed to download and open PDF')),
       );
     } finally {
       setState(() {

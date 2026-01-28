@@ -233,11 +233,12 @@ class _MenuPageState extends State<MenuPage> {
                 Clipboard.setData(ClipboardData(
                         text: StoreUserData().getString(USER_FCM)))
                     .then((value) {
+                  if (!context.mounted) return;
                   Utils().showSnackBar(context, "Copied!");
                 });
               },
               child: CText(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 text: 'Copy Device Token',
                 textColor: AppTheme.colorPrimary,
                 fontFamily: AppTheme.Urbanist,
@@ -282,6 +283,7 @@ class _MenuPageState extends State<MenuPage> {
           visitCount = data.data.length;
         });
       } else {
+        if (!mounted) return;
         Utils().showAlert(
             buildContext: context,
             message: data.message,
@@ -290,6 +292,7 @@ class _MenuPageState extends State<MenuPage> {
             });
       }
     } else {
+      if (!mounted) return;
       Utils().showAlert(
           buildContext: context,
           message: jsonDecode(response.body)["message"],

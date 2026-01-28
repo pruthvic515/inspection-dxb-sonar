@@ -68,6 +68,7 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
 
   Future<void> getOutletService() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api()
           .getAPI(context, "Mobile/Entity/GetOutletService")
           .then((value) async {
@@ -91,6 +92,7 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
 
   Future<void> getOutletOwnerShip() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api()
           .getAPI(context, "Mobile/Entity/GetOwnershipDetails")
           .then((value) async {
@@ -705,6 +707,7 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
 
   Future<void> rejectTask(int id, String notes) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api().callAPI(context, "Department/Task/UpdateInspectionTaskStatus", {
         "inspectionTaskId": id,

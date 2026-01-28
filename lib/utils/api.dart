@@ -76,6 +76,7 @@ class Api {
     if (response.statusCode == 200 || response.statusCode == 400) {
       return response.body;
     } else if (response.statusCode == 500) {
+      if (!context.mounted) return;
       Navigator.of(context).pop();
       Utils().showAlert(
           buildContext: context,
@@ -86,6 +87,7 @@ class Api {
       return "{\"message\":\"Internal Server Error\"}";
     } else {
       if (isValidJson(response.body)) {
+        if (!context.mounted) return;
         Utils().showAlert(
             buildContext: context,
             message: jsonDecode(response.body)["message"],
@@ -94,6 +96,7 @@ class Api {
             });
         return response.body;
       } else {
+        if (!context.mounted) return;
         Utils().showAlert(
             buildContext: context,
             title: "StatusCode : ${response.statusCode}",
@@ -193,6 +196,7 @@ class Api {
       return response.body;
     } else {
       if (response.statusCode == 401) {
+        if (!context.mounted) return;
         Utils().showAlert(
             buildContext: context,
             message: jsonDecode(response.body)["message"],
@@ -209,6 +213,7 @@ class Api {
         return "error";
       }
       if (response.statusCode != 422) {
+        if (!context.mounted) return;
         Utils().showAlert(
             buildContext: context,
             message: jsonDecode(response.body)["message"],

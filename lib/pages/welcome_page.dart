@@ -8,7 +8,6 @@ import 'package:patrol_system/utils/color_const.dart';
 import 'package:patrol_system/utils/utils.dart';
 
 import '../notification_services/local_notification.dart';
-import '../utils/constants.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -29,7 +28,7 @@ class _WelcomePageState extends State<WelcomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-               /* Center(
+                /* Center(
                     child: CText(
                   text: "INSPECTION DXB",
                   fontSize: 28,
@@ -108,7 +107,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     textAlign: TextAlign.start,
                   ),
                   CText(
-                    padding: EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.only(top: 10),
                     text: "Accept Permissions for Enhanced Features.",
                     maxLines: 5,
                     fontSize: AppTheme.big,
@@ -167,6 +166,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      if (!mounted) return;
       Utils().showAlert(
           buildContext: context,
           message: "Location services are disabled.",
@@ -182,6 +182,7 @@ class _WelcomePageState extends State<WelcomePage> {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied ||
             permission == LocationPermission.deniedForever) {
+          if (!mounted) return;
           Utils().showAlert(
               buildContext: context,
               message: "Location permissions are denied.",

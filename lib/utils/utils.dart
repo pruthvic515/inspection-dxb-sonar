@@ -23,10 +23,12 @@ class Utils {
   }
 
   void showAlert(
-      {required BuildContext buildContext,
+      {required buildContext,
       String? title,
       required String message,
       required VoidCallback onPressed}) {
+    if (!buildContext.mounted) return;
+
     showDialog(
         context: buildContext,
         builder: (BuildContext context) {
@@ -191,7 +193,7 @@ class Utils {
   String getFileName(String name) {
     const maxLength = 5; // Set a max length for the filename
 
-    var last = "." + name.split(".").last;
+    var last = ".${name.split(".").last}";
     var input = name
         .split(".")
         .first
@@ -256,7 +258,7 @@ class Utils {
     return false;
   }
 
-  Future<bool> hasNetwork(BuildContext context, StateSetter setState) async {
+  Future<bool> hasNetwork(context, StateSetter setState) async {
     var onlineStatus = false;
     var stList = await (Connectivity().checkConnectivity());
     if (stList.isNotEmpty &&
@@ -286,7 +288,7 @@ class Utils {
         builder: (BuildContext dialogContext) {
           return AlertDialog(
               surfaceTintColor: AppTheme.black,
-              title: Text(
+              title: const Text(
                 'Internet Disconnected!',
                 style: TextStyle(fontSize: 16),
               ),

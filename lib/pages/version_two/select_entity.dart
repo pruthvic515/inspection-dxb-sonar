@@ -34,6 +34,7 @@ class _SelectEntityState extends State<SelectEntity> {
 
   Future<void> getAllEntities() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api()
           .getAPI(context, "Mobile/Entity/GetAllEntityBasicDetail")

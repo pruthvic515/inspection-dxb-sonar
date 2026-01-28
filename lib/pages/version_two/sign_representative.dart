@@ -170,9 +170,9 @@ class _SignRepresentativeState extends State<SignRepresentative> {
                       )),
                   Card(
                     color: AppTheme.white,
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8))),
-                    margin: EdgeInsets.all(20),
+                    margin: const EdgeInsets.all(20),
                     child: Stack(
                       children: [
                         Signature(
@@ -191,7 +191,7 @@ class _SignRepresentativeState extends State<SignRepresentative> {
                                   });
                                 },
                                 child: CText(
-                                  padding: EdgeInsets.all(10),
+                                  padding: const EdgeInsets.all(10),
                                   text: "Clear",
                                   textColor: AppTheme.red,
                                   fontSize: AppTheme.medium,
@@ -280,7 +280,7 @@ class _SignRepresentativeState extends State<SignRepresentative> {
         .then((value) {
       LoadingIndicatorDialog().dismiss();
       // LogPrint().log(value);
-      print("uploadImage Signature" + value);
+      print('uploadImage Signature $value' );
       if (value == "error") {
         Utils().showAlert(
             buildContext: context,

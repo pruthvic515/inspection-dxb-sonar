@@ -59,6 +59,8 @@ class _DashboardPageState extends State<DashboardPage> {
                             );
                             if (date != null) {
                               if (endDate != null && date.isAfter(endDate!)) {
+                                if (!context.mounted) return;
+
                                 Utils().showAlert(
                                     buildContext: context,
                                     message:
@@ -97,6 +99,8 @@ class _DashboardPageState extends State<DashboardPage> {
                             if (date != null) {
                               if (startDate != null &&
                                   date.isBefore(startDate!)) {
+                                if (!context.mounted) return;
+
                                 Utils().showAlert(
                                     buildContext: context,
                                     message:
@@ -248,6 +252,7 @@ class _DashboardPageState extends State<DashboardPage> {
           count = data["data"];
         });
       } else {
+        if (!mounted) return;
         Utils().showAlert(
             buildContext: context,
             message: data["message"],
@@ -256,6 +261,7 @@ class _DashboardPageState extends State<DashboardPage> {
             });
       }
     } else {
+      if (!mounted) return;
       Utils().showAlert(
           buildContext: context,
           message: jsonDecode(response.body)["message"],

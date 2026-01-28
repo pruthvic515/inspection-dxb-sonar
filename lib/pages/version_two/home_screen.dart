@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final int pageSize = 10;
   bool isLastPage = false;
   bool isLoading = false;
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   Timer? _debounce;
 
   @override
@@ -140,6 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
 
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       var map = storeUserData.getBoolean(IS_AGENT_LOGIN)
           ? {"agentId": storeUserData.getInt(USER_ID)}
@@ -249,6 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
         isLoading = true;
       });
     }
+    if (!mounted) return;
 
     LoadingIndicatorDialog().show(context);
     try {
@@ -388,7 +390,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 CText(
-                                    text: "Awaiting Feedback(${feedbackCount})",
+                                    text: "Awaiting Feedback($feedbackCount)",
                                     textColor: agentTabType == "feedback"
                                         ? AppTheme.black
                                         : AppTheme.text_color_gray,
@@ -429,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               CText(
-                                text: "Awaiting Confirmation(${waitingCount})",
+                                text: "Awaiting Confirmation($waitingCount)",
                                 textColor: agentTabType == "waiting"
                                     ? AppTheme.black
                                     : AppTheme.text_color_gray,
@@ -519,7 +521,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.inbox_outlined,
               size: 64,
               color: AppTheme.grey,
@@ -680,6 +682,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      if (!mounted) return;
       Utils().showAlert(
           buildContext: context,
           message: "Location services are disabled.",
@@ -695,6 +698,7 @@ class _HomeScreenState extends State<HomeScreen> {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied ||
             permission == LocationPermission.deniedForever) {
+          if (!mounted) return;
           Utils().showAlert(
               buildContext: context,
               message: "Location permissions are denied.",
@@ -1385,9 +1389,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   .inspectionTaskId,
                                                               statusId:
                                                                   task.statusId,
-                                                              inspectionId:
-                                                                  task.inspectionId ??
-                                                                      0,
+                                                              inspectionId: task
+                                                                  .inspectionId,
                                                               category: 0,
                                                               isAgentEmployees: task
                                                                   .isAgentEmployees,
@@ -1557,7 +1560,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         )),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         Expanded(
@@ -1607,6 +1610,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> updateTask(Tasks task, int statusId, String notes) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api().callAPI(context, "Department/Task/UpdateInspectionTaskStatus", {
         "inspectionTaskId": task.inspectionTaskId,
@@ -1628,6 +1632,7 @@ class _HomeScreenState extends State<HomeScreen> {
     LogPrint().log(jsonEncode(task));
     if (await Utils().hasNetwork(context, setState)) {
       // LoadingIndicatorDialog().show(context);
+      if (!mounted) return;
       Api().callAPI(
           context,
           "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${task.mainTaskId}&entityId=${task.entityID}",
@@ -1657,7 +1662,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           entityId: task.entityID!,
                           taskId: task.inspectionTaskId,
                           statusId: task.statusId,
-                          inspectionId: task.inspectionId ?? 0,
+                          inspectionId: task.inspectionId,
                           category: 0,
                           isAgentEmployees: task.isAgentEmployees,
                           completeStatus: tabType == "completed"))
@@ -1797,6 +1802,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> getArea(StateSetter myState) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api().getAPI(context, "Mobile/Entity/GetArea").then((value) async {
         LoadingIndicatorDialog().dismiss();
@@ -1956,6 +1962,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> getCategory(StateSetter setState, AreaData? area) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api().getAPI(context, "Mobile/Entity/GetCategory").then((value) async {
         LoadingIndicatorDialog().dismiss();

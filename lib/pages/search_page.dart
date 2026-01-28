@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:patrol_system/model/place_model.dart';
 import 'package:patrol_system/pages/version_two/entity_details.dart';
-import 'package:patrol_system/utils/log_print.dart';
 
 import '../controls/LoadingIndicatorDialog.dart';
 import '../controls/text.dart';
@@ -39,6 +38,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> getPlaces() async {
     print(widget.categoryId);
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api().callAPI(context, "Mobile/Entity/GetEntity", {
         "categoryId": int.parse(widget.categoryId),

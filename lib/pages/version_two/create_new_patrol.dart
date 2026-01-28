@@ -2,12 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_video_thumbnail_plus/flutter_video_thumbnail_plus.dart';
-import 'package:flutter_video_thumbnail_plus/flutter_video_thumbnail_plus_platform_interface.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -34,12 +32,12 @@ import 'package:patrol_system/utils/log_print.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
+
 // import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../controls/formMobileTextField.dart';
 import '../../model/all_user_model.dart';
 import '../../model/area_model.dart';
-import '../../model/attachments.dart';
 import '../../model/entity_detail_model.dart';
 import '../../model/inspection_detail_model.dart';
 import '../../model/inspection_product_model.dart';
@@ -228,6 +226,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         selectedAEList.clear();
         selectedMMIList.clear();
       });
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api().callAPI(context, "Mobile/Inspection/GetInspectionDetails", {
         "mainTaskId": widget.mainTaskId,
@@ -364,6 +363,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Future<void> getEntityRole() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api().getAPI(context, "Mobile/Entity/GetEntityRole").then((value) async {
         var data = areaFromJson(value);
         if (data.data.isNotEmpty) {
@@ -385,6 +385,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Future<void> getLiquorSize() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api()
           .getAPI(context, "Mobile/ProduectDetail/GetLiquorSizeEnum")
           .then((value) async {
@@ -410,6 +411,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Future<void> getKnownProductCategories() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api()
           .getAPI(context, "Mobile/ProduectDetail/GetProductCategory")
           .then((value) async {
@@ -497,6 +499,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      if (!mounted) return;
       Utils().showAlert(
           buildContext: context,
           message: "Location services are disabled.",
@@ -512,6 +515,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied ||
             permission == LocationPermission.deniedForever) {
+          if (!mounted) return;
           Utils().showAlert(
               buildContext: context,
               message: "Location permissions are denied.",
@@ -1114,6 +1118,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Future<void> updateProduct(Map<String, dynamic> fields) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api()
           .callAPI(context, "Mobile/ProduectDetail/Update", fields)
@@ -1137,6 +1142,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Future<void> addProduct(Map<String, dynamic> fields) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api()
           .callAPI(context, "Mobile/ProduectDetail/Create", fields)
@@ -1169,6 +1175,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Future<void> deleteProduct(int productId) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api()
           .getAPI(context,
@@ -1378,13 +1385,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       focusNodeList.add(FocusNode());
       sizeList.add(null);
     }
-    focusNodeList.forEach((node) {
+    for (var node in focusNodeList) {
       node.addListener(() {
         if (node.hasFocus) {
           _scrollToFocusedField(node, scrollController);
         }
       });
-    });
+    }
     showModalBottomSheet(
         enableDrag: false,
         isDismissible: false,
@@ -1653,9 +1660,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           visible: productName.text.isNotEmpty &&
                               quantity != 0 &&
                               serial
-                                  .where((element) => (element == null ||
-                                      (element != null &&
-                                          (element.text.isEmpty ||
+                                  .where((element) => (((element.text.isEmpty ||
                                               element.text.length < 5))))
                                   .isEmpty &&
                               sizeList
@@ -1699,9 +1704,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                     });
                               } else if (serial
                                   .where((element) =>
-                                      element == null ||
-                                      (element != null &&
-                                          (element.text.isEmpty ||
+                                      ((element.text.isEmpty ||
                                               element.text.length < 5)))
                                   .isNotEmpty) {
                                 Utils().showAlert(
@@ -1774,9 +1777,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                               backgroundColor: productName.text.isNotEmpty &&
                                       serial
                                           .where((element) =>
-                                              element == null ||
-                                              (element != null &&
-                                                  (element.text.isEmpty ||
+                                              ((element.text.isEmpty ||
                                                       element.text.length < 5)))
                                           .isEmpty &&
                                       quantity != 0 &&
@@ -1958,9 +1959,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   Visibility(
                       visible: quantity != 0 &&
                           controllers
-                              .where((element) => (element.text == null ||
-                                  (element.text != null &&
-                                      element!.text.isEmpty)))
+                              .where((element) => ((element.text.isEmpty)))
                               .isEmpty,
                       child: FormTextField(
                         onChange: (value) {
@@ -1989,9 +1988,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                 });
                           } else if (controllers
                               .where((element) =>
-                                  element.text == null ||
-                                  (element.text != null &&
-                                      (element.text.isEmpty ||
+                                  ((element.text.isEmpty ||
                                           element.text.length < 5)))
                               .isNotEmpty) {
                             Utils().showAlert(
@@ -2008,7 +2005,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   products.add(Product(
                                           productSerialNumberId: 0,
                                           productDetailsId: model.productId,
-                                          serialNumber: element!.text)
+                                          serialNumber: element.text)
                                       .toJson());
                                 }
                                 Navigator.of(context).pop();
@@ -2034,7 +2031,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   products.add(Product(
                                           productSerialNumberId: 0,
                                           productDetailsId: 0,
-                                          serialNumber: element!.text)
+                                          serialNumber: element.text)
                                       .toJson());
                                 }
                                 Navigator.of(context).pop();
@@ -2063,9 +2060,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           backgroundColor: quantity != 0 &&
                                   controllers
                                       .where((element) =>
-                                          element.text == null ||
-                                          (element.text != null &&
-                                              (element.text.isEmpty ||
+                                          ((element.text.isEmpty ||
                                                   element.text.length < 5)))
                                       .isEmpty
                               ? AppTheme.colorPrimary
@@ -2554,6 +2549,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Future<void> getAllUsers() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api()
           .getAPI(context,
@@ -2655,9 +2651,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                 IconButton(
                                     onPressed: () {
                                       myState(() {
-                                        if (selected.firstWhereOrNull((element) =>
-                                                element.departmentUserId ==
-                                                list[index].departmentUserId) !=
+                                        if (selected.firstWhereOrNull(
+                                                (element) =>
+                                                    element.departmentUserId ==
+                                                    list[index]
+                                                        .departmentUserId) !=
                                             null) {
                                           selected.removeWhere((element) =>
                                               element.departmentUserId ==
@@ -2699,8 +2697,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         inspectorNameList.clear();
         selectedInspectors.clear();
         selectedInspectors.addAll(selected);
-        selectedInspectors
-            .forEach((element) => inspectorNameList.add(element.name));
+        for (var element in selectedInspectors) {
+          inspectorNameList.add(element.name);
+        }
       });
     });
   }
@@ -2766,9 +2765,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           statusId = 5;
           tabType = 2;
           inspectorId = storeUserData.getInt(USER_ID);
-          if (taskId == null) {
-            taskId = data["data"]["inspectionTaskId"];
-          }
+          taskId ??= data["data"]["inspectionTaskId"];
 
           inspectionId = data["data"];
         });
@@ -2944,6 +2941,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Future<void> getAgents(int agentId) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api()
           .getAPI(context,
@@ -3012,8 +3010,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             buildContext: context,
             message: data["message"],
             onPressed: () {
-
-              Future.delayed(Duration(milliseconds: 300), () {
+              Future.delayed(const Duration(milliseconds: 300), () {
                 if (!Get.isRegistered<HomeScreen>()) {
                   Get.offAll(() => const HomeScreen());
                 }
@@ -3240,10 +3237,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         selectedMMIList.clear();
         selectedMMIList.addAll(agent2);
         aeNameList.clear();
-        selectedAEList.forEach((element) => aeNameList.add(element.agentName));
+        for (var element in selectedAEList) {
+          aeNameList.add(element.agentName);
+        }
         mmiNameList.clear();
-        selectedMMIList
-            .forEach((element) => mmiNameList.add(element.agentName));
+        for (var element in selectedMMIList) {
+          mmiNameList.add(element.agentName);
+        }
       });
     });
   }
@@ -3457,7 +3457,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   right: currentWidth > SIZE_600 ? 15 : 10),
                               width: 150,
                               height: 150,
-                              child: Image.network(imageAttach!,
+                              child: Image.network(imageAttach,
                                   fit: BoxFit.cover),
                             )
                           : Container(),
@@ -3616,6 +3616,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Future<void> deleteRepresentative(int id) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api()
           .getAPI(context,
@@ -3644,6 +3645,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       witnessList.clear();
     });
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api()
           .getAPI(context,
               "Mobile/EntityRepresentative/GetInspectionDetail?inspectionId=$inspectionId")
@@ -4321,7 +4323,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                             final reason = reasonList[index];
                             return RadioListTile<int>(
                               contentPadding: EdgeInsets.zero,
-                              value: index!,
+                              value: index,
                               groupValue: selectedIndex,
                               title: CText(
                                 text: reason["name"],
