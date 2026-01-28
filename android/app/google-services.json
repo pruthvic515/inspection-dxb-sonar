@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "992879245046",
+    "project_id": "licensedxb---patrol-app",
+    "storage_bucket": "licensedxb---patrol-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992879245046:android:22ef480bfbe53cdbf1ded7",
+        "android_client_info": {
+          "package_name": "com.licensedxb.patroluae"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGjxgLjoRRRRRbg3tta-8kx3GqgphhHrQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
