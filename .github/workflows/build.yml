@@ -9,31 +9,27 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  sonarqube:
-    name: SonarQube
+  sonarcloud:
+    name: SonarCloud
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Required for proper Sonar analysis
+          fetch-depth: 0
 
-      # ✅ Install Flutter SDK
+      # Setup Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.38.7"
 
-      # ✅ Build & Analyze Flutter project
-      - name: Build
-        run: |
-          flutter pub get
-      
+      # Get dependencies
+      - name: Flutter Pub Get
+        run: flutter pub get
 
-      # ✅ SonarCloud Scan
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
-        continue-on-error: true
+      # SonarCloud Scan
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_BASE_DIR: .
