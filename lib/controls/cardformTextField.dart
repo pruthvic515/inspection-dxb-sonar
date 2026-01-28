@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../controls/text_field.dart';
 import '../utils/color_const.dart';
 import '../utils/constants.dart' as constants;
-import '../utils/constants.dart';
+import '../utils/layout_values.dart';
 import 'text.dart';
 
 class CardFormTextField extends StatelessWidget {
@@ -51,16 +51,18 @@ class CardFormTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var currentWidth = MediaQuery.of(context).size.width;
+    final layout = LayoutValues.fromWidth(currentWidth);
+
     hint = hint ?? "";
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(
-                bottom: currentWidth > SIZE_600 ? 20 : 10,
-                top: currentWidth > SIZE_600 ? 20 : 10,
-                left: currentWidth > SIZE_600 ? 33 : 23,
-                right: currentWidth > SIZE_600 ? 33 : 23),
+                bottom: layout.vertical,
+                top: layout.vertical,
+                left: layout.horizontal,
+                right: layout.horizontal),
             child: CText(
               textColor: textColor ?? AppTheme.black,
               fontSize: fontSize ?? AppTheme.large,
@@ -75,17 +77,14 @@ class CardFormTextField extends StatelessWidget {
           onTap == null
               ? Container(
                   margin: EdgeInsets.only(
-                      left: currentWidth > SIZE_600 ? 33 : 23,
-                      right: currentWidth > SIZE_600 ? 33 : 23),
+                      left: layout.horizontal, right: layout.horizontal),
                   child: Card(
                       elevation: 2,
                       surfaceTintColor: AppTheme.white,
                       color: AppTheme.white,
-                      margin: EdgeInsets.only(
-                          top: currentWidth > SIZE_600 ? 15 : 10),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(
-                              currentWidth > SIZE_600 ? 15 : 15))),
+                      margin: EdgeInsets.only(top: layout.cardTop),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
                       child: Padding(
                         padding: const EdgeInsets.only(
                             bottom: 15, left: 10, top: 5, right: 10),
@@ -109,12 +108,10 @@ class CardFormTextField extends StatelessWidget {
                       )))
               : Container(
                   margin: EdgeInsets.only(
-                      left: currentWidth > SIZE_600 ? 33 : 23,
-                      right: currentWidth > SIZE_600 ? 33 : 23),
+                      left: layout.horizontal, right: layout.horizontal),
                   child: Card(
                     elevation: 2,
-                    margin:
-                        EdgeInsets.only(top: currentWidth > SIZE_600 ? 15 : 10),
+                    margin: EdgeInsets.only(top: layout.cardTop),
                     surfaceTintColor: AppTheme.white,
                     color: AppTheme.white,
                     shape: const RoundedRectangleBorder(
