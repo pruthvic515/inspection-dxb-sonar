@@ -277,46 +277,51 @@ class _LoginPageState extends State<LoginPage> {
         "userName": _userName.text.toString(),
         "password": _password.text.toString()
       });
-      
+
       final response = await _performEncryptedRequest(
         endpoint: '${baseUrl}api/Department/User/Login',
         payload: payload,
       );
-      
+
       if (response == null) {
         _handleError("An error occurred. Please try again.");
         return;
       }
-      
+
       if (response.statusCode != 200) {
         _handleError("Please enter valid credentials.");
         return;
       }
-      
+
       final responseData = jsonDecode(response.body);
       final statusCode = responseData["statusCode"];
       final encryptedData = responseData["data"];
       final message = responseData["message"] ?? "";
       print("object $encryptedData");
-      if (statusCode != 200 || encryptedData == null || encryptedData is! String) {
-        _handleError(message.isNotEmpty ? message : "Please enter valid credentials.");
+      if (statusCode != 200 ||
+          encryptedData == null ||
+          encryptedData is! String) {
+        _handleError(
+            message.isNotEmpty ? message : "Please enter valid credentials.");
         return;
       }
-      
-      final decryptedData = await _encryptAndDecrypt.decryption(payload: encryptedData);
+
+      final decryptedData =
+          await _encryptAndDecrypt.decryption(payload: encryptedData);
       debugPrint("decryptedData $decryptedData");
       if (decryptedData.isEmpty) {
         _handleError("Please enter valid credentials.");
         return;
       }
-      
+
       final profileData = profileFromJson(decryptedData);
       if (profileData.data == null) {
         _handleError("Please enter valid credentials.");
         return;
       }
 
-      storeUserData.setString(USER_TOKEN,"Bearer ${profileData.data!.accessToken}");
+      storeUserData.setString(
+          USER_TOKEN, "Bearer ${profileData.data!.accessToken}");
       _handleSuccessfulLogin(
         userId: profileData.data!.departmentUserMasterId,
         designationId: profileData.data!.designationId,
@@ -338,12 +343,18 @@ class _LoginPageState extends State<LoginPage> {
         "password": _agentPassword.text.toString(),
         "agentId": "1",
       });
-      
+
+      print("Original Payload $payload");
+
       final response = await _performEncryptedRequest(
         endpoint: '${baseUrl}api/Agent/Employee/Login',
         payload: payload,
       );
-      
+
+      /* if (kDebugMode) {
+        print("encrypted response ${response?.body}");
+        print("encryptedPayload ${response?.request?.url}");
+      }*/
       if (response == null) {
         _handleError("An error occurred. Please try again.");
         return;
@@ -354,35 +365,44 @@ class _LoginPageState extends State<LoginPage> {
         _handleError("Please enter valid credentials.");
         return;
       }
-      
+
       final responseData = jsonDecode(response.body);
       final statusCode = responseData["statusCode"];
       final encryptedData = responseData["data"];
       final message = responseData["message"] ?? "";
-      
-      if (statusCode != 200 || encryptedData == null || encryptedData is! String) {
-        _handleError(message.isNotEmpty ? message : "Please enter valid credentials.");
+
+
+      if (statusCode != 200 ||
+          encryptedData == null ||
+          encryptedData is! String) {
+        _handleError(
+            message.isNotEmpty ? message : "Please enter valid credentials.");
         return;
       }
-      
-      final decryptedData = await _encryptAndDecrypt.decryption(payload: encryptedData);
-      
+
+
+      final decryptedData =
+          await _encryptAndDecrypt.decryption(payload: encryptedData);
+
       if (decryptedData.isEmpty) {
         _handleError("Please enter valid credentials.");
         return;
       }
-      
+
       final data = jsonDecode(decryptedData);
       if (data == null) {
         _handleError("Please enter valid credentials.");
         return;
       }
-      
+
+      storeUserData.setString(
+          USER_TOKEN, "Bearer ${data["AccessToken"]}");
+
       _handleSuccessfulLogin(
-        userId: data["agentEmployeeId"],
-        designationId: data["agentId"],
-        userName: data["agentName"],
-        name: data["agentName"],
+        userId: data["AgentEmployeeId"],
+        designationId: data["AgentId"],
+        userName: data["AgentName"],
+        name: data["AgentName"],
         badgeNumber: "0",
         isAgentLogin: true,
       );

@@ -143,9 +143,9 @@ class TaskResponse {
   factory TaskResponse.fromJson(Map<String, dynamic> json) {
     return TaskResponse(
       tasks: List<Tasks>.from(
-        json["data"]["paginationData"].map((x) => Tasks.fromJson(x)),
+        json["data"]["PaginationData"].map((x) => Tasks.fromJson(x)),
       ),
-      totalCount: json["data"]["totalCount"] ?? 0,
+      totalCount: json["data"]["TotalCount"] ?? 0,
     );
   }
 }

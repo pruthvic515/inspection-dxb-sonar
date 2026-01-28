@@ -31,6 +31,7 @@ import '../../model/outlet_model.dart';
 import '../../model/patrol_visit_model.dart';
 import '../../model/search_entity_model.dart';
 import '../../model/task_model.dart';
+import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../../utils/api.dart';
 import '../../utils/color_const.dart';
 import '../../utils/constants.dart';
@@ -117,6 +118,9 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   Future<void> getTaskStatus() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) {
+        return;
+      }
       Api()
           .getAPI(context, "Department/Task/GetTaskStatus")
           .then((value) async {
@@ -145,13 +149,33 @@ class _EntityDetailsState extends State<EntityDetails> {
       if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       var endPoint = "";
+      final encryptAndDecrypt = EncryptAndDecrypt();
       if (widget.task != null) {
+        final encryptedMainTaskId = await encryptAndDecrypt.encryption(
+          payload: widget.task!.mainTaskId.toString(),
+          urlEncode: true,
+        );
+        final encryptedEntityId = await encryptAndDecrypt.encryption(
+          payload: widget.entityId.toString(),
+          urlEncode: true,
+        );
+        debugPrint("encryptedMainTaskId $encryptedMainTaskId");
+        debugPrint("encryptedEntityId $encryptedEntityId");
         endPoint =
-            "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${widget.task!.mainTaskId}&entityId=${widget.entityId}";
+            "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=$encryptedMainTaskId&entityId=$encryptedEntityId";
       } else {
+        final encryptedEntityId = await encryptAndDecrypt.encryption(
+          payload: widget.entityId.toString(),
+          urlEncode: true,
+        );
         endPoint =
-            "Mobile/Entity/GetEntityInspectionDetails?entityId=${widget.entityId}";
+            "Mobile/Entity/GetEntityInspectionDetails?entityId=$encryptedEntityId";
       }
+
+      if (!mounted) {
+        return;
+      }
+
       Api().callAPI(context, endPoint, {}).then((value) async {
         LoadingIndicatorDialog().dismiss();
         if (value != null) {
@@ -1276,9 +1300,15 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                                       bottom:
                                                                           5),
                                                               decoration: BoxDecoration(
-                                                                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                                                                  borderRadius:
+                                                                      const BorderRadius
+                                                                          .all(
+                                                                          Radius.circular(
+                                                                              5)),
                                                                   color: AppTheme.getStatusColor(
-                                                                      outletList[index].inspectionStatusId)),
+                                                                      outletList[
+                                                                              index]
+                                                                          .inspectionStatusId)),
                                                               child: CText(
                                                                 textAlign:
                                                                     TextAlign
@@ -1841,6 +1871,9 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   Future<void> getVisitDetail() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) {
+        return;
+      }
       Api().callAPI(context, "Mobile/Entity/GetPatrolLogs", {
         "patrolId": 0,
         "dateFilter": null,
@@ -1870,9 +1903,15 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   Future<void> getOutletService() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) {
+        return;
+      }
       Api()
           .getAPI(context, "Mobile/Entity/GetOutletService")
           .then((value) async {
+        if (value == null) {
+          return;
+        }
         var data = areaFromJson(value);
         if (data.data.isNotEmpty) {
           setState(() {
@@ -1893,6 +1932,9 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   Future<void> getOutletOwnerShip() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) {
+        return;
+      }
       Api()
           .getAPI(context, "Mobile/Entity/GetOwnershipDetails")
           .then((value) async {
@@ -2225,7 +2267,11 @@ class _EntityDetailsState extends State<EntityDetails> {
       }*/
       fields["taskType"] = 1;
       LogPrint().log("CreateTask $fields");
+      if (!mounted) {
+        return;
+      }
       LoadingIndicatorDialog().show(context);
+
       Api()
           .callAPI(context, "Department/Task/CreateTask", fields)
           .then((value) async {
@@ -3268,6 +3314,9 @@ class _EntityDetailsState extends State<EntityDetails> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      if (!mounted) {
+        return;
+      }
       Utils().showAlert(
           buildContext: context,
           message: "Location services are disabled.",
@@ -3283,6 +3332,9 @@ class _EntityDetailsState extends State<EntityDetails> {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied ||
             permission == LocationPermission.deniedForever) {
+          if (!mounted) {
+            return;
+          }
           Utils().showAlert(
               buildContext: context,
               message: "Location permissions are denied.",

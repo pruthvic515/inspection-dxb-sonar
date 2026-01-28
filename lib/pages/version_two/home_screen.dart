@@ -268,8 +268,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (!mounted) return;
       if (currentPageIndex == 1) {}
+      String decryptedValue = value;
+
+      try {
+        final responseJson = jsonDecode(decryptedValue);
+
+        if (responseJson is Map<String, dynamic> &&
+            responseJson['data'] != null &&
+            responseJson['data'] is String) {
+          final encryptAndDecrypt = EncryptAndDecrypt();
+          final decryptedData = await encryptAndDecrypt.decryption(
+            payload: responseJson['data'] as String,
+          );
+
+          if (decryptedData.isNotEmpty) {
+            final decryptedJson = jsonDecode(decryptedData);
+            responseJson['data'] = decryptedJson;
+            decryptedValue = jsonEncode(responseJson);
+          }
+        }
+      } catch (jsonError) {
+        print("Error parsing JSON: $jsonError");
+      }
+
       LoadingIndicatorDialog().dismiss();
-      final data = taskResponseFromJson(value);
+
+      final data = taskResponseFromJson(decryptedValue);
 
       if (data.tasks.isNotEmpty) {
         tasks.addAll(data.tasks);
