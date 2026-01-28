@@ -235,7 +235,7 @@ class _EntityDetailsState extends State<EntityDetails> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppTheme.main_background,
+        backgroundColor: AppTheme.mainBackground,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -279,8 +279,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                             padding: const EdgeInsets.only(
                                 left: 60, right: 60, top: 65),
                             text: entity?.entityName ?? "",
-                            textColor: AppTheme.text_primary,
-                            fontFamily: AppTheme.Urbanist,
+                            textColor: AppTheme.textPrimary,
+                            fontFamily: AppTheme.urbanist,
                             fontSize: AppTheme.big,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -291,8 +291,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                             padding: const EdgeInsets.only(
                                 left: 60, right: 60, top: 5),
                             text: entity?.location?.address ?? "",
-                            textColor: AppTheme.text_primary,
-                            fontFamily: AppTheme.Urbanist,
+                            textColor: AppTheme.textPrimary,
+                            fontFamily: AppTheme.urbanist,
                             fontSize: AppTheme.large,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -332,7 +332,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                               width: 0,
                                             ),
                                             bottom: BorderSide(
-                                              color: AppTheme.text_primary,
+                                              color: AppTheme.textPrimary,
                                               width: 2,
                                             ),
                                           ),
@@ -343,8 +343,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                           padding: EdgeInsets.zero,
                                           text: "Add DXB Task",
                                           fontSize: AppTheme.medium - 1,
-                                          textColor: AppTheme.text_primary,
-                                          fontFamily: AppTheme.Poppins,
+                                          textColor: AppTheme.textPrimary,
+                                          fontFamily: AppTheme.poppins,
                                           fontWeight: FontWeight.w800,
                                         ),
                                       ),
@@ -369,7 +369,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                         text: "Complete task",
                                         fontSize: 12,
                                         textColor: AppTheme.colorPrimary,
-                                        fontFamily: AppTheme.Poppins,
+                                        fontFamily: AppTheme.poppins,
                                         fontWeight: FontWeight.w800,
                                       ),
                                     )
@@ -411,7 +411,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                         child: CText(
                                           text: "Complete task",
                                           textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.Poppins,
+                                          fontFamily: AppTheme.poppins,
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ))
@@ -447,7 +447,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                         child: CText(
                                           text: "Finish Inspection",
                                           textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.Poppins,
+                                          fontFamily: AppTheme.poppins,
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ))
@@ -475,7 +475,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                               width: 0,
                                             ),
                                             bottom: BorderSide(
-                                              color: AppTheme.text_primary,
+                                              color: AppTheme.textPrimary,
                                               width: 2,
                                             ),
                                           ),
@@ -485,8 +485,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                         child: CText(
                                           text: "Add Liquor Task",
                                           fontSize: AppTheme.medium - 1,
-                                          textColor: AppTheme.text_primary,
-                                          fontFamily: AppTheme.Poppins,
+                                          textColor: AppTheme.textPrimary,
+                                          fontFamily: AppTheme.poppins,
                                           fontWeight: FontWeight.w800,
                                         ),
                                       ),
@@ -505,7 +505,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                       child: CText(
                                         text: "Download Report",
                                         textColor: AppTheme.colorPrimary,
-                                        fontFamily: AppTheme.Poppins,
+                                        fontFamily: AppTheme.poppins,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     )
@@ -532,7 +532,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     text: "Entity Details :",
                     textColor: AppTheme.black,
-                    fontFamily: AppTheme.Urbanist,
+                    fontFamily: AppTheme.urbanist,
                     fontSize: AppTheme.big_20,
                     fontWeight: FontWeight.w700,
                   ),
@@ -572,8 +572,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 CText(
                                   textAlign: TextAlign.center,
                                   text: "Status",
-                                  textColor: AppTheme.title_gray,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.titleGray,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -582,7 +582,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   textAlign: TextAlign.center,
                                   text: entity?.licenseStatus ?? "",
                                   textColor: AppTheme.colorPrimary,
-                                  fontFamily: AppTheme.Urbanist,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.large,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -598,8 +598,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 CText(
                                   textAlign: TextAlign.center,
                                   text: "License No :",
-                                  textColor: AppTheme.title_gray,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.titleGray,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -607,8 +607,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   padding: const EdgeInsets.only(top: 2),
                                   textAlign: TextAlign.center,
                                   text: entity?.licenseNumber ?? "",
-                                  textColor: AppTheme.text_black,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.textBlack,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.large,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -629,8 +629,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 CText(
                                   textAlign: TextAlign.center,
                                   text: "Monthly Limit",
-                                  textColor: AppTheme.title_gray,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.titleGray,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -638,8 +638,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   padding: const EdgeInsets.only(top: 2),
                                   textAlign: TextAlign.center,
                                   text: entity?.monthlyLimit.toString() ?? "",
-                                  textColor: AppTheme.text_black,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.textBlack,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.large,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -655,8 +655,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 CText(
                                   textAlign: TextAlign.center,
                                   text: "Expiry Date :",
-                                  textColor: AppTheme.title_gray,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.titleGray,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -667,8 +667,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                       ? DateFormat("dd-MM-yyyy")
                                           .format(entity!.licenseExpiryDate)
                                       : "",
-                                  textColor: AppTheme.text_black,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.textBlack,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.large,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -689,8 +689,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 CText(
                                   textAlign: TextAlign.center,
                                   text: "Opening Hours",
-                                  textColor: AppTheme.title_gray,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.titleGray,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -698,8 +698,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   padding: const EdgeInsets.only(top: 2),
                                   textAlign: TextAlign.center,
                                   text: entity?.openingTime ?? "-",
-                                  textColor: AppTheme.text_black,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.textBlack,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.large,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -715,8 +715,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 CText(
                                   textAlign: TextAlign.center,
                                   text: "Closing Hours",
-                                  textColor: AppTheme.title_gray,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.titleGray,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -724,8 +724,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   padding: const EdgeInsets.only(top: 2),
                                   textAlign: TextAlign.center,
                                   text: entity?.closingTime ?? "-",
-                                  textColor: AppTheme.text_black,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.textBlack,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.large,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -746,8 +746,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 CText(
                                   textAlign: TextAlign.center,
                                   text: "Classification : ",
-                                  textColor: AppTheme.title_gray,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.titleGray,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -755,8 +755,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   padding: const EdgeInsets.only(top: 2),
                                   textAlign: TextAlign.center,
                                   text: entity?.classification ?? "-",
-                                  textColor: AppTheme.text_black,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.textBlack,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.large,
                                   maxLines: 2,
                                   fontWeight: FontWeight.w600,
@@ -773,8 +773,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 CText(
                                   textAlign: TextAlign.center,
                                   text: "Ownership Type : ",
-                                  textColor: AppTheme.title_gray,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.titleGray,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -782,8 +782,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   padding: const EdgeInsets.only(top: 2),
                                   textAlign: TextAlign.center,
                                   text: entity?.ownerShipType ?? "-",
-                                  textColor: AppTheme.text_black,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.textBlack,
+                                  fontFamily: AppTheme.urbanist,
                                   maxLines: 2,
                                   fontSize: AppTheme.large,
                                   fontWeight: FontWeight.w600,
@@ -805,8 +805,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 CText(
                                   textAlign: TextAlign.center,
                                   text: "Manager Name : ",
-                                  textColor: AppTheme.title_gray,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.titleGray,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -814,8 +814,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   padding: const EdgeInsets.only(top: 2),
                                   textAlign: TextAlign.center,
                                   text: entity?.managerName ?? "-",
-                                  textColor: AppTheme.text_black,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.textBlack,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.large,
                                   maxLines: 2,
                                   fontWeight: FontWeight.w600,
@@ -832,8 +832,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 CText(
                                   textAlign: TextAlign.center,
                                   text: "Manager Contact : ",
-                                  textColor: AppTheme.title_gray,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.titleGray,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -841,8 +841,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   padding: const EdgeInsets.only(top: 2),
                                   textAlign: TextAlign.center,
                                   text: entity?.managerContactNumber ?? "-",
-                                  textColor: AppTheme.text_black,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.textBlack,
+                                  fontFamily: AppTheme.urbanist,
                                   maxLines: 2,
                                   fontSize: AppTheme.large,
                                   fontWeight: FontWeight.w600,
@@ -864,8 +864,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 CText(
                                   textAlign: TextAlign.center,
                                   text: "Role Name : ",
-                                  textColor: AppTheme.title_gray,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.titleGray,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -873,8 +873,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   padding: const EdgeInsets.only(top: 2),
                                   textAlign: TextAlign.center,
                                   text: entity?.roleName ?? "-",
-                                  textColor: AppTheme.text_black,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.textBlack,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.large,
                                   maxLines: 2,
                                   fontWeight: FontWeight.w600,
@@ -891,8 +891,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 CText(
                                   textAlign: TextAlign.center,
                                   text: "Last Inspection Date : ",
-                                  textColor: AppTheme.title_gray,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.titleGray,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -902,8 +902,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   text: entity?.lastVisitedDate == null
                                       ? "-"
                                       : "${DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))} \n${DateFormat("hh:mm:ss aa").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))}",
-                                  textColor: AppTheme.text_black,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.textBlack,
+                                  fontFamily: AppTheme.urbanist,
                                   maxLines: 2,
                                   fontSize: AppTheme.large,
                                   fontWeight: FontWeight.w600,
@@ -932,7 +932,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   CText(
                                     text: "Entity Outlets :",
                                     textColor: AppTheme.black,
-                                    fontFamily: AppTheme.Urbanist,
+                                    fontFamily: AppTheme.urbanist,
                                     fontSize: AppTheme.big_20,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -992,10 +992,10 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                     textColor: tabType == 1
                                                         ? AppTheme.black
                                                         : AppTheme
-                                                            .text_color_gray,
+                                                            .textColorGray,
                                                     fontWeight: FontWeight.w600,
                                                     fontFamily:
-                                                        AppTheme.Urbanist,
+                                                        AppTheme.urbanist,
                                                     fontSize: AppTheme.medium),
                                                 Container(
                                                   height: 3,
@@ -1004,7 +1004,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                   color: tabType == 1
                                                       ? AppTheme.colorPrimary
                                                       : AppTheme
-                                                          .main_background,
+                                                          .mainBackground,
                                                 )
                                               ],
                                             ),
@@ -1040,10 +1040,10 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                     textColor: tabType == 2
                                                         ? AppTheme.black
                                                         : AppTheme
-                                                            .text_color_gray,
+                                                            .textColorGray,
                                                     fontWeight: FontWeight.w600,
                                                     fontFamily:
-                                                        AppTheme.Urbanist,
+                                                        AppTheme.urbanist,
                                                     fontSize: AppTheme.medium),
                                                 Container(
                                                   height: 3,
@@ -1052,7 +1052,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                   color: tabType == 2
                                                       ? AppTheme.colorPrimary
                                                       : AppTheme
-                                                          .main_background,
+                                                          .mainBackground,
                                                 )
                                               ],
                                             ),
@@ -1119,7 +1119,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                       color: AppTheme.grey,
                                     ),
                                     hintStyle: TextStyle(
-                                        fontFamily: AppTheme.Urbanist,
+                                        fontFamily: AppTheme.urbanist,
                                         fontWeight: FontWeight.w400,
                                         color: AppTheme.black,
                                         fontSize: AppTheme.large)),
@@ -1251,7 +1251,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                       textColor:
                                                           AppTheme.colorPrimary,
                                                       fontFamily:
-                                                          AppTheme.Urbanist,
+                                                          AppTheme.urbanist,
                                                       fontSize: AppTheme.large,
                                                       maxLines: 1,
                                                       overflow:
@@ -1301,7 +1301,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                                         .white,
                                                                 fontFamily:
                                                                     AppTheme
-                                                                        .Urbanist,
+                                                                        .urbanist,
                                                                 fontSize:
                                                                     AppTheme
                                                                         .small,
@@ -1325,8 +1325,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                   text: outletList[index]
                                                       .ownerShipType,
                                                   textColor:
-                                                      AppTheme.gray_Asparagus,
-                                                  fontFamily: AppTheme.Urbanist,
+                                                      AppTheme.grayAsparagus,
+                                                  fontFamily: AppTheme.urbanist,
                                                   fontSize: AppTheme.large,
                                                   maxLines: 2,
                                                   overflow:
@@ -1353,9 +1353,9 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                                     index]
                                                                 .serviceType,
                                                             textColor: AppTheme
-                                                                .gray_Asparagus,
+                                                                .grayAsparagus,
                                                             fontFamily: AppTheme
-                                                                .Urbanist,
+                                                                .urbanist,
                                                             fontSize:
                                                                 AppTheme.large,
                                                             maxLines: 2,
@@ -1390,7 +1390,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                                   .colorPrimary,
                                                               fontFamily:
                                                                   AppTheme
-                                                                      .Urbanist,
+                                                                      .urbanist,
                                                               fontSize: AppTheme
                                                                   .large,
                                                               maxLines: 1,
@@ -1456,9 +1456,9 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                         text: outletList[index]
                                                             .serviceType,
                                                         textColor: AppTheme
-                                                            .gray_Asparagus,
+                                                            .grayAsparagus,
                                                         fontFamily:
-                                                            AppTheme.Urbanist,
+                                                            AppTheme.urbanist,
                                                         fontSize:
                                                             AppTheme.large,
                                                         maxLines: 2,
@@ -1490,7 +1490,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                             left: 20, right: 20),
                                         text: "Recent Inspection Logs",
                                         textColor: AppTheme.black,
-                                        fontFamily: AppTheme.Urbanist,
+                                        fontFamily: AppTheme.urbanist,
                                         fontSize: AppTheme.big_20,
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -1509,8 +1509,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                                               left: 20, right: 20),
                                           textAlign: TextAlign.end,
                                           text: "VIEW ALL LOGS",
-                                          textColor: AppTheme.text_color_two,
-                                          fontFamily: AppTheme.Urbanist,
+                                          textColor: AppTheme.textColorTwo,
+                                          fontFamily: AppTheme.urbanist,
                                           fontSize: AppTheme.medium,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -1557,11 +1557,11 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                             TextAlign.start,
                                                         text: "Visit ID",
                                                         fontFamily:
-                                                            AppTheme.Urbanist,
+                                                            AppTheme.urbanist,
                                                         fontSize:
                                                             AppTheme.large,
                                                         textColor: AppTheme
-                                                            .gray_Asparagus,
+                                                            .grayAsparagus,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                       ),
@@ -1583,11 +1583,11 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                         fontFamily:
-                                                            AppTheme.Urbanist,
+                                                            AppTheme.urbanist,
                                                         fontSize:
                                                             AppTheme.large,
                                                         textColor: AppTheme
-                                                            .gray_Asparagus,
+                                                            .grayAsparagus,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                       ),
@@ -1612,11 +1612,11 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                             TextAlign.start,
                                                         text: "Date & Time",
                                                         fontFamily:
-                                                            AppTheme.Urbanist,
+                                                            AppTheme.urbanist,
                                                         fontSize:
                                                             AppTheme.large,
                                                         textColor: AppTheme
-                                                            .gray_Asparagus,
+                                                            .grayAsparagus,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                       ),
@@ -1638,11 +1638,11 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                         fontFamily:
-                                                            AppTheme.Urbanist,
+                                                            AppTheme.urbanist,
                                                         fontSize:
                                                             AppTheme.large,
                                                         textColor: AppTheme
-                                                            .gray_Asparagus,
+                                                            .grayAsparagus,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                       ),
@@ -1665,11 +1665,11 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                             TextAlign.start,
                                                         text: "Comments",
                                                         fontFamily:
-                                                            AppTheme.Urbanist,
+                                                            AppTheme.urbanist,
                                                         fontSize:
                                                             AppTheme.large,
                                                         textColor: AppTheme
-                                                            .gray_Asparagus,
+                                                            .grayAsparagus,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                       ),
@@ -1690,9 +1690,9 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                         textColor: AppTheme
-                                                            .text_color_red,
+                                                            .textColorRed,
                                                         fontFamily:
-                                                            AppTheme.Urbanist,
+                                                            AppTheme.urbanist,
                                                         fontSize:
                                                             AppTheme.large,
                                                         fontWeight:
@@ -1771,7 +1771,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 ),
                                 backgroundColor: widget.taskId != null
                                     ? AppTheme.colorPrimary
-                                    : AppTheme.pale_gray,
+                                    : AppTheme.paleGray,
                                 minimumSize: const Size.fromHeight(50),
                               ),
                               child: CText(
@@ -1779,9 +1779,9 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 text: widget.statusId == 5
                                     ? "Continue Inspection"
                                     : "Create Inspection",
-                                textColor: AppTheme.text_primary,
+                                textColor: AppTheme.textPrimary,
                                 fontSize: AppTheme.large,
-                                fontFamily: AppTheme.Urbanist,
+                                fontFamily: AppTheme.urbanist,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -1821,10 +1821,10 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 ),
                                 child: CText(
                                   text: "Cancel Inspection",
-                                  textColor: AppTheme.text_primary,
+                                  textColor: AppTheme.textPrimary,
                                   textAlign: TextAlign.center,
                                   fontSize: AppTheme.large,
-                                  fontFamily: AppTheme.Urbanist,
+                                  fontFamily: AppTheme.urbanist,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -1931,14 +1931,14 @@ class _EntityDetailsState extends State<EntityDetails> {
 
     showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
           return Container(
             decoration: const BoxDecoration(
-                color: AppTheme.main_background,
+                color: AppTheme.mainBackground,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(15),
                     topLeft: Radius.circular(15))),
@@ -1966,7 +1966,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                         textAlign: TextAlign.center,
                         text: "DONE",
                         textColor: AppTheme.black,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.medium,
                         fontWeight: FontWeight.w700,
                       ),
@@ -1983,7 +1983,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     title: 'Task Name :',
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.text,
                   ),
                   FormTextField(
@@ -2019,7 +2019,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     title: 'Primary Inspector :',
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.text,
                   ),
                   FormTextField(
@@ -2060,7 +2060,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     title: 'Other Inspectors :',
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.text,
                   ),
                   Visibility(
@@ -2099,7 +2099,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                       title: 'Agents :',
                       inputBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
-                      textColor: AppTheme.gray_Asparagus,
+                      textColor: AppTheme.grayAsparagus,
                       inputType: TextInputType.text,
                     ),
                   ),
@@ -2116,7 +2116,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     maxLines: 3,
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.text,
                   ),
                   Center(
@@ -2147,14 +2147,14 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   selectedUsers.isNotEmpty &&
                                   (!isHideAgents || selectedAgents.isNotEmpty)
                               ? AppTheme.colorPrimary
-                              : AppTheme.pale_gray,
+                              : AppTheme.paleGray,
                           minimumSize: const Size.fromHeight(50),
                         ),
                         child: CText(
                           text: "Add",
-                          textColor: AppTheme.text_primary,
+                          textColor: AppTheme.textPrimary,
                           fontSize: AppTheme.large,
-                          fontFamily: AppTheme.Urbanist,
+                          fontFamily: AppTheme.urbanist,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -2277,11 +2277,11 @@ class _EntityDetailsState extends State<EntityDetails> {
                   onChange: (value) {
                     setState(() {});
                   },
-                  cardColor: AppTheme.main_background,
+                  cardColor: AppTheme.mainBackground,
                   hint: "",
                   controller: remark,
-                  textColor: AppTheme.gray_Asparagus,
-                  fontFamily: AppTheme.Urbanist,
+                  textColor: AppTheme.grayAsparagus,
+                  fontFamily: AppTheme.urbanist,
                   title: 'Notes :',
                   maxLines: 10,
                   minLines: 5,
@@ -2311,7 +2311,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                       ),
                       backgroundColor: remark.text.isNotEmpty
                           ? AppTheme.colorPrimary
-                          : AppTheme.pale_gray,
+                          : AppTheme.paleGray,
                       minimumSize: const Size(200, 40),
                     ),
                     child: loading
@@ -2365,11 +2365,11 @@ class _EntityDetailsState extends State<EntityDetails> {
                   height: 20,
                 ),
                 FormTextField(
-                  cardColor: AppTheme.main_background,
+                  cardColor: AppTheme.mainBackground,
                   hint: "",
                   controller: remark,
-                  textColor: AppTheme.gray_Asparagus,
-                  fontFamily: AppTheme.Urbanist,
+                  textColor: AppTheme.grayAsparagus,
+                  fontFamily: AppTheme.urbanist,
                   title: 'Notes :',
                   maxLines: 10,
                   minLines: 5,
@@ -2534,14 +2534,14 @@ class _EntityDetailsState extends State<EntityDetails> {
 
     showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
           return Container(
             decoration: const BoxDecoration(
-                color: AppTheme.main_background,
+                color: AppTheme.mainBackground,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(15),
                     topLeft: Radius.circular(15))),
@@ -2564,7 +2564,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                         textAlign: TextAlign.center,
                         text: "DONE",
                         textColor: AppTheme.black,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.medium,
                         fontWeight: FontWeight.w700,
                       ),
@@ -2581,7 +2581,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     title: 'Outlet Name :',
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.text,
                   ),
                   FormTextField(
@@ -2593,7 +2593,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     title: 'Ownership :',
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.text,
                     onTap: () {
                       selectOutletTypeSheet(
@@ -2609,7 +2609,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     title: 'Service Type :',
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.text,
                     onTap: () {
                       selectOutletTypeSheet(outletServiceList, "service",
@@ -2625,7 +2625,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     title: 'Outlet Type :',
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.text,
                     onTap: () {
                       List<AreaData> types = [];
@@ -2645,7 +2645,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     title: 'Manager Name :',
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.text,
                   ),
                   FormTextField(
@@ -2661,7 +2661,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     title: 'Emirates ID :',
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.number,
                   ),
                   FormMobileTextField(
@@ -2678,7 +2678,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     title: 'Contact Number :',
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.phone,
                   ),
                   FormTextField(
@@ -2693,7 +2693,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     maxLines: 2,
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.text,
                   ),
                   Center(
@@ -2829,14 +2829,14 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   emiratesId.text.length == 18 &&
                                   mobileNumber.text.length == 8
                               ? AppTheme.colorPrimary
-                              : AppTheme.pale_gray,
+                              : AppTheme.paleGray,
                           minimumSize: const Size.fromHeight(50),
                         ),
                         child: CText(
                           text: model == null ? "Add" : "Update",
-                          textColor: AppTheme.text_primary,
+                          textColor: AppTheme.textPrimary,
                           fontSize: AppTheme.large,
-                          fontFamily: AppTheme.Urbanist,
+                          fontFamily: AppTheme.urbanist,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -2997,14 +2997,14 @@ class _EntityDetailsState extends State<EntityDetails> {
       StateSetter myState, FocusNode focusNode) {
     showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return Container(
             decoration: const BoxDecoration(
-                color: AppTheme.main_background,
+                color: AppTheme.mainBackground,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(15),
                     topLeft: Radius.circular(15))),
@@ -3026,7 +3026,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                         textAlign: TextAlign.center,
                         text: "DONE",
                         textColor: AppTheme.black,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.medium,
                         fontWeight: FontWeight.w700,
                       ),
@@ -3065,7 +3065,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                               padding: const EdgeInsets.all(15.0),
                               text: list[index].text,
                               textColor: AppTheme.colorPrimary,
-                              fontFamily: AppTheme.Urbanist,
+                              fontFamily: AppTheme.urbanist,
                               fontSize: AppTheme.large,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

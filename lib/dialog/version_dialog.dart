@@ -4,8 +4,8 @@ import 'package:patrol_system/utils/color_const.dart';
 
 class VersionDialog extends StatefulWidget {
   const VersionDialog({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<VersionDialog> createState() => _VersionDialogState();
@@ -24,16 +24,16 @@ class _VersionDialogState extends State<VersionDialog> {
         color: Colors.transparent,
         child: Container(
             width: width,
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               left: 24,
               top: 24,
               right: 15,
               bottom: 15,
             ),
-            margin: EdgeInsets.symmetric(horizontal: 15),
+            margin: const EdgeInsets.symmetric(horizontal: 15),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: AppTheme.text_primary,
+              color: AppTheme.textPrimary,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +43,7 @@ class _VersionDialogState extends State<VersionDialog> {
                 Center(
                   child: CText(
                     text: 'Update Required',
-                    fontFamily: AppTheme.Urbanist,
+                    fontFamily: AppTheme.urbanist,
                     fontWeight: FontWeight.w700,
                     fontSize: width * .05,
                     textColor: AppTheme.black,
@@ -58,7 +58,7 @@ class _VersionDialogState extends State<VersionDialog> {
                           text:
                               "We have released a new update for our mobile app. Kindly ",
                           style: TextStyle(
-                            fontFamily: AppTheme.Urbanist,
+                            fontFamily: AppTheme.urbanist,
                             fontWeight: FontWeight.w600,
                             fontSize: width * .05,
                             color: AppTheme.black,
@@ -67,7 +67,7 @@ class _VersionDialogState extends State<VersionDialog> {
                         TextSpan(
                           text: "DELETE",
                           style: TextStyle(
-                            fontFamily: AppTheme.Urbanist,
+                            fontFamily: AppTheme.urbanist,
                             fontWeight: FontWeight.w800, // Bold
                             fontSize: width * .05,
                             color: Colors.red, // Red color
@@ -77,7 +77,7 @@ class _VersionDialogState extends State<VersionDialog> {
                           text:
                               " the existing app and install the latest version.",
                           style: TextStyle(
-                            fontFamily: AppTheme.Urbanist,
+                            fontFamily: AppTheme.urbanist,
                             fontWeight: FontWeight.w600,
                             fontSize: width * .05,
                             color: AppTheme.black,

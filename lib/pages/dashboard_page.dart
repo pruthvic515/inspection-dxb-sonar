@@ -29,7 +29,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppTheme.main_background,
+        backgroundColor: AppTheme.mainBackground,
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -148,8 +148,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                   CText(
                                     textAlign: TextAlign.center,
                                     text: "Total Sites Visited",
-                                    textColor: AppTheme.text_color_two,
-                                    fontFamily: AppTheme.Urbanist,
+                                    textColor: AppTheme.textColorTwo,
+                                    fontFamily: AppTheme.urbanist,
                                     fontSize: AppTheme.large,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -157,8 +157,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                     padding: const EdgeInsets.only(top: 2),
                                     textAlign: TextAlign.center,
                                     text: "$count",
-                                    textColor: AppTheme.text_color_two,
-                                    fontFamily: AppTheme.Urbanist,
+                                    textColor: AppTheme.textColorTwo,
+                                    fontFamily: AppTheme.urbanist,
                                     fontSize: AppTheme.large,
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -208,7 +208,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             left: 10, right: 10, top: 20, bottom: 20),
                         text: "Dashboard",
                         textColor: AppTheme.white,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.big,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,

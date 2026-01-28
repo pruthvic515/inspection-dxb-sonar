@@ -45,22 +45,22 @@ class OutletDetailScreen extends StatefulWidget {
       required this.primary});
 
   @override
-  State<OutletDetailScreen> createState() =>
-      _OutletDetailScreenState(taskId, entity, outlet);
+  State<OutletDetailScreen> createState() => _OutletDetailScreenState();
 }
 
 class _OutletDetailScreenState extends State<OutletDetailScreen> {
   int? taskId;
-  EntityDetailModel entity;
+  late EntityDetailModel entity;
   var storeUserData = StoreUserData();
   List<AreaData> ownerShipList = [];
   List<AreaData> outletServiceList = [];
-  OutletData outlet;
-
-  _OutletDetailScreenState(this.taskId, this.entity, this.outlet);
+  late OutletData outlet;
 
   @override
   void initState() {
+    taskId = widget.taskId;
+    entity = widget.entity;
+    outlet = widget.outlet;
     getOutletService();
     getOutletOwnerShip();
     super.initState();
@@ -117,7 +117,7 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -161,8 +161,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                           padding: const EdgeInsets.only(
                               left: 60, right: 60, top: 80),
                           text: outlet.outletName,
-                          textColor: AppTheme.text_primary,
-                          fontFamily: AppTheme.Urbanist,
+                          textColor: AppTheme.textPrimary,
+                          fontFamily: AppTheme.urbanist,
                           fontSize: AppTheme.big,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -173,8 +173,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                           padding: const EdgeInsets.only(
                               left: 60, right: 60, top: 5),
                           text: entity.location?.address ?? "",
-                          textColor: AppTheme.text_primary,
-                          fontFamily: AppTheme.Urbanist,
+                          textColor: AppTheme.textPrimary,
+                          fontFamily: AppTheme.urbanist,
                           fontSize: AppTheme.large,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -196,7 +196,7 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                             const EdgeInsets.only(left: 20, right: 20, top: 20),
                         text: "Outlet Details :",
                         textColor: AppTheme.black,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.big_20,
                         fontWeight: FontWeight.w700,
                       ),
@@ -225,8 +225,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                     CText(
                                       textAlign: TextAlign.center,
                                       text: "Outlet Name : ",
-                                      textColor: AppTheme.title_gray,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.titleGray,
+                                      fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.medium,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -234,8 +234,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                       padding: const EdgeInsets.only(top: 2),
                                       textAlign: TextAlign.center,
                                       text: outlet.outletName,
-                                      textColor: AppTheme.text_black,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.textBlack,
+                                      fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.large,
                                       maxLines: 2,
                                       fontWeight: FontWeight.w600,
@@ -252,8 +252,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                     CText(
                                       textAlign: TextAlign.center,
                                       text: "Outlet Type : ",
-                                      textColor: AppTheme.title_gray,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.titleGray,
+                                      fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.medium,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -261,8 +261,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                       padding: const EdgeInsets.only(top: 2),
                                       textAlign: TextAlign.center,
                                       text: outlet.outletType ?? "-",
-                                      textColor: AppTheme.text_black,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.textBlack,
+                                      fontFamily: AppTheme.urbanist,
                                       maxLines: 2,
                                       fontSize: AppTheme.large,
                                       fontWeight: FontWeight.w600,
@@ -284,8 +284,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                     CText(
                                       textAlign: TextAlign.center,
                                       text: "Ownership : ",
-                                      textColor: AppTheme.title_gray,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.titleGray,
+                                      fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.medium,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -297,8 +297,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                               element.id ==
                                               outlet.ownerShipTypeId)
                                           .text,
-                                      textColor: AppTheme.text_black,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.textBlack,
+                                      fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.large,
                                       maxLines: 2,
                                       fontWeight: FontWeight.w600,
@@ -315,8 +315,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                     CText(
                                       textAlign: TextAlign.center,
                                       text: "Service Type : ",
-                                      textColor: AppTheme.title_gray,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.titleGray,
+                                      fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.medium,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -328,8 +328,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                               element.id ==
                                               outlet.serviceTypeId)
                                           .text,
-                                      textColor: AppTheme.text_black,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.textBlack,
+                                      fontFamily: AppTheme.urbanist,
                                       maxLines: 2,
                                       fontSize: AppTheme.large,
                                       fontWeight: FontWeight.w600,
@@ -351,8 +351,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                     CText(
                                       textAlign: TextAlign.center,
                                       text: "Manager Name : ",
-                                      textColor: AppTheme.title_gray,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.titleGray,
+                                      fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.medium,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -360,8 +360,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                       padding: const EdgeInsets.only(top: 2),
                                       textAlign: TextAlign.center,
                                       text: outlet.managerName ?? "-",
-                                      textColor: AppTheme.text_black,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.textBlack,
+                                      fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.large,
                                       maxLines: 2,
                                       fontWeight: FontWeight.w600,
@@ -378,8 +378,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                     CText(
                                       textAlign: TextAlign.center,
                                       text: "Emirates ID : ",
-                                      textColor: AppTheme.title_gray,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.titleGray,
+                                      fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.medium,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -387,8 +387,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                       padding: const EdgeInsets.only(top: 2),
                                       textAlign: TextAlign.center,
                                       text: outlet.emiratesId ?? "-",
-                                      textColor: AppTheme.text_black,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.textBlack,
+                                      fontFamily: AppTheme.urbanist,
                                       maxLines: 2,
                                       fontSize: AppTheme.large,
                                       fontWeight: FontWeight.w600,
@@ -410,8 +410,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                     CText(
                                       textAlign: TextAlign.center,
                                       text: "Contact Number : ",
-                                      textColor: AppTheme.title_gray,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.titleGray,
+                                      fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.medium,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -419,8 +419,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                       padding: const EdgeInsets.only(top: 2),
                                       textAlign: TextAlign.center,
                                       text: outlet.contactNumber ?? "-",
-                                      textColor: AppTheme.text_black,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.textBlack,
+                                      fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.large,
                                       maxLines: 2,
                                       fontWeight: FontWeight.w600,
@@ -437,8 +437,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                     CText(
                                       textAlign: TextAlign.center,
                                       text: "Notes : ",
-                                      textColor: AppTheme.title_gray,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.titleGray,
+                                      fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.medium,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -446,8 +446,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                       padding: const EdgeInsets.only(top: 2),
                                       textAlign: TextAlign.center,
                                       text: outlet.notes ?? "-",
-                                      textColor: AppTheme.text_black,
-                                      fontFamily: AppTheme.Urbanist,
+                                      textColor: AppTheme.textBlack,
+                                      fontFamily: AppTheme.urbanist,
                                       maxLines: 2,
                                       fontSize: AppTheme.large,
                                       fontWeight: FontWeight.w600,
@@ -553,7 +553,7 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                     outlet.inspectorId ==
                                         storeUserData.getInt(USER_ID))
                             ? AppTheme.colorPrimary
-                            : AppTheme.pale_gray,
+                            : AppTheme.paleGray,
                         minimumSize: const Size.fromHeight(50),
                       ),
                       child: CText(
@@ -561,9 +561,9 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                         text: widget.statusId == 5
                             ? "Continue Inspection"
                             : "Create Inspection",
-                        textColor: AppTheme.text_primary,
+                        textColor: AppTheme.textPrimary,
                         fontSize: AppTheme.large,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -604,9 +604,9 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                         child: CText(
                           textAlign: TextAlign.center,
                           text: "Cancel Inspection",
-                          textColor: AppTheme.text_primary,
+                          textColor: AppTheme.textPrimary,
                           fontSize: AppTheme.large,
-                          fontFamily: AppTheme.Urbanist,
+                          fontFamily: AppTheme.urbanist,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -648,11 +648,11 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                   height: 20,
                 ),
                 FormTextField(
-                  cardColor: AppTheme.main_background,
+                  cardColor: AppTheme.mainBackground,
                   hint: "",
                   controller: remark,
-                  textColor: AppTheme.gray_Asparagus,
-                  fontFamily: AppTheme.Urbanist,
+                  textColor: AppTheme.grayAsparagus,
+                  fontFamily: AppTheme.urbanist,
                   title: 'Notes :',
                   maxLines: 10,
                   minLines: 5,

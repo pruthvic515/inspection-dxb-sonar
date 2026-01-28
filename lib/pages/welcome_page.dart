@@ -20,7 +20,7 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
@@ -41,7 +41,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   text: "Welcome to",
                   textColor: AppTheme.black,
                   textAlign: TextAlign.center,
-                  fontFamily: AppTheme.Urbanist,
+                  fontFamily: AppTheme.urbanist,
                   fontSize: 40,
                   fontWeight: FontWeight.w700,
                 ),
@@ -49,7 +49,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   text: "Inspection DXB",
                   fontSize: 40,
                   fontWeight: FontWeight.w700,
-                  fontFamily: AppTheme.Urbanist,
+                  fontFamily: AppTheme.urbanist,
                   textColor: AppTheme.colorPrimary,
                 ),
                 Container(
@@ -70,7 +70,7 @@ class _WelcomePageState extends State<WelcomePage> {
                       text: "Get started",
                       textColor: AppTheme.white,
                       fontSize: AppTheme.big,
-                      fontFamily: AppTheme.Poppins,
+                      fontFamily: AppTheme.poppins,
                       fontWeight: FontWeight.w700,
                     ),
                   ),

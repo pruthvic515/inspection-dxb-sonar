@@ -110,7 +110,7 @@ class Utils {
 
   bool isValidEmail(String text) {
     return RegExp(
-            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+            r'^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
         .hasMatch(text);
   }
 
@@ -155,7 +155,7 @@ class Utils {
       Color textColor = AppTheme.red}) {
     return CText(
       text: title,
-      fontFamily: AppTheme.Urbanist,
+      fontFamily: AppTheme.urbanist,
       fontWeight: FontWeight.w500,
       fontSize: fontSize,
       textColor: textColor,

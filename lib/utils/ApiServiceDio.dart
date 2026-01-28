@@ -31,7 +31,6 @@ class ApiServiceDio {
         'Connection': 'keep-alive',
         'Accept-Encoding': 'gzip, deflate, br',
         'Cache-Control': 'keep-alive',
-        'Accept-Encoding': 'gzip, deflate, br',
       };
     } else {
       headers = {
@@ -39,7 +38,6 @@ class ApiServiceDio {
         'Content-Type': "application/json-patch+json",
         'Accept-Encoding': 'gzip, deflate, br',
         'Cache-Control': 'keep-alive',
-        'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive',
       };
     }
@@ -233,7 +231,7 @@ class ApiServiceDio {
           filePaths[i],
           filename: filePaths[i].split('/').last,
         );
-        formData.files.add(MapEntry('${fileFieldName}', file));
+        formData.files.add(MapEntry(fileFieldName, file));
       }
 
       final response = await _dio.post(
@@ -256,13 +254,13 @@ class ApiServiceDio {
       String endpoint,
       Map<String, String> fields,
       String filePath,
-      String EmiratedIdBack,
+      String emiratedIdBack,
       ) async {
     return uploadFiles<T>(
       endpoint,
       fields,
       [filePath],
-      EmiratedIdBack,
+      emiratedIdBack,
     );
   }
 
@@ -354,8 +352,7 @@ class ApiServiceDio {
 
       case DioExceptionType.badResponse:
         final statusCode = error.response?.statusCode ?? 0;
-        final errorMessage = _extractErrorMessage(error.response?.data) ??
-            'Server error (${statusCode})';
+        final errorMessage = _extractErrorMessage(error.response?.data);
         return ApiResponse.error(errorMessage, statusCode);
 
       case DioExceptionType.cancel:
@@ -368,8 +365,7 @@ class ApiServiceDio {
         return ApiResponse.error('Certificate verification failed.');
 
       case DioExceptionType.unknown:
-      default:
-        return ApiResponse.error('Network error occurred.');
+      return ApiResponse.error('Network error occurred.');
     }
   }
 

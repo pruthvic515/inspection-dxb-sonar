@@ -340,7 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 CText(
                   text: "My Task",
                   textColor: AppTheme.black,
-                  fontFamily: AppTheme.Urbanist,
+                  fontFamily: AppTheme.urbanist,
                   fontSize: AppTheme.big_20,
                   fontWeight: FontWeight.w800,
                 ),
@@ -352,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: CText(
                     text: "Search Entity",
-                    textColor: AppTheme.text_primary,
+                    textColor: AppTheme.textPrimary,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -393,9 +393,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     text: "Awaiting Feedback($feedbackCount)",
                                     textColor: agentTabType == "feedback"
                                         ? AppTheme.black
-                                        : AppTheme.text_color_gray,
+                                        : AppTheme.textColorGray,
                                     fontWeight: FontWeight.w400,
-                                    fontFamily: AppTheme.Poppins,
+                                    fontFamily: AppTheme.poppins,
                                     textAlign: TextAlign.center,
                                     fontSize: AppTheme.medium),
                                 Container(
@@ -403,7 +403,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   margin: const EdgeInsets.only(top: 8),
                                   color: agentTabType == "feedback"
                                       ? AppTheme.colorPrimary
-                                      : AppTheme.main_background,
+                                      : AppTheme.mainBackground,
                                 )
                               ],
                             )))),
@@ -434,9 +434,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 text: "Awaiting Confirmation($waitingCount)",
                                 textColor: agentTabType == "waiting"
                                     ? AppTheme.black
-                                    : AppTheme.text_color_gray,
+                                    : AppTheme.textColorGray,
                                 fontWeight: FontWeight.w400,
-                                fontFamily: AppTheme.Poppins,
+                                fontFamily: AppTheme.poppins,
                                 fontSize: AppTheme.medium,
                                 textAlign: TextAlign.center,
                               ),
@@ -445,7 +445,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 margin: const EdgeInsets.only(top: 8),
                                 color: agentTabType == "waiting"
                                     ? AppTheme.colorPrimary
-                                    : AppTheme.main_background,
+                                    : AppTheme.mainBackground,
                               )
                             ],
                           ),
@@ -486,7 +486,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: AppTheme.grey,
                   ),
                   hintStyle: TextStyle(
-                      fontFamily: AppTheme.Poppins,
+                      fontFamily: AppTheme.poppins,
                       fontWeight: FontWeight.w400,
                       color: AppTheme.black,
                       fontSize: AppTheme.large)),
@@ -529,8 +529,8 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16),
             CText(
               text: "No tasks found",
-              textColor: AppTheme.text_color_gray,
-              fontFamily: AppTheme.Urbanist,
+              textColor: AppTheme.textColorGray,
+              fontFamily: AppTheme.urbanist,
               fontSize: AppTheme.large,
               fontWeight: FontWeight.w600,
             ),
@@ -539,8 +539,8 @@ class _HomeScreenState extends State<HomeScreen> {
               text: agentTabType == "waiting"
                   ? "No tasks waiting for agent confirmation"
                   : "No tasks ready for agent feedback",
-              textColor: AppTheme.text_color_gray,
-              fontFamily: AppTheme.Poppins,
+              textColor: AppTheme.textColorGray,
+              fontFamily: AppTheme.poppins,
               fontSize: AppTheme.medium,
               fontWeight: FontWeight.w400,
               textAlign: TextAlign.center,
@@ -571,8 +571,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           textAlign: TextAlign.start,
                           padding: const EdgeInsets.only(right: 10, top: 10),
                           text: task.taskName,
-                          textColor: AppTheme.gray_Asparagus,
-                          fontFamily: AppTheme.Urbanist,
+                          textColor: AppTheme.grayAsparagus,
+                          fontFamily: AppTheme.urbanist,
                           fontSize: AppTheme.large,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -589,7 +589,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? task.entityName
                         : "${task.entityName} (${task.outletName})",
                     textColor: AppTheme.colorPrimary,
-                    fontFamily: AppTheme.Urbanist,
+                    fontFamily: AppTheme.urbanist,
                     fontSize: AppTheme.large,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -602,8 +602,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         textAlign: TextAlign.end,
                         padding: const EdgeInsets.only(right: 5, top: 5),
                         text: "Date & Time :",
-                        textColor: AppTheme.gray_Asparagus,
-                        fontFamily: AppTheme.Urbanist,
+                        textColor: AppTheme.grayAsparagus,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.medium,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -614,8 +614,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.only(right: 20, top: 5),
                         text: DateFormat("dd-MM-yyyy hh:mm:ss aa")
                             .format(task.createdOn),
-                        textColor: AppTheme.gray_Asparagus,
-                        fontFamily: AppTheme.Urbanist,
+                        textColor: AppTheme.grayAsparagus,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.medium,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -635,7 +635,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.only(right: 5, top: 10),
                             text: "Notes :",
                             textColor: AppTheme.colorPrimary,
-                            fontFamily: AppTheme.Urbanist,
+                            fontFamily: AppTheme.urbanist,
                             fontSize: AppTheme.medium,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -645,8 +645,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: CText(
                             padding: const EdgeInsets.only(right: 20, top: 10),
                             text: task.notes,
-                            textColor: AppTheme.gray_Asparagus,
-                            fontFamily: AppTheme.Urbanist,
+                            textColor: AppTheme.grayAsparagus,
+                            fontFamily: AppTheme.urbanist,
                             fontSize: AppTheme.medium,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -752,7 +752,7 @@ class _HomeScreenState extends State<HomeScreen> {
           refreshTask();
         },
         child: Scaffold(
-            backgroundColor: AppTheme.main_background,
+            backgroundColor: AppTheme.mainBackground,
             body: Column(
               children: [
                 Container(
@@ -774,8 +774,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       left: 10, right: 10),
                                   text:
                                       "${DateFormat("dd MMMM yyyy").format(Utils().getCurrentGSTTime())} \nHi, ${storeUserData.getString(NAME)} ",
-                                  textColor: AppTheme.text_primary,
-                                  fontFamily: AppTheme.Urbanist,
+                                  textColor: AppTheme.textPrimary,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.big,
                                   fontWeight: FontWeight.w600,
                                 )),
@@ -803,8 +803,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           text: googleAddress.isEmpty
                               ? "Your Location \nLoading...\n"
                               : "Your Location \n$googleAddress",
-                          textColor: AppTheme.text_primary,
-                          fontFamily: AppTheme.Urbanist,
+                          textColor: AppTheme.textPrimary,
+                          fontFamily: AppTheme.urbanist,
                           fontSize: AppTheme.large,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
@@ -835,7 +835,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         CText(
                                           text: "My Task",
                                           textColor: AppTheme.black,
-                                          fontFamily: AppTheme.Urbanist,
+                                          fontFamily: AppTheme.urbanist,
                                           fontSize: AppTheme.big_20,
                                           fontWeight: FontWeight.w800,
                                         ),
@@ -848,7 +848,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           },
                                           child: CText(
                                             text: "Search Entity",
-                                            textColor: AppTheme.text_primary,
+                                            textColor: AppTheme.textPrimary,
                                             fontWeight: FontWeight.w700,
                                           ),
                                         ),
@@ -887,11 +887,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   "pending"
                                                               ? AppTheme.black
                                                               : AppTheme
-                                                                  .text_color_gray,
+                                                                  .textColorGray,
                                                           fontWeight:
                                                               FontWeight.w400,
                                                           fontFamily:
-                                                              AppTheme.Poppins,
+                                                              AppTheme.poppins,
                                                           fontSize:
                                                               AppTheme.medium),
                                                       Container(
@@ -902,7 +902,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             ? AppTheme
                                                                 .colorPrimary
                                                             : AppTheme
-                                                                .main_background,
+                                                                .mainBackground,
                                                       )
                                                     ],
                                                   ),
@@ -933,11 +933,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     "completed"
                                                                 ? AppTheme.black
                                                                 : AppTheme
-                                                                    .text_color_gray,
+                                                                    .textColorGray,
                                                             fontWeight:
                                                                 FontWeight.w400,
                                                             fontFamily: AppTheme
-                                                                .Poppins,
+                                                                .poppins,
                                                             fontSize: AppTheme
                                                                 .medium),
                                                         Container(
@@ -953,7 +953,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               ? AppTheme
                                                                   .colorPrimary
                                                               : AppTheme
-                                                                  .main_background,
+                                                                  .mainBackground,
                                                         )
                                                       ],
                                                     )))),
@@ -993,7 +993,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ],
                                         ),
                                         hintStyle: TextStyle(
-                                            fontFamily: AppTheme.Poppins,
+                                            fontFamily: AppTheme.poppins,
                                             fontWeight: FontWeight.w400,
                                             color: AppTheme.black,
                                             fontSize: AppTheme.large)),
@@ -1037,9 +1037,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             text: list[index]
                                                                 .taskName,
                                                             textColor: AppTheme
-                                                                .gray_Asparagus,
+                                                                .grayAsparagus,
                                                             fontFamily: AppTheme
-                                                                .Urbanist,
+                                                                .urbanist,
                                                             fontSize:
                                                                 AppTheme.large,
                                                             maxLines: 1,
@@ -1089,7 +1089,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             textColor:
                                                                 AppTheme.white,
                                                             fontFamily: AppTheme
-                                                                .Urbanist,
+                                                                .urbanist,
                                                             fontSize:
                                                                 AppTheme.small,
                                                             maxLines: 1,
@@ -1119,7 +1119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       textColor:
                                                           AppTheme.colorPrimary,
                                                       fontFamily:
-                                                          AppTheme.Urbanist,
+                                                          AppTheme.urbanist,
                                                       fontSize: AppTheme.large,
                                                       maxLines: 1,
                                                       overflow:
@@ -1144,9 +1144,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 ?.address ??
                                                             "",
                                                         textColor: AppTheme
-                                                            .gray_Asparagus,
+                                                            .grayAsparagus,
                                                         fontFamily:
-                                                            AppTheme.Urbanist,
+                                                            AppTheme.urbanist,
                                                         fontSize:
                                                             AppTheme.large,
                                                         maxLines: 2,
@@ -1170,9 +1170,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   top: 5),
                                                           text: "Date & Time :",
                                                           textColor: AppTheme
-                                                              .gray_Asparagus,
+                                                              .grayAsparagus,
                                                           fontFamily:
-                                                              AppTheme.Urbanist,
+                                                              AppTheme.urbanist,
                                                           fontSize:
                                                               AppTheme.medium,
                                                           maxLines: 1,
@@ -1195,9 +1195,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                       index]
                                                                   .createdOn),
                                                           textColor: AppTheme
-                                                              .gray_Asparagus,
+                                                              .grayAsparagus,
                                                           fontFamily:
-                                                              AppTheme.Urbanist,
+                                                              AppTheme.urbanist,
                                                           fontSize:
                                                               AppTheme.medium,
                                                           maxLines: 1,
@@ -1235,7 +1235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   .colorPrimary,
                                                               fontFamily:
                                                                   AppTheme
-                                                                      .Urbanist,
+                                                                      .urbanist,
                                                               fontSize: AppTheme
                                                                   .medium,
                                                               maxLines: 1,
@@ -1256,10 +1256,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               text: list[index]
                                                                   .notes,
                                                               textColor: AppTheme
-                                                                  .gray_Asparagus,
+                                                                  .grayAsparagus,
                                                               fontFamily:
                                                                   AppTheme
-                                                                      .Urbanist,
+                                                                      .urbanist,
                                                               fontSize: AppTheme
                                                                   .medium,
                                                               maxLines: 2,
@@ -1521,11 +1521,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 20,
                 ),
                 FormTextField(
-                  cardColor: AppTheme.main_background,
+                  cardColor: AppTheme.mainBackground,
                   hint: "",
                   controller: remark,
-                  textColor: AppTheme.gray_Asparagus,
-                  fontFamily: AppTheme.Urbanist,
+                  textColor: AppTheme.grayAsparagus,
+                  fontFamily: AppTheme.urbanist,
                   title: 'Notes :',
                   maxLines: 10,
                   minLines: 5,
@@ -1553,9 +1553,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: CText(
                               textAlign: TextAlign.center,
                               text: "Accept",
-                              textColor: AppTheme.text_primary,
+                              textColor: AppTheme.textPrimary,
                               fontSize: AppTheme.large,
-                              fontFamily: AppTheme.Urbanist,
+                              fontFamily: AppTheme.urbanist,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -1592,7 +1592,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               text: "Not Accept",
                               textColor: AppTheme.white,
                               fontSize: AppTheme.large,
-                              fontFamily: AppTheme.Urbanist,
+                              fontFamily: AppTheme.urbanist,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -1692,7 +1692,7 @@ class _HomeScreenState extends State<HomeScreen> {
         enableDrag: false,
         isDismissible: false,
         context: context,
-        backgroundColor: AppTheme.main_background,
+        backgroundColor: AppTheme.mainBackground,
         isScrollControlled: true,
         builder: (BuildContext buildContext) {
           return StatefulBuilder(
@@ -1700,7 +1700,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return Container(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               decoration: const BoxDecoration(
-                  color: AppTheme.main_background,
+                  color: AppTheme.mainBackground,
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(15),
                       topLeft: Radius.circular(15))),
@@ -1717,7 +1717,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.only(top: 20, bottom: 10),
                         textColor: AppTheme.black,
                         fontSize: AppTheme.big_20,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontWeight: FontWeight.w700,
                       )),
                       Align(
@@ -1779,14 +1779,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         backgroundColor: isFetched
                             ? AppTheme.colorPrimary
-                            : AppTheme.pale_gray,
+                            : AppTheme.paleGray,
                         minimumSize: const Size.fromHeight(50),
                       ),
                       child: CText(
                         text: "Search",
-                        textColor: AppTheme.text_primary,
+                        textColor: AppTheme.textPrimary,
                         fontSize: AppTheme.big,
-                        fontFamily: AppTheme.Poppins,
+                        fontFamily: AppTheme.poppins,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -1828,14 +1828,14 @@ class _HomeScreenState extends State<HomeScreen> {
     showModalBottomSheet(
       isDismissible: false,
       isScrollControlled: true,
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return Container(
             decoration: const BoxDecoration(
-                color: AppTheme.main_background,
+                color: AppTheme.mainBackground,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(15),
                     topLeft: Radius.circular(15))),
@@ -1856,7 +1856,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       textAlign: TextAlign.center,
                       text: "DONE",
                       textColor: AppTheme.black,
-                      fontFamily: AppTheme.Urbanist,
+                      fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.medium,
                       fontWeight: FontWeight.w700,
                     ),
@@ -1884,7 +1884,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: AppTheme.grey,
                         ),
                         hintStyle: TextStyle(
-                            fontFamily: AppTheme.Urbanist,
+                            fontFamily: AppTheme.urbanist,
                             fontWeight: FontWeight.w400,
                             color: AppTheme.black,
                             fontSize: AppTheme.large)),
@@ -1923,8 +1923,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.only(
                                   right: 10, top: 10, bottom: 10),
                               text: _filteredItems[index].text,
-                              textColor: AppTheme.gray_Asparagus,
-                              fontFamily: AppTheme.Urbanist,
+                              textColor: AppTheme.grayAsparagus,
+                              fontFamily: AppTheme.urbanist,
                               fontSize: AppTheme.large,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,

@@ -92,7 +92,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppTheme.main_background,
+        backgroundColor: AppTheme.mainBackground,
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -122,7 +122,7 @@ class _SearchPageState extends State<SearchPage> {
                             color: AppTheme.grey,
                           ),
                           hintStyle: TextStyle(
-                              fontFamily: AppTheme.Poppins,
+                              fontFamily: AppTheme.poppins,
                               fontWeight: FontWeight.w400,
                               color: AppTheme.black,
                               fontSize: AppTheme.large)),
@@ -182,7 +182,7 @@ class _SearchPageState extends State<SearchPage> {
                                               right: 10, top: 20, bottom: 5),
                                           text: list[index].entityName,
                                           textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.Urbanist,
+                                          fontFamily: AppTheme.urbanist,
                                           fontSize: AppTheme.large,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -230,7 +230,7 @@ class _SearchPageState extends State<SearchPage> {
                                           overflow: TextOverflow.ellipsis,
                                           fontWeight: FontWeight.w600,
                                           textColor: AppTheme.white,
-                                          fontFamily: AppTheme.Urbanist,
+                                          fontFamily: AppTheme.urbanist,
                                           fontSize: AppTheme.small,
                                           maxLines: 1,
                                         ),
@@ -242,8 +242,8 @@ class _SearchPageState extends State<SearchPage> {
                                     padding: const EdgeInsets.only(
                                         right: 10, top: 0, bottom: 5),
                                     text: list[index].location?.address ?? "",
-                                    textColor: AppTheme.gray_Asparagus,
-                                    fontFamily: AppTheme.Urbanist,
+                                    textColor: AppTheme.grayAsparagus,
+                                    fontFamily: AppTheme.urbanist,
                                     fontSize: AppTheme.large,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
@@ -255,8 +255,8 @@ class _SearchPageState extends State<SearchPage> {
                                         right: 10, top: 10),
                                     text:
                                         "${list[index].categoryName} ${list[index].classificationName.isNotEmpty ? " - ${list[index].classificationName}" : ""}",
-                                    textColor: AppTheme.gray_Asparagus,
-                                    fontFamily: AppTheme.Urbanist,
+                                    textColor: AppTheme.grayAsparagus,
+                                    fontFamily: AppTheme.urbanist,
                                     fontSize: AppTheme.large,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -268,8 +268,8 @@ class _SearchPageState extends State<SearchPage> {
                                         right: 10, top: 0),
                                     text:
                                         "Monthly Limit : ${list[index].monthlyLimit}",
-                                    textColor: AppTheme.gray_Asparagus,
-                                    fontFamily: AppTheme.Urbanist,
+                                    textColor: AppTheme.grayAsparagus,
+                                    fontFamily: AppTheme.urbanist,
                                     fontSize: AppTheme.large,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -291,7 +291,7 @@ class _SearchPageState extends State<SearchPage> {
                                                 right: 5, top: 15),
                                             text: "Last Inspection Visit :",
                                             textColor: AppTheme.colorPrimary,
-                                            fontFamily: AppTheme.Urbanist,
+                                            fontFamily: AppTheme.urbanist,
                                             fontSize: AppTheme.medium,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
@@ -311,7 +311,7 @@ class _SearchPageState extends State<SearchPage> {
                                                             .lastVisitedDate!))
                                                 : "",
                                             textColor: AppTheme.black,
-                                            fontFamily: AppTheme.Urbanist,
+                                            fontFamily: AppTheme.urbanist,
                                             fontSize: AppTheme.medium,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
@@ -371,8 +371,8 @@ class _SearchPageState extends State<SearchPage> {
                         padding: const EdgeInsets.only(
                             left: 0, right: 0, top: 35, bottom: 0),
                         text: "Search Results",
-                        textColor: AppTheme.text_primary,
-                        fontFamily: AppTheme.Urbanist,
+                        textColor: AppTheme.textPrimary,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.big,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

@@ -17,24 +17,30 @@ class PatrolVisitsAll extends StatefulWidget {
   PatrolVisitsAll({super.key, required this.list, required this.place});
 
   @override
-  State<PatrolVisitsAll> createState() => _PatrolVisitsAllState(list, place);
+  State<PatrolVisitsAll> createState() => _PatrolVisitsAllState();
 }
 
 class _PatrolVisitsAllState extends State<PatrolVisitsAll> {
-  EntityDetailModel place;
+  late EntityDetailModel place;
   var storeUserData = StoreUserData();
   List<PatrolVisitData> list = [];
 
-  _PatrolVisitsAllState(this.list, this.place);
+
+  @override
+  void initState() {
+    super.initState();
+    list=widget.list;
+    place=widget.place;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppTheme.main_background,
+        backgroundColor: AppTheme.mainBackground,
         body: Stack(
           children: [
             SingleChildScrollView(
-              padding: EdgeInsets.only(top: 182),
+              padding: const EdgeInsets.only(top: 182),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -75,10 +81,10 @@ class _PatrolVisitsAllState extends State<PatrolVisitsAll> {
                                                   left: 20, right: 10),
                                               textAlign: TextAlign.start,
                                               text: "Visit ID",
-                                              fontFamily: AppTheme.Urbanist,
+                                              fontFamily: AppTheme.urbanist,
                                               fontSize: AppTheme.large,
                                               textColor:
-                                                  AppTheme.gray_Asparagus,
+                                                  AppTheme.grayAsparagus,
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
@@ -93,10 +99,10 @@ class _PatrolVisitsAllState extends State<PatrolVisitsAll> {
                                                   .toString(),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
-                                              fontFamily: AppTheme.Urbanist,
+                                              fontFamily: AppTheme.urbanist,
                                               fontSize: AppTheme.large,
                                               textColor:
-                                                  AppTheme.gray_Asparagus,
+                                                  AppTheme.grayAsparagus,
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
@@ -147,10 +153,10 @@ class _PatrolVisitsAllState extends State<PatrolVisitsAll> {
                                                   left: 20, right: 10),
                                               textAlign: TextAlign.start,
                                               text: "Date & Time",
-                                              fontFamily: AppTheme.Urbanist,
+                                              fontFamily: AppTheme.urbanist,
                                               fontSize: AppTheme.large,
                                               textColor:
-                                                  AppTheme.gray_Asparagus,
+                                                  AppTheme.grayAsparagus,
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
@@ -165,10 +171,10 @@ class _PatrolVisitsAllState extends State<PatrolVisitsAll> {
                                                   "${DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").parse(list[index].createdOn))} \n${DateFormat("hh:mm:ss aa").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").parse(list[index].createdOn))}",
                                               maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
-                                              fontFamily: AppTheme.Urbanist,
+                                              fontFamily: AppTheme.urbanist,
                                               fontSize: AppTheme.large,
                                               textColor:
-                                                  AppTheme.gray_Asparagus,
+                                                  AppTheme.grayAsparagus,
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
@@ -218,10 +224,10 @@ class _PatrolVisitsAllState extends State<PatrolVisitsAll> {
                                                   left: 20, right: 10),
                                               textAlign: TextAlign.start,
                                               text: "Comments",
-                                              fontFamily: AppTheme.Urbanist,
+                                              fontFamily: AppTheme.urbanist,
                                               fontSize: AppTheme.large,
                                               textColor:
-                                                  AppTheme.gray_Asparagus,
+                                                  AppTheme.grayAsparagus,
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
@@ -235,8 +241,8 @@ class _PatrolVisitsAllState extends State<PatrolVisitsAll> {
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                               textColor:
-                                                  AppTheme.text_color_red,
-                                              fontFamily: AppTheme.Urbanist,
+                                                  AppTheme.textColorRed,
+                                              fontFamily: AppTheme.urbanist,
                                               fontSize: AppTheme.large,
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -294,8 +300,8 @@ class _PatrolVisitsAllState extends State<PatrolVisitsAll> {
                             padding: const EdgeInsets.only(
                                 left: 60, right: 60, top: 70, bottom: 0),
                             text: place.entityName,
-                            textColor: AppTheme.text_primary,
-                            fontFamily: AppTheme.Urbanist,
+                            textColor: AppTheme.textPrimary,
+                            fontFamily: AppTheme.urbanist,
                             fontSize: AppTheme.big,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -306,8 +312,8 @@ class _PatrolVisitsAllState extends State<PatrolVisitsAll> {
                             padding: const EdgeInsets.only(
                                 left: 60, right: 60, bottom: 0),
                             text: place.location?.address ?? "",
-                            textColor: AppTheme.text_primary,
-                            fontFamily: AppTheme.Urbanist,
+                            textColor: AppTheme.textPrimary,
+                            fontFamily: AppTheme.urbanist,
                             fontSize: AppTheme.big,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,

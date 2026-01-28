@@ -32,9 +32,6 @@ import 'package:patrol_system/utils/log_print.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
-
-// import 'package:video_thumbnail/video_thumbnail.dart';
-
 import '../../controls/formMobileTextField.dart';
 import '../../model/all_user_model.dart';
 import '../../model/area_model.dart';
@@ -74,15 +71,14 @@ class CreateNewPatrol extends StatefulWidget {
       required this.taskType});
 
   @override
-  State<CreateNewPatrol> createState() =>
-      _CreateNewPatrolState(taskId, statusId, inspectionId, outletData);
+  State<CreateNewPatrol> createState() => _CreateNewPatrolState();
 }
 
 class _CreateNewPatrolState extends State<CreateNewPatrol> {
   var inspectionId = 0;
   var inspectorId = 0;
   int? taskId;
-  int statusId;
+  late int statusId;
   var storeUserData = StoreUserData();
 
   ///tab
@@ -152,9 +148,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   Timer? timer;
   List<Map<String, dynamic>> reasonList = [];
 
-  _CreateNewPatrolState(
-      this.taskId, this.statusId, this.inspectionId, this.outletModel);
-
   @override
   void dispose() {
     if (timer != null && timer!.isActive) {
@@ -166,6 +159,10 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   @override
   void initState() {
     super.initState(); // always call super first
+    taskId = widget.taskId;
+    statusId = widget.statusId;
+    inspectionId = widget.inspectionId;
+    outletModel = widget.outletData;
     debugPrint("inspectionId-id ${widget.inspectionId}");
     if (statusId == 5) {
       tabType = 2;
@@ -586,7 +583,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           return false;
         },
         child: Scaffold(
-          backgroundColor: AppTheme.main_background,
+          backgroundColor: AppTheme.mainBackground,
           resizeToAvoidBottomInset: true,
           body: SingleChildScrollView(
             child: Column(
@@ -634,8 +631,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                             padding: const EdgeInsets.only(
                                 left: 60, right: 60, top: 60),
                             text: "Add a new Inspection Visit",
-                            textColor: AppTheme.text_primary,
-                            fontFamily: AppTheme.Urbanist,
+                            textColor: AppTheme.textPrimary,
+                            fontFamily: AppTheme.urbanist,
                             fontSize: AppTheme.big,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -657,14 +654,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                         width: 25,
                                         decoration: BoxDecoration(
                                           color: tabType > 0
-                                              ? AppTheme.light_blue
+                                              ? AppTheme.lightBlueTwo
                                               : AppTheme.white,
                                           shape: BoxShape.circle,
                                         ),
                                         child: CText(
                                           text: "1",
                                           textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.Urbanist,
+                                          fontFamily: AppTheme.urbanist,
                                           fontSize: AppTheme.large,
                                         )),
                                     const SizedBox(
@@ -672,11 +669,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                     ),
                                     CText(
                                         text: "Details",
-                                        fontFamily: AppTheme.Urbanist,
+                                        fontFamily: AppTheme.urbanist,
                                         textAlign: TextAlign.center,
                                         textColor: tabType > 0
-                                            ? AppTheme.text_primary
-                                            : AppTheme.text_primary,
+                                            ? AppTheme.textPrimary
+                                            : AppTheme.textPrimary,
                                         fontSize: AppTheme.small),
                                   ],
                                 ),
@@ -696,14 +693,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                         width: 25,
                                         decoration: BoxDecoration(
                                           color: tabType > 1
-                                              ? AppTheme.light_blue
+                                              ? AppTheme.lightBlueTwo
                                               : AppTheme.white,
                                           shape: BoxShape.circle,
                                         ),
                                         child: CText(
                                           text: "2",
                                           textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.Urbanist,
+                                          fontFamily: AppTheme.urbanist,
                                           fontSize: AppTheme.large,
                                         )),
                                     const SizedBox(
@@ -711,11 +708,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                     ),
                                     CText(
                                         text: "Products \nInspections",
-                                        fontFamily: AppTheme.Urbanist,
+                                        fontFamily: AppTheme.urbanist,
                                         textAlign: TextAlign.center,
                                         textColor: tabType > 1
-                                            ? AppTheme.text_primary
-                                            : AppTheme.text_primary,
+                                            ? AppTheme.textPrimary
+                                            : AppTheme.textPrimary,
                                         fontSize: AppTheme.small),
                                   ],
                                 ),
@@ -735,14 +732,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                         width: 25,
                                         decoration: BoxDecoration(
                                           color: tabType > 2
-                                              ? AppTheme.light_blue
+                                              ? AppTheme.lightBlueTwo
                                               : AppTheme.white,
                                           shape: BoxShape.circle,
                                         ),
                                         child: CText(
                                           text: "3",
                                           textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.Urbanist,
+                                          fontFamily: AppTheme.urbanist,
                                           fontSize: AppTheme.large,
                                         )),
                                     const SizedBox(
@@ -750,11 +747,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                     ),
                                     CText(
                                         text: "Attachments",
-                                        fontFamily: AppTheme.Urbanist,
+                                        fontFamily: AppTheme.urbanist,
                                         textAlign: TextAlign.center,
                                         textColor: tabType > 2
-                                            ? AppTheme.text_primary
-                                            : AppTheme.text_primary,
+                                            ? AppTheme.textPrimary
+                                            : AppTheme.textPrimary,
                                         fontSize: AppTheme.small),
                                   ],
                                 ),
@@ -774,14 +771,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                         width: 25,
                                         decoration: BoxDecoration(
                                           color: tabType > 3
-                                              ? AppTheme.light_blue
+                                              ? AppTheme.lightBlueTwo
                                               : AppTheme.white,
                                           shape: BoxShape.circle,
                                         ),
                                         child: CText(
                                           text: "4",
                                           textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.Urbanist,
+                                          fontFamily: AppTheme.urbanist,
                                           fontSize: AppTheme.large,
                                         )),
                                     const SizedBox(
@@ -789,11 +786,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                     ),
                                     CText(
                                         text: "Witness & \nRepresentative",
-                                        fontFamily: AppTheme.Urbanist,
+                                        fontFamily: AppTheme.urbanist,
                                         textAlign: TextAlign.center,
                                         textColor: tabType > 3
-                                            ? AppTheme.text_primary
-                                            : AppTheme.text_primary,
+                                            ? AppTheme.textPrimary
+                                            : AppTheme.textPrimary,
                                         fontSize: AppTheme.small),
                                   ],
                                 ),
@@ -833,7 +830,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                     textAlign: TextAlign.center,
                                     text: "Previous",
                                     textColor: AppTheme.colorPrimary,
-                                    fontFamily: AppTheme.Urbanist,
+                                    fontFamily: AppTheme.urbanist,
                                     fontSize: AppTheme.medium,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -874,7 +871,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   textColor: validateNext()
                                       ? AppTheme.colorPrimary
                                       : AppTheme.grey,
-                                  fontFamily: AppTheme.Urbanist,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.medium,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -929,7 +926,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               },
               child: CText(
                 text: "Add Product",
-                textColor: AppTheme.text_primary,
+                textColor: AppTheme.textPrimary,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -978,7 +975,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                         .categoryId)
                                 .name,
                             textColor: AppTheme.colorPrimary,
-                            fontFamily: AppTheme.Urbanist,
+                            fontFamily: AppTheme.urbanist,
                             fontSize: AppTheme.large,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -1004,8 +1001,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         padding:
                             const EdgeInsets.only(right: 10, top: 0, bottom: 5),
                         text: selectedKnownProductListData[index].productName,
-                        textColor: AppTheme.gray_Asparagus,
-                        fontFamily: AppTheme.Urbanist,
+                        textColor: AppTheme.grayAsparagus,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.large,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -1016,8 +1013,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         padding: const EdgeInsets.only(right: 10, top: 0),
                         text:
                             "Quantity : ${selectedKnownProductListData[index].qty}",
-                        textColor: AppTheme.gray_Asparagus,
-                        fontFamily: AppTheme.Urbanist,
+                        textColor: AppTheme.grayAsparagus,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.large,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -1032,8 +1029,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                               padding: const EdgeInsets.only(
                                   right: 10, top: 0, bottom: 5),
                               text: "Product Code : ${serialNumber.join(", ")}",
-                              textColor: AppTheme.gray_Asparagus,
-                              fontFamily: AppTheme.Urbanist,
+                              textColor: AppTheme.grayAsparagus,
+                              fontFamily: AppTheme.urbanist,
                               fontSize: AppTheme.large,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -1054,7 +1051,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   right: 10, top: 5, bottom: 5),
                               text: "EDIT",
                               textColor: AppTheme.colorPrimary,
-                              fontFamily: AppTheme.Urbanist,
+                              fontFamily: AppTheme.urbanist,
                               fontSize: AppTheme.large,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -1229,7 +1226,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   padding: const EdgeInsets.only(right: 10, top: 5, bottom: 5),
                   text: list[index].productName,
                   textColor: AppTheme.colorPrimary,
-                  fontFamily: AppTheme.Urbanist,
+                  fontFamily: AppTheme.urbanist,
                   fontSize: AppTheme.large,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -1248,8 +1245,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               textAlign: TextAlign.start,
               padding: const EdgeInsets.only(right: 10, top: 0, bottom: 5),
               text: "Quantity : ${list[index].qty}",
-              textColor: AppTheme.gray_Asparagus,
-              fontFamily: AppTheme.Urbanist,
+              textColor: AppTheme.grayAsparagus,
+              fontFamily: AppTheme.urbanist,
               fontSize: AppTheme.large,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -1259,8 +1256,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               textAlign: TextAlign.start,
               padding: const EdgeInsets.only(right: 10),
               text: "Product Code : ${serialNumber.join(",")}",
-              textColor: AppTheme.gray_Asparagus,
-              fontFamily: AppTheme.Urbanist,
+              textColor: AppTheme.grayAsparagus,
+              fontFamily: AppTheme.urbanist,
               fontSize: AppTheme.large,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -1273,8 +1270,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   textAlign: TextAlign.start,
                   padding: const EdgeInsets.only(right: 10, bottom: 5),
                   text: "Size : ${sizes.join(", ")}",
-                  textColor: AppTheme.gray_Asparagus,
-                  fontFamily: AppTheme.Urbanist,
+                  textColor: AppTheme.grayAsparagus,
+                  fontFamily: AppTheme.urbanist,
                   fontSize: AppTheme.large,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -1291,7 +1288,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         const EdgeInsets.only(right: 10, top: 5, bottom: 5),
                     text: "EDIT",
                     textColor: AppTheme.colorPrimary,
-                    fontFamily: AppTheme.Urbanist,
+                    fontFamily: AppTheme.urbanist,
                     fontSize: AppTheme.large,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -1396,7 +1393,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         enableDrag: false,
         isDismissible: false,
         context: context,
-        backgroundColor: AppTheme.main_background,
+        backgroundColor: AppTheme.mainBackground,
         isScrollControlled: true,
         builder: (BuildContext buildContext) {
           return StatefulBuilder(
@@ -1404,7 +1401,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             return Container(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               decoration: const BoxDecoration(
-                  color: AppTheme.main_background,
+                  color: AppTheme.mainBackground,
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(15),
                       topLeft: Radius.circular(15))),
@@ -1428,7 +1425,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                             padding: const EdgeInsets.only(top: 20, bottom: 10),
                             textColor: AppTheme.black,
                             fontSize: AppTheme.big_20,
-                            fontFamily: AppTheme.Urbanist,
+                            fontFamily: AppTheme.urbanist,
                             fontWeight: FontWeight.w700,
                           )),
                           Align(
@@ -1464,7 +1461,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                             title: 'Product Name :',
                             inputBorder: InputBorder.none,
                             focusedBorder: InputBorder.none,
-                            textColor: AppTheme.gray_Asparagus,
+                            textColor: AppTheme.grayAsparagus,
                             inputType: TextInputType.text,
                           ),
                           Positioned(
@@ -1509,7 +1506,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   text: "Search",
                                   fontSize: AppTheme.large,
                                   textColor: AppTheme.colorPrimary,
-                                  fontFamily: AppTheme.Poppins,
+                                  fontFamily: AppTheme.poppins,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -1526,7 +1523,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         title: 'Quantity :',
                         inputBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        textColor: AppTheme.gray_Asparagus,
+                        textColor: AppTheme.grayAsparagus,
                         onTap: () {
                           Get.to(const SelectQuantity())?.then((value) {
                             if (value != null) {
@@ -1589,7 +1586,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                               inputBorder: InputBorder.none,
                                               focusedBorder: InputBorder.none,
                                               textColor:
-                                                  AppTheme.gray_Asparagus,
+                                                  AppTheme.grayAsparagus,
                                               inputType: TextInputType.text,
                                               inputFormatters: [
                                                 LengthLimitingTextInputFormatter(
@@ -1610,7 +1607,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                               inputBorder: InputBorder.none,
                                               focusedBorder: InputBorder.none,
                                               textColor:
-                                                  AppTheme.gray_Asparagus,
+                                                  AppTheme.grayAsparagus,
                                               onTap: () {
                                                 showSizeSheet(node, sizeList,
                                                     index, setState);
@@ -1661,7 +1658,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                               quantity != 0 &&
                               serial
                                   .where((element) => (((element.text.isEmpty ||
-                                              element.text.length < 5))))
+                                      element.text.length < 5))))
                                   .isEmpty &&
                               sizeList
                                   .where((element) => element == null)
@@ -1672,8 +1669,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                             },
                             hint: "",
                             controller: notes,
-                            textColor: AppTheme.gray_Asparagus,
-                            fontFamily: AppTheme.Urbanist,
+                            textColor: AppTheme.grayAsparagus,
+                            fontFamily: AppTheme.urbanist,
                             title: 'Notes',
                             maxLines: 3,
                             minLines: 1,
@@ -1703,9 +1700,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                       Navigator.of(context).pop();
                                     });
                               } else if (serial
-                                  .where((element) =>
-                                      ((element.text.isEmpty ||
-                                              element.text.length < 5)))
+                                  .where((element) => ((element.text.isEmpty ||
+                                      element.text.length < 5)))
                                   .isNotEmpty) {
                                 Utils().showAlert(
                                     buildContext: buildContext,
@@ -1778,21 +1774,21 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                       serial
                                           .where((element) =>
                                               ((element.text.isEmpty ||
-                                                      element.text.length < 5)))
+                                                  element.text.length < 5)))
                                           .isEmpty &&
                                       quantity != 0 &&
                                       sizeList
                                           .where((element) => element == null)
                                           .isEmpty
                                   ? AppTheme.colorPrimary
-                                  : AppTheme.pale_gray,
+                                  : AppTheme.paleGray,
                               minimumSize: const Size.fromHeight(50),
                             ),
                             child: CText(
                               text: "SAVE",
-                              textColor: AppTheme.text_primary,
+                              textColor: AppTheme.textPrimary,
                               fontSize: AppTheme.large,
-                              fontFamily: AppTheme.Urbanist,
+                              fontFamily: AppTheme.urbanist,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -1846,14 +1842,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     showModalBottomSheet<void>(
       isDismissible: false,
       isScrollControlled: true,
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
           return Container(
             decoration: const BoxDecoration(
-                color: AppTheme.main_background,
+                color: AppTheme.mainBackground,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(15),
                     topLeft: Radius.circular(15))),
@@ -1878,7 +1874,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     title: 'Quantity :',
                     inputBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    textColor: AppTheme.gray_Asparagus,
+                    textColor: AppTheme.grayAsparagus,
                     inputType: TextInputType.number,
                     onTap: () {
                       Get.to(const SelectQuantity())?.then((value) {
@@ -1951,7 +1947,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                               ],
                               inputBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
-                              textColor: AppTheme.gray_Asparagus,
+                              textColor: AppTheme.grayAsparagus,
                               inputType: TextInputType.text,
                             );
                           })
@@ -1967,8 +1963,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         },
                         hint: "",
                         controller: notes,
-                        textColor: AppTheme.gray_Asparagus,
-                        fontFamily: AppTheme.Urbanist,
+                        textColor: AppTheme.grayAsparagus,
+                        fontFamily: AppTheme.urbanist,
                         title: 'Notes',
                         maxLines: 3,
                         minLines: 1,
@@ -1987,9 +1983,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   Navigator.of(context).pop();
                                 });
                           } else if (controllers
-                              .where((element) =>
-                                  ((element.text.isEmpty ||
-                                          element.text.length < 5)))
+                              .where((element) => ((element.text.isEmpty ||
+                                  element.text.length < 5)))
                               .isNotEmpty) {
                             Utils().showAlert(
                                 buildContext: buildContext,
@@ -2061,17 +2056,17 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   controllers
                                       .where((element) =>
                                           ((element.text.isEmpty ||
-                                                  element.text.length < 5)))
+                                              element.text.length < 5)))
                                       .isEmpty
                               ? AppTheme.colorPrimary
-                              : AppTheme.pale_gray,
+                              : AppTheme.paleGray,
                           minimumSize: const Size.fromHeight(50),
                         ),
                         child: CText(
                           text: "SAVE",
-                          textColor: AppTheme.text_primary,
+                          textColor: AppTheme.textPrimary,
                           fontSize: AppTheme.large,
-                          fontFamily: AppTheme.Urbanist,
+                          fontFamily: AppTheme.urbanist,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -2096,14 +2091,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     showModalBottomSheet(
       isDismissible: false,
       isScrollControlled: true,
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return Container(
             decoration: const BoxDecoration(
-                color: AppTheme.main_background,
+                color: AppTheme.mainBackground,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(15),
                     topLeft: Radius.circular(15))),
@@ -2124,7 +2119,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                       textAlign: TextAlign.center,
                       text: "DONE",
                       textColor: AppTheme.black,
-                      fontFamily: AppTheme.Urbanist,
+                      fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.medium,
                       fontWeight: FontWeight.w700,
                     ),
@@ -2167,7 +2162,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           color: AppTheme.grey,
                         ),
                         hintStyle: TextStyle(
-                            fontFamily: AppTheme.Urbanist,
+                            fontFamily: AppTheme.urbanist,
                             fontWeight: FontWeight.w400,
                             color: AppTheme.black,
                             fontSize: AppTheme.large)),
@@ -2200,8 +2195,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                               padding: const EdgeInsets.only(
                                   right: 10, top: 10, bottom: 10),
                               text: sizeList[index].text,
-                              textColor: AppTheme.gray_Asparagus,
-                              fontFamily: AppTheme.Urbanist,
+                              textColor: AppTheme.grayAsparagus,
+                              fontFamily: AppTheme.urbanist,
                               fontSize: AppTheme.large,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -2230,14 +2225,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   void showKnownProductSheet() {
     showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
           return Container(
             decoration: const BoxDecoration(
-                color: AppTheme.main_background,
+                color: AppTheme.mainBackground,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(15),
                     topLeft: Radius.circular(15))),
@@ -2264,7 +2259,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         textAlign: TextAlign.center,
                         text: "DONE",
                         textColor: AppTheme.black,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.medium,
                         fontWeight: FontWeight.w700,
                       ),
@@ -2297,7 +2292,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                             color: AppTheme.grey,
                           ),
                           hintStyle: TextStyle(
-                              fontFamily: AppTheme.Urbanist,
+                              fontFamily: AppTheme.urbanist,
                               fontWeight: FontWeight.w400,
                               color: AppTheme.black,
                               fontSize: AppTheme.large)),
@@ -2365,8 +2360,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                     padding: const EdgeInsets.only(
                                         right: 10, top: 10, bottom: 10),
                                     text: knownProductList[index].productName,
-                                    textColor: AppTheme.gray_Asparagus,
-                                    fontFamily: AppTheme.Urbanist,
+                                    textColor: AppTheme.grayAsparagus,
+                                    fontFamily: AppTheme.urbanist,
                                     fontSize: AppTheme.large,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
@@ -2418,7 +2413,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 right: currentWidth > SIZE_600 ? 15 : 10),
             textColor: AppTheme.black,
             fontSize: AppTheme.large,
-            fontFamily: AppTheme.Urbanist,
+            fontFamily: AppTheme.urbanist,
             fontWeight: FontWeight.w600,
             text: 'Your Location',
             // fontWeight: FontWeight.w400,
@@ -2440,9 +2435,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 padding: const EdgeInsets.all(15),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                textColor: AppTheme.gray_Asparagus,
+                textColor: AppTheme.grayAsparagus,
                 fontSize: AppTheme.large,
-                fontFamily: AppTheme.Urbanist,
+                fontFamily: AppTheme.urbanist,
                 fontWeight: FontWeight.w600,
                 text: googleAddress.isEmpty ? "Loading..." : googleAddress,
               ),
@@ -2463,8 +2458,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           FormTextField(
             hint: "",
             value: inspectorNameList.join(","),
-            textColor: AppTheme.gray_Asparagus,
-            fontFamily: AppTheme.Urbanist,
+            textColor: AppTheme.grayAsparagus,
+            fontFamily: AppTheme.urbanist,
             title: 'Select Inspectors',
             maxLines: 2,
             minLines: 1,
@@ -2478,8 +2473,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             child: FormTextField(
               hint: "",
               value: mmiNameList.join(","),
-              textColor: AppTheme.gray_Asparagus,
-              fontFamily: AppTheme.Urbanist,
+              textColor: AppTheme.grayAsparagus,
+              fontFamily: AppTheme.urbanist,
               title: 'Select AE Representative',
               maxLines: 2,
               minLines: 1,
@@ -2493,8 +2488,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             child: FormTextField(
               hint: "",
               value: aeNameList.join(","),
-              textColor: AppTheme.gray_Asparagus,
-              fontFamily: AppTheme.Urbanist,
+              textColor: AppTheme.grayAsparagus,
+              fontFamily: AppTheme.urbanist,
               title: 'Select MMI Representative',
               maxLines: 2,
               minLines: 1,
@@ -2506,8 +2501,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           FormTextField(
             hint: "",
             controller: initialNotes,
-            textColor: AppTheme.gray_Asparagus,
-            fontFamily: AppTheme.Urbanist,
+            textColor: AppTheme.grayAsparagus,
+            fontFamily: AppTheme.urbanist,
             title: 'Comments',
             maxLines: 10,
             minLines: 3,
@@ -2534,9 +2529,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 ),
                 child: CText(
                   text: "Start",
-                  textColor: AppTheme.text_primary,
+                  textColor: AppTheme.textPrimary,
                   fontSize: AppTheme.large,
-                  fontFamily: AppTheme.Urbanist,
+                  fontFamily: AppTheme.urbanist,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -2580,14 +2575,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     selected.addAll(selectedInspectors);
     showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
           return Container(
             decoration: const BoxDecoration(
-                color: AppTheme.main_background,
+                color: AppTheme.mainBackground,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(15),
                     topLeft: Radius.circular(15))),
@@ -2609,7 +2604,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                       textAlign: TextAlign.center,
                       text: "DONE",
                       textColor: AppTheme.black,
-                      fontFamily: AppTheme.Urbanist,
+                      fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.medium,
                       fontWeight: FontWeight.w700,
                     ),
@@ -2641,7 +2636,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                         right: 10, top: 20, bottom: 5),
                                     text: list[index].name,
                                     textColor: AppTheme.colorPrimary,
-                                    fontFamily: AppTheme.Urbanist,
+                                    fontFamily: AppTheme.urbanist,
                                     fontSize: AppTheme.large,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -2794,7 +2789,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 CText(
                   text: "Client Representative",
                   textColor: AppTheme.black,
-                  fontFamily: AppTheme.Urbanist,
+                  fontFamily: AppTheme.urbanist,
                   fontSize: AppTheme.large,
                   fontWeight: FontWeight.w600,
                 ),
@@ -2809,7 +2804,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   },
                   child: CText(
                     text: "Add New",
-                    textColor: AppTheme.text_primary,
+                    textColor: AppTheme.textPrimary,
                     fontWeight: FontWeight.w700,
                   ),
                 )
@@ -2833,7 +2828,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 CText(
                   text: "Witness",
                   textColor: AppTheme.black,
-                  fontFamily: AppTheme.Urbanist,
+                  fontFamily: AppTheme.urbanist,
                   fontSize: AppTheme.large,
                   fontWeight: FontWeight.w600,
                 ),
@@ -2848,7 +2843,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   },
                   child: CText(
                     text: "Add New",
-                    textColor: AppTheme.text_primary,
+                    textColor: AppTheme.textPrimary,
                     fontWeight: FontWeight.w700,
                   ),
                 )
@@ -2869,8 +2864,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 hint: "",
                 focusNode: concludeFocusNode,
                 controller: concludeNotes,
-                textColor: AppTheme.gray_Asparagus,
-                fontFamily: AppTheme.Urbanist,
+                textColor: AppTheme.grayAsparagus,
+                fontFamily: AppTheme.urbanist,
                 title: 'Inspection Concluding Notes :',
                 maxLines: 10,
                 minLines: 5,
@@ -2917,9 +2912,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               ),
               child: CText(
                 text: "SUBMIT & FINISH MY INSPECTION",
-                textColor: AppTheme.text_primary,
+                textColor: AppTheme.textPrimary,
                 fontSize: AppTheme.large,
-                fontFamily: AppTheme.Urbanist,
+                fontFamily: AppTheme.urbanist,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -3035,14 +3030,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     agent2.addAll(selectedMMIList);
     showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
           return Container(
             decoration: const BoxDecoration(
-                color: AppTheme.main_background,
+                color: AppTheme.mainBackground,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(15),
                     topLeft: Radius.circular(15))),
@@ -3052,7 +3047,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 // Sticky SAVE header
                 Container(
                   width: double.infinity,
-                  color: AppTheme.main_background,
+                  color: AppTheme.mainBackground,
                   child: Align(
                     alignment: Alignment.topRight,
                     child: GestureDetector(
@@ -3065,7 +3060,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         textAlign: TextAlign.center,
                         text: "SAVE",
                         textColor: AppTheme.colorPrimary,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.medium,
                         fontWeight: FontWeight.w700,
                       ),
@@ -3141,7 +3136,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                                 text: list[index].agentName,
                                                 textColor:
                                                     AppTheme.colorPrimary,
-                                                fontFamily: AppTheme.Urbanist,
+                                                fontFamily: AppTheme.urbanist,
                                                 fontSize: AppTheme.large,
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
@@ -3155,8 +3150,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                                     bottom: 5),
                                                 text: list[index].emiratesId,
                                                 textColor:
-                                                    AppTheme.gray_Asparagus,
-                                                fontFamily: AppTheme.Urbanist,
+                                                    AppTheme.grayAsparagus,
+                                                fontFamily: AppTheme.urbanist,
                                                 fontSize: AppTheme.large,
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
@@ -3168,8 +3163,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                                     right: 10),
                                                 text: list[index].phoneNo,
                                                 textColor:
-                                                    AppTheme.gray_Asparagus,
-                                                fontFamily: AppTheme.Urbanist,
+                                                    AppTheme.grayAsparagus,
+                                                fontFamily: AppTheme.urbanist,
                                                 fontSize: AppTheme.large,
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
@@ -3286,7 +3281,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         enableDrag: false,
         isDismissible: false,
         context: context,
-        backgroundColor: AppTheme.main_background,
+        backgroundColor: AppTheme.mainBackground,
         isScrollControlled: true,
         builder: (BuildContext buildContext) {
           return StatefulBuilder(
@@ -3294,7 +3289,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: const BoxDecoration(
-                    color: AppTheme.main_background,
+                    color: AppTheme.mainBackground,
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(15),
                         topLeft: Radius.circular(15))),
@@ -3343,7 +3338,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         title: 'Name :',
                         inputBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        textColor: AppTheme.gray_Asparagus,
+                        textColor: AppTheme.grayAsparagus,
                         inputType: TextInputType.text,
                       ),
                       const SizedBox(
@@ -3365,7 +3360,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         title: 'Emirates ID :',
                         inputBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        textColor: AppTheme.gray_Asparagus,
+                        textColor: AppTheme.grayAsparagus,
                         inputType: TextInputType.number,
                       ),
                       const SizedBox(
@@ -3385,7 +3380,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         ],
                         inputBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        textColor: AppTheme.gray_Asparagus,
+                        textColor: AppTheme.grayAsparagus,
                         inputType: TextInputType.phone,
                       ),
                       const SizedBox(
@@ -3402,7 +3397,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         title: 'Role :',
                         inputBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        textColor: AppTheme.gray_Asparagus,
+                        textColor: AppTheme.grayAsparagus,
                         inputType: TextInputType.text,
                       ),
                       const SizedBox(
@@ -3421,7 +3416,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         maxLines: 5,
                         inputBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        textColor: AppTheme.gray_Asparagus,
+                        textColor: AppTheme.grayAsparagus,
                         inputType: TextInputType.text,
                       ),
                       const SizedBox(
@@ -3457,8 +3452,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   right: currentWidth > SIZE_600 ? 15 : 10),
                               width: 150,
                               height: 150,
-                              child: Image.network(imageAttach,
-                                  fit: BoxFit.cover),
+                              child:
+                                  Image.network(imageAttach, fit: BoxFit.cover),
                             )
                           : Container(),
                       const SizedBox(
@@ -3547,14 +3542,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                       emiratesId.text.length == 18 &&
                                       mobileNumber.text.length == 8
                                   ? AppTheme.colorPrimary
-                                  : AppTheme.pale_gray,
+                                  : AppTheme.paleGray,
                               minimumSize: const Size.fromHeight(50),
                             ),
                             child: CText(
                               text: model == null ? "Add" : "Update",
-                              textColor: AppTheme.text_primary,
+                              textColor: AppTheme.textPrimary,
                               fontSize: AppTheme.large,
-                              fontFamily: AppTheme.Urbanist,
+                              fontFamily: AppTheme.urbanist,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -3696,7 +3691,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     textAlign: TextAlign.start,
                     text: list[index].name,
                     textColor: AppTheme.colorPrimary,
-                    fontFamily: AppTheme.Urbanist,
+                    fontFamily: AppTheme.urbanist,
                     fontSize: AppTheme.large,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -3719,7 +3714,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                       textAlign: TextAlign.start,
                       text: "E-Sign",
                       textColor: AppTheme.colorAccent,
-                      fontFamily: AppTheme.Urbanist,
+                      fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.large,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -3733,8 +3728,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               textAlign: TextAlign.start,
               padding: const EdgeInsets.only(right: 10, top: 0, bottom: 5),
               text: "Role : ${list[index].roleName}",
-              textColor: AppTheme.gray_Asparagus,
-              fontFamily: AppTheme.Urbanist,
+              textColor: AppTheme.grayAsparagus,
+              fontFamily: AppTheme.urbanist,
               fontSize: AppTheme.large,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -3744,8 +3739,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               textAlign: TextAlign.start,
               padding: const EdgeInsets.only(right: 10, bottom: 5),
               text: "Emirates ID : ${formatEmiratesID(list[index].emiratesId)}",
-              textColor: AppTheme.gray_Asparagus,
-              fontFamily: AppTheme.Urbanist,
+              textColor: AppTheme.grayAsparagus,
+              fontFamily: AppTheme.urbanist,
               fontSize: AppTheme.large,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -3755,8 +3750,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               textAlign: TextAlign.start,
               padding: const EdgeInsets.only(right: 10),
               text: "Contact Number : ${list[index].phoneNo}",
-              textColor: AppTheme.gray_Asparagus,
-              fontFamily: AppTheme.Urbanist,
+              textColor: AppTheme.grayAsparagus,
+              fontFamily: AppTheme.urbanist,
               fontSize: AppTheme.large,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -3769,8 +3764,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     textAlign: TextAlign.start,
                     padding: const EdgeInsets.only(right: 10, top: 5),
                     text: "Notes : ${list[index].notes}",
-                    textColor: AppTheme.gray_Asparagus,
-                    fontFamily: AppTheme.Urbanist,
+                    textColor: AppTheme.grayAsparagus,
+                    fontFamily: AppTheme.urbanist,
                     fontSize: AppTheme.large,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -3789,7 +3784,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     textAlign: TextAlign.start,
                     text: "EDIT",
                     textColor: AppTheme.colorPrimary,
-                    fontFamily: AppTheme.Urbanist,
+                    fontFamily: AppTheme.urbanist,
                     fontSize: AppTheme.large,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -3938,7 +3933,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     text: "Load All Images",
                     textColor: AppTheme.white,
                     fontSize: AppTheme.large,
-                    fontFamily: AppTheme.Urbanist,
+                    fontFamily: AppTheme.urbanist,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -4328,7 +4323,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                               title: CText(
                                 text: reason["name"],
                                 textColor: AppTheme.black,
-                                fontFamily: AppTheme.Urbanist,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -4365,7 +4360,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                               text: "Submit",
                               textColor: AppTheme.white,
                               fontSize: AppTheme.large,
-                              fontFamily: AppTheme.Urbanist,
+                              fontFamily: AppTheme.urbanist,
                               fontWeight: FontWeight.w700,
                             ),
                           ),

@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:intl/intl.dart';
 import 'package:patrol_system/utils/ApiServiceDio.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 
@@ -25,14 +23,13 @@ class InspectionListScreen extends StatefulWidget {
   Map<String, dynamic> map;
 
   InspectionListScreen(
-      {Key? key,
+      {super.key,
       required this.inspectionId,
       required this.taskId,
       required this.mainTaskId,
       required this.entityId,
       required this.map,
-      required this.isDXBTask})
-      : super(key: key);
+      required this.isDXBTask});
 
   @override
   _InspectionListScreenState createState() => _InspectionListScreenState();
@@ -94,7 +91,7 @@ class _InspectionListScreenState extends State<InspectionListScreen> {
                             const EdgeInsets.only(left: 60, right: 60, top: 60),
                         text: "Inspection Task",
                         textColor: AppTheme.white,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.big,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -119,7 +116,7 @@ class _InspectionListScreenState extends State<InspectionListScreen> {
                               left: 0, right: 20, top: 60),
                           text: "Done",
                           textColor: AppTheme.white,
-                          fontFamily: AppTheme.Urbanist,
+                          fontFamily: AppTheme.urbanist,
                           fontSize: AppTheme.big,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -131,7 +128,7 @@ class _InspectionListScreenState extends State<InspectionListScreen> {
                 )),
             ListView.builder(
               itemCount: inspections.length,
-              padding: EdgeInsets.only(top: 15),
+              padding: const EdgeInsets.only(top: 15),
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (context, index) {
@@ -155,7 +152,7 @@ class _InspectionListScreenState extends State<InspectionListScreen> {
                           ? item.entityName
                           : "No Name",
                       textColor: AppTheme.colorPrimary,
-                      fontFamily: AppTheme.Urbanist,
+                      fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.big,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -164,7 +161,7 @@ class _InspectionListScreenState extends State<InspectionListScreen> {
                     subtitle: CText(
                       text: "Accompanied By: ${item.accompaniedBy}",
                       textColor: AppTheme.colorPrimary,
-                      fontFamily: AppTheme.Urbanist,
+                      fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.small,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -182,8 +179,8 @@ class _InspectionListScreenState extends State<InspectionListScreen> {
 
   void getInspection() async {
     try {
-      var result = await context.apiDio
-          .get("api/Department/User/GetInspectionList?inspectorId=${storeUserData.getInt(USER_ID)}");
+      var result = await context.apiDio.get(
+          "api/Department/User/GetInspectionList?inspectorId=${storeUserData.getInt(USER_ID)}");
 
       if (result.statusCode == 200 && result.data["data"] != null) {
         setState(() {
@@ -213,7 +210,7 @@ class _InspectionListScreenState extends State<InspectionListScreen> {
               inspectionId: data["data"],
               entityId: widget.entityId,
               mainTaskId: widget.mainTaskId,
-              taskId: widget.taskId!,
+              taskId: widget.taskId,
               isDXBTask: widget.isDXBTask,
             ));
       } else {

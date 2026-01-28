@@ -92,7 +92,7 @@ class _SelectInspectorState extends State<SelectInspector> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppTheme.main_background,
+        backgroundColor: AppTheme.mainBackground,
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -122,7 +122,7 @@ class _SelectInspectorState extends State<SelectInspector> {
                             color: AppTheme.grey,
                           ),
                           hintStyle: TextStyle(
-                              fontFamily: AppTheme.Poppins,
+                              fontFamily: AppTheme.poppins,
                               fontWeight: FontWeight.w400,
                               color: AppTheme.black,
                               fontSize: AppTheme.large)),
@@ -172,7 +172,7 @@ class _SelectInspectorState extends State<SelectInspector> {
                                             right: 10, top: 20, bottom: 5),
                                         text: list[index].name,
                                         textColor: AppTheme.colorPrimary,
-                                        fontFamily: AppTheme.Urbanist,
+                                        fontFamily: AppTheme.urbanist,
                                         fontSize: AppTheme.large,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -183,8 +183,8 @@ class _SelectInspectorState extends State<SelectInspector> {
                                         padding: const EdgeInsets.only(
                                             right: 10, top: 0, bottom: 5),
                                         text: list[index].userName,
-                                        textColor: AppTheme.gray_Asparagus,
-                                        fontFamily: AppTheme.Urbanist,
+                                        textColor: AppTheme.grayAsparagus,
+                                        fontFamily: AppTheme.urbanist,
                                         fontSize: AppTheme.large,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
@@ -260,8 +260,8 @@ class _SelectInspectorState extends State<SelectInspector> {
                         padding: const EdgeInsets.only(
                             left: 0, right: 0, top: 35, bottom: 0),
                         text: "Search Inspector",
-                        textColor: AppTheme.text_primary,
-                        fontFamily: AppTheme.Urbanist,
+                        textColor: AppTheme.textPrimary,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.big,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -285,7 +285,7 @@ class _SelectInspectorState extends State<SelectInspector> {
                                 textAlign: TextAlign.center,
                                 text: "DONE",
                                 textColor: AppTheme.white,
-                                fontFamily: AppTheme.Urbanist,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w700,
                               ),

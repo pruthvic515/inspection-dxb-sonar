@@ -21,6 +21,7 @@ class LoadingIndicatorDialog {
       return;
     }
     Future.delayed(Duration.zero, () {
+      if (!context.mounted) return;
       showDialog<void>(
           context: context,
           barrierColor: AppTheme.transBlack,

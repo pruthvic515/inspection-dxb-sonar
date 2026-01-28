@@ -36,7 +36,7 @@ class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       body: Column(
         children: [
           Container(
@@ -81,8 +81,8 @@ class _MenuPageState extends State<MenuPage> {
                           left: 10, right: 10, top: 20, bottom: 20),
                       text:
                           "${storeUserData.getString(NAME)}\nDepartment : ${storeUserData.getInt(USER_ID)}",
-                      textColor: AppTheme.text_primary,
-                      fontFamily: AppTheme.Urbanist,
+                      textColor: AppTheme.textPrimary,
+                      fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.big,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
@@ -95,8 +95,8 @@ class _MenuPageState extends State<MenuPage> {
                           left: 10, right: 10, top: 20, bottom: 20),
                       text:
                           "${storeUserData.getString(NAME)}\nEmployee ID : ${storeUserData.getString(USER_BADGE_NUMBER)}\nDepartment : ${storeUserData.getInt(USER_ID)}",
-                      textColor: AppTheme.text_primary,
-                      fontFamily: AppTheme.Urbanist,
+                      textColor: AppTheme.textPrimary,
+                      fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.big,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
@@ -215,8 +215,8 @@ class _MenuPageState extends State<MenuPage> {
                         child: CText(
                           padding: const EdgeInsets.all(20),
                           text: "Logout",
-                          textColor: AppTheme.text_color,
-                          fontFamily: AppTheme.Urbanist,
+                          textColor: AppTheme.textColor,
+                          fontFamily: AppTheme.urbanist,
                           fontSize: AppTheme.large,
                           fontWeight: FontWeight.w600,
                         ),
@@ -241,7 +241,7 @@ class _MenuPageState extends State<MenuPage> {
                 padding: const EdgeInsets.all(20),
                 text: 'Copy Device Token',
                 textColor: AppTheme.colorPrimary,
-                fontFamily: AppTheme.Urbanist,
+                fontFamily: AppTheme.urbanist,
                 fontSize: AppTheme.big,
                 fontWeight: FontWeight.w600,
               ),

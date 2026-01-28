@@ -76,7 +76,7 @@ class _CTextFieldState extends State<CTextField> {
       textAlign: widget.textAlign == null ? TextAlign.start : widget.textAlign!,
       style: TextStyle(
           fontFamily:
-              widget.fontFamily == null ? AppTheme.Poppins : widget.fontFamily!,
+              widget.fontFamily == null ? AppTheme.poppins : widget.fontFamily!,
           fontWeight:
               widget.fontWeight == null ? FontWeight.w300 : widget.fontWeight!,
           color: widget.textColor ?? AppTheme.black,
@@ -95,7 +95,7 @@ class _CTextFieldState extends State<CTextField> {
           counterText: "",
           hintStyle: TextStyle(
               fontFamily: widget.fontFamily == null
-                  ? AppTheme.Poppins
+                  ? AppTheme.poppins
                   : widget.fontFamily!,
               fontWeight: widget.fontWeight == null
                   ? FontWeight.w300

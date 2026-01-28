@@ -58,7 +58,7 @@ class _SignRepresentativeState extends State<SignRepresentative> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       body: Column(
         children: [
           Container(
@@ -102,7 +102,7 @@ class _SignRepresentativeState extends State<SignRepresentative> {
                           left: 10, right: 10, top: 20, bottom: 20),
                       text: "Add E-Sign",
                       textColor: AppTheme.white,
-                      fontFamily: AppTheme.Urbanist,
+                      fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.big,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
@@ -122,7 +122,7 @@ class _SignRepresentativeState extends State<SignRepresentative> {
                       padding: const EdgeInsets.all(20),
                       text: "Agree Terms & Conditions",
                       textColor: AppTheme.white,
-                      fontFamily: AppTheme.Urbanist,
+                      fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.large,
                       fontWeight: FontWeight.w700,
                     ),
@@ -161,7 +161,7 @@ class _SignRepresentativeState extends State<SignRepresentative> {
                                     .name} with Emirates ID ${widget.model
                                     .emiratesId}, agree that all products taken will be subject to investigation, and I confirm my consent to this.",
                                 textColor: AppTheme.black,
-                                fontFamily: AppTheme.Urbanist,
+                                fontFamily: AppTheme.urbanist,
                                 maxLines: 3,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
@@ -195,7 +195,7 @@ class _SignRepresentativeState extends State<SignRepresentative> {
                                   text: "Clear",
                                   textColor: AppTheme.red,
                                   fontSize: AppTheme.medium,
-                                  fontFamily: AppTheme.Urbanist,
+                                  fontFamily: AppTheme.urbanist,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -246,9 +246,9 @@ class _SignRepresentativeState extends State<SignRepresentative> {
                       ),
                       child: CText(
                         text: "Submit",
-                        textColor: AppTheme.text_primary,
+                        textColor: AppTheme.textPrimary,
                         fontSize: AppTheme.large,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontWeight: FontWeight.w700,
                       ),
                     ),

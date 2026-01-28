@@ -71,7 +71,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       resizeToAvoidBottomInset: true,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +113,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                     child: CText(
                       text: "Complete Task",
                       textColor: AppTheme.white,
-                      fontFamily: AppTheme.Urbanist,
+                      fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.big_20,
                       fontWeight: FontWeight.w700,
                     ),
@@ -147,16 +147,16 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                                         text: "Notes",
                                         textColor: tabType == "notes"
                                             ? AppTheme.black
-                                            : AppTheme.text_color_gray,
+                                            : AppTheme.textColorGray,
                                         fontWeight: FontWeight.w400,
-                                        fontFamily: AppTheme.Poppins,
+                                        fontFamily: AppTheme.poppins,
                                         fontSize: AppTheme.medium),
                                     Container(
                                       height: 3,
                                       margin: const EdgeInsets.only(top: 8),
                                       color: tabType == "notes"
                                           ? AppTheme.colorPrimary
-                                          : AppTheme.main_background,
+                                          : AppTheme.mainBackground,
                                     )
                                   ],
                                 ),
@@ -179,16 +179,16 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                                           text: "Attachments",
                                           textColor: tabType == "attachments"
                                               ? AppTheme.black
-                                              : AppTheme.text_color_gray,
+                                              : AppTheme.textColorGray,
                                           fontWeight: FontWeight.w400,
-                                          fontFamily: AppTheme.Poppins,
+                                          fontFamily: AppTheme.poppins,
                                           fontSize: AppTheme.medium),
                                       Container(
                                         height: 3,
                                         margin: const EdgeInsets.only(top: 8),
                                         color: tabType == "attachments"
                                             ? AppTheme.colorPrimary
-                                            : AppTheme.main_background,
+                                            : AppTheme.mainBackground,
                                       )
                                     ],
                                   )))),
@@ -204,12 +204,12 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                         border: Border.all(color: AppTheme.grey),
                         borderRadius: const BorderRadius.all(Radius.circular(10))),
                     child: CTextField(
-                      textColor: AppTheme.text_color,
+                      textColor: AppTheme.textColor,
                       hint: "Notes here.....",
                       fontSize: AppTheme.medium,
                       minLines: 5,
                       fontWeight: FontWeight.w500,
-                      fontFamily: AppTheme.Poppins,
+                      fontFamily: AppTheme.poppins,
                       controller: _notes,
                       focusedBorder: InputBorder.none,
                       inputBorder: InputBorder.none,
@@ -359,9 +359,9 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                       ),
                       child: CText(
                         text: "SUBMIT & FINISH MY INSPECTION",
-                        textColor: AppTheme.text_primary,
+                        textColor: AppTheme.textPrimary,
                         fontSize: AppTheme.large,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -717,7 +717,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                       text: "Note:",
                       fontSize: AppTheme.big,
                       textAlign: TextAlign.center,
-                      fontFamily: AppTheme.Poppins,
+                      fontFamily: AppTheme.poppins,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -726,7 +726,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                     text: "Please select reason for complete this task",
                     maxLines: 5,
                     fontSize: AppTheme.medium,
-                    fontFamily: AppTheme.Poppins,
+                    fontFamily: AppTheme.poppins,
                     textAlign: TextAlign.center,
                     fontWeight: FontWeight.w500,
                   ),
@@ -808,7 +808,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                               title: CText(
                                 text: reason["name"],
                                 textColor: AppTheme.black,
-                                fontFamily: AppTheme.Urbanist,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -845,7 +845,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                               text: "Submit",
                               textColor: AppTheme.white,
                               fontSize: AppTheme.large,
-                              fontFamily: AppTheme.Urbanist,
+                              fontFamily: AppTheme.urbanist,
                               fontWeight: FontWeight.w700,
                             ),
                           ),

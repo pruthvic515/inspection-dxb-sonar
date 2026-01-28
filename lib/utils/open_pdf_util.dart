@@ -15,7 +15,7 @@ class OpenPdfUtil {
     final filename = path.basename(url);
 
     final dir = await getExternalStorageDirectory();
-    final downloadsDir = Directory('${dir!.path}');
+    final downloadsDir = Directory(dir!.path);
 
     if (!downloadsDir.existsSync()) {
       downloadsDir.createSync(recursive: true);

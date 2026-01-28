@@ -11,19 +11,18 @@ class VideoPlayerScreen extends StatefulWidget {
   const VideoPlayerScreen({super.key, required this.url});
 
   @override
-  State<VideoPlayerScreen> createState() => _VideoPlayerScreenState(url);
+  State<VideoPlayerScreen> createState() => _VideoPlayerScreenState();
 }
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   late VideoPlayerController _controller;
   late Future<void> _initializeVideoPlayerFuture;
-  final String url;
-
-  _VideoPlayerScreenState(this.url);
+  late final String url;
 
   @override
   void initState() {
     super.initState();
+    url = widget.url;
     print("url : $url");
     _controller = VideoPlayerController.networkUrl(
       Uri.parse(

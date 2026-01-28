@@ -64,7 +64,7 @@ class CardFormTextField extends StatelessWidget {
             child: CText(
               textColor: textColor ?? AppTheme.black,
               fontSize: fontSize ?? AppTheme.large,
-              fontFamily: fontFamily ?? AppTheme.Urbanist,
+              fontFamily: fontFamily ?? AppTheme.urbanist,
               fontWeight: fontWeight ?? FontWeight.w700,
               text: title,
               // fontWeight: FontWeight.w400,
@@ -98,9 +98,9 @@ class CardFormTextField extends StatelessWidget {
                           controller: controller,
                           maxLines: maxLines ?? 1,
                           minLines: minLine ?? 1,
-                          textColor: formTextColor ?? AppTheme.text_color,
+                          textColor: formTextColor ?? AppTheme.textColor,
                           fontSize: formTextFontSize ?? AppTheme.large,
-                          fontFamily: formTextFontFamily ?? AppTheme.Urbanist,
+                          fontFamily: formTextFontFamily ?? AppTheme.urbanist,
                           fontWeight: formTextFontWeight ?? FontWeight.w600,
                           textCapitalization: inputType == TextInputType.name
                               ? TextCapitalization.words
@@ -132,10 +132,10 @@ class CardFormTextField extends StatelessWidget {
                             Expanded(
                               flex: 1,
                               child: CText(
-                                textColor: formTextColor ?? AppTheme.text_color,
+                                textColor: formTextColor ?? AppTheme.textColor,
                                 fontSize: formTextFontSize ?? AppTheme.large,
                                 fontFamily:
-                                    formTextFontFamily ?? AppTheme.Urbanist,
+                                    formTextFontFamily ?? AppTheme.urbanist,
                                 fontWeight:
                                     formTextFontWeight ?? FontWeight.w600,
                                 text: value == null || value!.isEmpty

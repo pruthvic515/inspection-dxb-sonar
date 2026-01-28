@@ -63,7 +63,7 @@ class CTextFieldPassword extends StatelessWidget {
       inputFormatters: inputFormatters,
       textAlign: textAlign == null ? TextAlign.start : textAlign!,
       style: TextStyle(
-          fontFamily: fontFamily == null ? AppTheme.Poppins : fontFamily!,
+          fontFamily: fontFamily == null ? AppTheme.poppins : fontFamily!,
           fontWeight: fontWeight == null ? FontWeight.w300 : fontWeight!,
           color: textColor ?? AppTheme.black,
           fontSize: fontSize ?? AppTheme.medium),
@@ -79,7 +79,7 @@ class CTextFieldPassword extends StatelessWidget {
           counterText: "",
           suffixIcon: suffixIcon,
           hintStyle: TextStyle(
-              fontFamily: fontFamily == null ? AppTheme.Poppins : fontFamily!,
+              fontFamily: fontFamily == null ? AppTheme.poppins : fontFamily!,
               fontWeight: fontWeight == null ? FontWeight.w300 : fontWeight!,
               color: textColor ?? AppTheme.black,
               fontSize: fontSize ?? AppTheme.medium)),

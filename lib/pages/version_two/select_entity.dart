@@ -15,7 +15,7 @@ class SelectEntity extends StatefulWidget {
   SelectEntity({super.key, required this.selectedEntity});
 
   @override
-  State<SelectEntity> createState() => _SelectEntityState(selectedEntity);
+  State<SelectEntity> createState() => _SelectEntityState();
 }
 
 class _SelectEntityState extends State<SelectEntity> {
@@ -24,10 +24,10 @@ class _SelectEntityState extends State<SelectEntity> {
   List<SearchEntityData> list = [];
   List<SearchEntityData> selectedEntity = [];
 
-  _SelectEntityState(this.selectedEntity);
 
   @override
   void initState() {
+    selectedEntity=widget.selectedEntity;
     getAllEntities();
     super.initState();
   }
@@ -65,7 +65,7 @@ class _SelectEntityState extends State<SelectEntity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppTheme.main_background,
+        backgroundColor: AppTheme.mainBackground,
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -85,7 +85,7 @@ class _SelectEntityState extends State<SelectEntity> {
                         textAlign: TextAlign.center,
                         text: "DONE",
                         textColor: AppTheme.black,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.medium,
                         fontWeight: FontWeight.w700,
                       ),
@@ -113,7 +113,7 @@ class _SelectEntityState extends State<SelectEntity> {
                             color: AppTheme.grey,
                           ),
                           hintStyle: TextStyle(
-                              fontFamily: AppTheme.Poppins,
+                              fontFamily: AppTheme.poppins,
                               fontWeight: FontWeight.w400,
                               color: AppTheme.black,
                               fontSize: AppTheme.large)),
@@ -159,8 +159,8 @@ class _SelectEntityState extends State<SelectEntity> {
                                     padding: const EdgeInsets.only(
                                         right: 10, top: 10, bottom: 10),
                                     text: list[index].entityName,
-                                    textColor: AppTheme.gray_Asparagus,
-                                    fontFamily: AppTheme.Urbanist,
+                                    textColor: AppTheme.grayAsparagus,
+                                    fontFamily: AppTheme.urbanist,
                                     fontSize: AppTheme.large,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
@@ -229,8 +229,8 @@ class _SelectEntityState extends State<SelectEntity> {
                         padding: const EdgeInsets.only(
                             left: 0, right: 0, top: 35, bottom: 0),
                         text: "Select Entities",
-                        textColor: AppTheme.text_primary,
-                        fontFamily: AppTheme.Urbanist,
+                        textColor: AppTheme.textPrimary,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.big,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

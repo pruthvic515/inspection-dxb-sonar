@@ -79,7 +79,7 @@ class FormTextField extends StatelessWidget {
                   child: CText(
                     textColor: AppTheme.black,
                     fontSize: fontSize ?? AppTheme.large,
-                    fontFamily: fontFamily ?? AppTheme.Urbanist,
+                    fontFamily: fontFamily ?? AppTheme.urbanist,
                     fontWeight: fontWeight ?? FontWeight.w600,
                     text: title,
                   ),
@@ -116,9 +116,9 @@ class FormTextField extends StatelessWidget {
                           controller: controller,
                           maxLines: maxLines ?? 1,
                           minLines: minLines ?? 1,
-                          textColor: textColor ?? AppTheme.text_color,
+                          textColor: textColor ?? AppTheme.textColor,
                           fontSize: fontSize ?? AppTheme.large,
-                          fontFamily: fontFamily ?? AppTheme.Urbanist,
+                          fontFamily: fontFamily ?? AppTheme.urbanist,
                           fontWeight: fontWeight ?? FontWeight.w600,
                           textCapitalization: inputType == TextInputType.name
                               ? TextCapitalization.words
@@ -149,9 +149,9 @@ class FormTextField extends StatelessWidget {
                             child: CText(
                               overflow: TextOverflow.ellipsis,
                               maxLines: maxLines,
-                              textColor: textColor ?? AppTheme.text_color,
+                              textColor: textColor ?? AppTheme.textColor,
                               fontSize: fontSize ?? AppTheme.large,
-                              fontFamily: fontFamily ?? AppTheme.Urbanist,
+                              fontFamily: fontFamily ?? AppTheme.urbanist,
                               fontWeight: fontWeight ?? FontWeight.w600,
                               text: value == null || value!.isEmpty
                                   ? hint!

@@ -19,9 +19,9 @@ class AppTheme {
   static const Color transBlack = Color(0x88000000);
   static const Color transparent = Color(0xffffffffff);
   static const Color lightBlack = Color(0xff241606);
-  static const Color text_color = Color(0xff465647);
+  static const Color textColor = Color(0xff465647);
   static const Color darkGray = Color(0xff545F71);
-  static const Color transparent_black = Color(0xff12000000);
+  static const Color transparentBlack = Color(0xff12000000);
   static const Color pink = Color(0xFFFFC0CB);
   static const Color purple = Color(0xFF800080);
   static const Color deepPurple = Color(0xFF673AB7);
@@ -39,20 +39,20 @@ class AppTheme {
   static const Color brown = Color(0xFF795548);
   static const Color grey = Color(0xFF9E9E9E);
   static const Color blueGrey = Color(0xFF607D8B);
-  static const Color main_background = Color(0xffF2F3F6);
-  static const Color blue_dark = Color(0xFF2158E4);
-  static const Color blue_light = Color(0xFF6C7DB7);
-  static const Color silver_two = Color(0xFFb9bdc7);
-  static const Color pale_gray = Color(0xFFE8E9EC);
-  static const Color ice_blue = Color(0xFFFAFCFF);
-  static const Color back_background = Color(0xFFD3D1D8);
+  static const Color mainBackground = Color(0xffF2F3F6);
+  static const Color blueDark = Color(0xFF2158E4);
+  static const Color blueLight = Color(0xFF6C7DB7);
+  static const Color silverTwo = Color(0xFFb9bdc7);
+  static const Color paleGray = Color(0xFFE8E9EC);
+  static const Color iceBlue = Color(0xFFFAFCFF);
+  static const Color backBackground = Color(0xFFD3D1D8);
   static const Color border = Color(0xFFC2C3CB);
-  static const Color text_color_two = Color(0xFF354863);
-  static const Color text_color_red = Color(0xFFD44638);
+  static const Color textColorTwo = Color(0xFF354863);
+  static const Color textColorRed = Color(0xFFD44638);
   static const Color brick = Color(0xFFA6001C);
-  static const Color text_color_gray = Color(0xFF858597);
-  static const Color gray_Asparagus = Color(0xFF465647);
-  static const Color light_blue = Color(0xFFBBDEFB);
+  static const Color textColorGray = Color(0xFF858597);
+  static const Color grayAsparagus = Color(0xFF465647);
+  static const Color lightBlueTwo = Color(0xFFBBDEFB);
 
   // Status colors (based on Status ID mapping)
   // 1  - Pending                       -> #DCBA7A
@@ -78,9 +78,9 @@ class AppTheme {
   static const Color statusGreen = Color(0xFF75A74D); // 7,11
   static const Color statusPurple = Color(0xFF8A3A6B); // 3,8,9,10,12,14-19
 
-  static const Color title_gray = Color(0xFF6F757E);
-  static const Color text_black = Color(0xFF121212);
-  static const Color text_primary = Color(0xFFFFFFFF);
+  static const Color titleGray = Color(0xFF6F757E);
+  static const Color textBlack = Color(0xFF121212);
+  static const Color textPrimary = Color(0xFFFFFFFF);
   static const Color freezed = Color(0xFFFF4500);
   static const Color closed = Color(0xFFE73927);
   static const Color cancelled = Color(0xFFCF0106);
@@ -95,8 +95,8 @@ class AppTheme {
   static const double big = 18;
   static const double big_20 = 20;
 
-  static const String Urbanist = "Urbanist";
-  static const String Poppins = "Poppins";
+  static const String urbanist = "Urbanist";
+  static const String poppins = "Poppins";
 
   /// Returns the color for a given status ID based on the unified mapping.
   static Color getStatusColor(int statusId) {

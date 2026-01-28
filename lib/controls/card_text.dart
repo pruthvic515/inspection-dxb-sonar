@@ -53,7 +53,7 @@ class CCardText extends StatelessWidget {
               style: TextStyle(
                   decoration: decoration ?? decoration,
                   fontWeight: fontWeight ?? fontWeight,
-                  fontFamily: fontFamily ?? AppTheme.Urbanist,
+                  fontFamily: fontFamily ?? AppTheme.urbanist,
                   backgroundColor: backgroundColor,
                   color: textColor ?? AppTheme.black,
                   shadows: shadows ?? shadows,

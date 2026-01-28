@@ -58,6 +58,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
 
   Future<void> getOutletService() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api()
           .getAPI(context, "Mobile/Entity/GetOutletService")
           .then((value) async {
@@ -119,7 +120,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -164,7 +165,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               left: 60, right: 60, top: 80),
                           text: entity?.entityName ?? "",
                           textColor: AppTheme.white,
-                          fontFamily: AppTheme.Urbanist,
+                          fontFamily: AppTheme.urbanist,
                           fontSize: AppTheme.big,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -176,7 +177,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               left: 60, right: 60, top: 5),
                           text: entity?.location?.address ?? "",
                           textColor: AppTheme.white,
-                          fontFamily: AppTheme.Urbanist,
+                          fontFamily: AppTheme.urbanist,
                           fontSize: AppTheme.large,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -201,7 +202,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                                 child: CText(
                           text: "Download Report",
                           textColor: AppTheme.colorPrimary,
-                          fontFamily: AppTheme.Poppins,
+                          fontFamily: AppTheme.poppins,
                           fontWeight: FontWeight.w700,
                                                 ),
                                               ),
@@ -221,7 +222,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   text: "Entity Details :",
                   textColor: AppTheme.black,
-                  fontFamily: AppTheme.Urbanist,
+                  fontFamily: AppTheme.urbanist,
                   fontSize: AppTheme.big_20,
                   fontWeight: FontWeight.w700,
                 ),
@@ -261,8 +262,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               CText(
                                 textAlign: TextAlign.center,
                                 text: "Status",
-                                textColor: AppTheme.title_gray,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.titleGray,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -271,7 +272,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                 textAlign: TextAlign.center,
                                 text: entity?.licenseStatus ?? "",
                                 textColor: AppTheme.colorPrimary,
-                                fontFamily: AppTheme.Urbanist,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.large,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -287,8 +288,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               CText(
                                 textAlign: TextAlign.center,
                                 text: "License No :",
-                                textColor: AppTheme.title_gray,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.titleGray,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -296,8 +297,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                 padding: const EdgeInsets.only(top: 2),
                                 textAlign: TextAlign.center,
                                 text: entity?.licenseNumber ?? "",
-                                textColor: AppTheme.text_black,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.textBlack,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.large,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -318,8 +319,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               CText(
                                 textAlign: TextAlign.center,
                                 text: "Monthly Limit",
-                                textColor: AppTheme.title_gray,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.titleGray,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -327,8 +328,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                 padding: const EdgeInsets.only(top: 2),
                                 textAlign: TextAlign.center,
                                 text: entity?.monthlyLimit.toString() ?? "",
-                                textColor: AppTheme.text_black,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.textBlack,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.large,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -344,8 +345,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               CText(
                                 textAlign: TextAlign.center,
                                 text: "Expiry Date :",
-                                textColor: AppTheme.title_gray,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.titleGray,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -356,8 +357,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                     ? DateFormat("dd-MM-yyyy")
                                         .format(entity!.licenseExpiryDate)
                                     : "",
-                                textColor: AppTheme.text_black,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.textBlack,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.large,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -378,8 +379,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               CText(
                                 textAlign: TextAlign.center,
                                 text: "Opening Hours",
-                                textColor: AppTheme.title_gray,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.titleGray,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -387,8 +388,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                 padding: const EdgeInsets.only(top: 2),
                                 textAlign: TextAlign.center,
                                 text: entity?.openingTime ?? "-",
-                                textColor: AppTheme.text_black,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.textBlack,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.large,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -404,8 +405,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               CText(
                                 textAlign: TextAlign.center,
                                 text: "Closing Hours",
-                                textColor: AppTheme.title_gray,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.titleGray,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -413,8 +414,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                 padding: const EdgeInsets.only(top: 2),
                                 textAlign: TextAlign.center,
                                 text: entity?.closingTime ?? "-",
-                                textColor: AppTheme.text_black,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.textBlack,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.large,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -435,8 +436,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               CText(
                                 textAlign: TextAlign.center,
                                 text: "Classification : ",
-                                textColor: AppTheme.title_gray,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.titleGray,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -444,8 +445,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                 padding: const EdgeInsets.only(top: 2),
                                 textAlign: TextAlign.center,
                                 text: entity?.classification ?? "-",
-                                textColor: AppTheme.text_black,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.textBlack,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.large,
                                 maxLines: 2,
                                 fontWeight: FontWeight.w600,
@@ -462,8 +463,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               CText(
                                 textAlign: TextAlign.center,
                                 text: "Ownership Type : ",
-                                textColor: AppTheme.title_gray,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.titleGray,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -471,8 +472,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                 padding: const EdgeInsets.only(top: 2),
                                 textAlign: TextAlign.center,
                                 text: entity?.ownerShipType ?? "-",
-                                textColor: AppTheme.text_black,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.textBlack,
+                                fontFamily: AppTheme.urbanist,
                                 maxLines: 2,
                                 fontSize: AppTheme.large,
                                 fontWeight: FontWeight.w600,
@@ -494,8 +495,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               CText(
                                 textAlign: TextAlign.center,
                                 text: "Manager Name : ",
-                                textColor: AppTheme.title_gray,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.titleGray,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -503,8 +504,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                 padding: const EdgeInsets.only(top: 2),
                                 textAlign: TextAlign.center,
                                 text: entity?.managerName ?? "-",
-                                textColor: AppTheme.text_black,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.textBlack,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.large,
                                 maxLines: 2,
                                 fontWeight: FontWeight.w600,
@@ -521,8 +522,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               CText(
                                 textAlign: TextAlign.center,
                                 text: "Manager Contact : ",
-                                textColor: AppTheme.title_gray,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.titleGray,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -530,8 +531,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                 padding: const EdgeInsets.only(top: 2),
                                 textAlign: TextAlign.center,
                                 text: entity?.managerContactNumber ?? "-",
-                                textColor: AppTheme.text_black,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.textBlack,
+                                fontFamily: AppTheme.urbanist,
                                 maxLines: 2,
                                 fontSize: AppTheme.large,
                                 fontWeight: FontWeight.w600,
@@ -553,8 +554,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               CText(
                                 textAlign: TextAlign.center,
                                 text: "Role Name : ",
-                                textColor: AppTheme.title_gray,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.titleGray,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -562,8 +563,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                 padding: const EdgeInsets.only(top: 2),
                                 textAlign: TextAlign.center,
                                 text: entity?.roleName ?? "-",
-                                textColor: AppTheme.text_black,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.textBlack,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.large,
                                 maxLines: 2,
                                 fontWeight: FontWeight.w600,
@@ -580,8 +581,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                               CText(
                                 textAlign: TextAlign.center,
                                 text: "Last Inspection Date : ",
-                                textColor: AppTheme.title_gray,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.titleGray,
+                                fontFamily: AppTheme.urbanist,
                                 fontSize: AppTheme.medium,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -591,8 +592,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                 text: entity?.lastVisitedDate == null
                                     ? "-"
                                     : "${DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))} \n${DateFormat("hh:mm:ss aa").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))}",
-                                textColor: AppTheme.text_black,
-                                fontFamily: AppTheme.Urbanist,
+                                textColor: AppTheme.textBlack,
+                                fontFamily: AppTheme.urbanist,
                                 maxLines: 2,
                                 fontSize: AppTheme.large,
                                 fontWeight: FontWeight.w600,
@@ -614,7 +615,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       text: "Entity Outlets :",
                       textColor: AppTheme.black,
-                      fontFamily: AppTheme.Urbanist,
+                      fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.big_20,
                       fontWeight: FontWeight.w700,
                     ),
@@ -671,7 +672,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                               text:
                                                   outletList[index].outletName,
                                               textColor: AppTheme.colorPrimary,
-                                              fontFamily: AppTheme.Urbanist,
+                                              fontFamily: AppTheme.urbanist,
                                               fontSize: AppTheme.large,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -730,7 +731,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                                         textColor:
                                                             AppTheme.white,
                                                         fontFamily:
-                                                            AppTheme.Urbanist,
+                                                            AppTheme.urbanist,
                                                         fontSize:
                                                             AppTheme.small,
                                                         maxLines: 1,
@@ -748,8 +749,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                           padding:
                                               const EdgeInsets.only(right: 10),
                                           text: outletList[index].ownerShipType,
-                                          textColor: AppTheme.gray_Asparagus,
-                                          fontFamily: AppTheme.Urbanist,
+                                          textColor: AppTheme.grayAsparagus,
+                                          fontFamily: AppTheme.urbanist,
                                           fontSize: AppTheme.large,
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
@@ -760,8 +761,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                                           padding: const EdgeInsets.only(
                                               right: 10, top: 0, bottom: 5),
                                           text: outletList[index].serviceType,
-                                          textColor: AppTheme.gray_Asparagus,
-                                          fontFamily: AppTheme.Urbanist,
+                                          textColor: AppTheme.grayAsparagus,
+                                          fontFamily: AppTheme.urbanist,
                                           fontSize: AppTheme.large,
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
@@ -786,6 +787,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
 
   Future<void> getTaskStatus() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api()
           .getAPI(context, "Department/Task/GetTaskStatus")
           .then((value) async {
@@ -811,6 +813,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
 
   Future<void> getOutletOwnerShip() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       Api()
           .getAPI(context, "Mobile/Entity/GetOwnershipDetails")
           .then((value) async {
@@ -837,11 +840,12 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
 
   Future<void> getDownloadReport() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       // http://4.161.39.155:8096/inspectionApi/api/Department/Report/ViewReport?mainTaskId=4512&inspectionId=0
       Api()
           .getAPI(context,
-          "Department/Report/ViewReport?mainTaskId=${widget.task!.mainTaskId}&inspectionId=0")
+          "Department/Report/ViewReport?mainTaskId=${widget.task.mainTaskId}&inspectionId=0")
           .then((value) async {
         LoadingIndicatorDialog().dismiss();
         print("ViewReport $value");
@@ -918,8 +922,9 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
       }
     } catch (e) {
       print("Error: $e");
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to download and open PDF')),
+        const SnackBar(content: Text('Failed to download and open PDF')),
       );
     } finally {
       setState(() {

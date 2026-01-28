@@ -35,7 +35,7 @@ class _SelectQuantityState extends State<SelectQuantity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppTheme.main_background,
+        backgroundColor: AppTheme.mainBackground,
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -69,7 +69,7 @@ class _SelectQuantityState extends State<SelectQuantity> {
                                       right: 10, top: 20, bottom: 5),
                                   text: list[index].toString(),
                                   textColor: AppTheme.colorPrimary,
-                                  fontFamily: AppTheme.Urbanist,
+                                  fontFamily: AppTheme.urbanist,
                                   fontSize: AppTheme.large,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -121,8 +121,8 @@ class _SelectQuantityState extends State<SelectQuantity> {
                         padding: const EdgeInsets.only(
                             left: 0, right: 0, top: 35, bottom: 0),
                         text: "Select Quantity",
-                        textColor: AppTheme.text_primary,
-                        fontFamily: AppTheme.Urbanist,
+                        textColor: AppTheme.textPrimary,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.big,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

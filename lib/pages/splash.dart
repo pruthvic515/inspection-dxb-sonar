@@ -15,7 +15,6 @@ import '../dialog/version_dialog.dart';
 import '../utils/api.dart';
 import '../utils/store_user_data.dart';
 import '../utils/utils.dart';
-import 'package:http/http.dart' as http;
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -52,7 +51,7 @@ class _SplashState extends State<Splash> {
                 }
               },
             );
-            // 2. This method only call when App in forground it mean app must be opened
+            // 2. This method only call when App in foreground it mean app must be opened
             FirebaseMessaging.onMessage.listen(
               (message) {
                 print("FirebaseMessaging.onMessage.listen");
@@ -103,7 +102,7 @@ class _SplashState extends State<Splash> {
                 text: "INSPECTION DXB",
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                fontFamily: AppTheme.Poppins,
+                fontFamily: AppTheme.poppins,
                 textColor: AppTheme.white,
               )
               /*Padding(
@@ -119,15 +118,15 @@ class _SplashState extends State<Splash> {
           ),
           CText(
             text: "licensedxb.ae",
-            fontFamily: AppTheme.Urbanist,
+            fontFamily: AppTheme.urbanist,
             fontSize: 22,
             textColor: AppTheme.white,
             fontWeight: FontWeight.w700,
           ),
           CText(
-            padding: EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.only(bottom: 20),
             text: "1.0.10",
-            fontFamily: AppTheme.Urbanist,
+            fontFamily: AppTheme.urbanist,
             fontSize: 12,
             textColor: AppTheme.white,
             fontWeight: FontWeight.w500,

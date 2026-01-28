@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:patrol_system/controls/textfieldpassword.dart';
+import 'package:patrol_system/controls/text_field_password.dart';
 
 import '../utils/color_const.dart';
 import '../utils/constants.dart' as constants;
@@ -61,7 +61,7 @@ class FormPasswordTextField extends StatelessWidget {
             child: CText(
               textColor: textColor ?? AppTheme.black,
               fontSize: fontSize ?? AppTheme.large,
-              fontFamily: fontFamily ?? AppTheme.Urbanist,
+              fontFamily: fontFamily ?? AppTheme.urbanist,
               fontWeight: fontWeight ?? FontWeight.w300,
               text: title,
               // fontWeight: FontWeight.w400,
@@ -93,7 +93,7 @@ class FormPasswordTextField extends StatelessWidget {
                         // maxLines: maxLines ?? 1,
                         textColor: textColor ?? AppTheme.black,
                         fontSize: fontSize ?? AppTheme.large,
-                        fontFamily: fontFamily ?? AppTheme.Poppins,
+                        fontFamily: fontFamily ?? AppTheme.poppins,
                         fontWeight: fontWeight ?? FontWeight.w300,
                         isPassword: isPassword,
                         suffixIcon: suffixIcon,
@@ -118,7 +118,7 @@ class FormPasswordTextField extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.only(top: 15, bottom: 10),
                             child: CText(
-                              fontFamily: AppTheme.Poppins,
+                              fontFamily: AppTheme.poppins,
                               fontSize: currentWidth > SIZE_600
                                   ? AppTheme.medium
                                   : AppTheme.small,

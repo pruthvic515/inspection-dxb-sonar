@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:patrol_system/controls/LoadingIndicatorDialog.dart';
 import 'package:patrol_system/controls/text.dart';
 
@@ -11,30 +9,33 @@ import '../../utils/constants.dart';
 import '../../utils/utils.dart';
 
 class SelectAgents extends StatefulWidget {
- final List<SearchEntityData> list;
- final List<SearchEntityData> selectedAgents;
-  const SelectAgents({super.key,required this.list,required this.selectedAgents});
+  final List<SearchEntityData> list;
+  final List<SearchEntityData> selectedAgents;
+
+  const SelectAgents(
+      {super.key, required this.list, required this.selectedAgents});
 
   @override
-  State<SelectAgents> createState() => _SelectAgentsState(selectedAgents);
+  State<SelectAgents> createState() => _SelectAgentsState();
 }
 
 class _SelectAgentsState extends State<SelectAgents> {
-  List<SearchEntityData> selectedAgents;
+  late List<SearchEntityData> selectedAgents;
 
-  _SelectAgentsState(this. selectedAgents);
   @override
   void initState() {
+    selectedAgents = widget.selectedAgents;
     LoadingIndicatorDialog().show(context);
     Future.delayed(const Duration(milliseconds: 1000), () async {
       LoadingIndicatorDialog().dismiss();
     });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppTheme.main_background,
+        backgroundColor: AppTheme.mainBackground,
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -54,7 +55,7 @@ class _SelectAgentsState extends State<SelectAgents> {
                         textAlign: TextAlign.center,
                         text: "DONE",
                         textColor: AppTheme.black,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.medium,
                         fontWeight: FontWeight.w700,
                       ),
@@ -78,8 +79,8 @@ class _SelectAgentsState extends State<SelectAgents> {
                             onTap: () {
                               setState(() {
                                 if (selectedAgents.firstWhereOrNull((element) =>
-                                element.entityId ==
-                                    widget.list[index].entityId) ==
+                                        element.entityId ==
+                                        widget.list[index].entityId) ==
                                     null) {
                                   selectedAgents.add(widget.list[index]);
                                 } else {
@@ -89,10 +90,10 @@ class _SelectAgentsState extends State<SelectAgents> {
                             },
                             child: Padding(
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 15.0),
+                                  const EdgeInsets.symmetric(horizontal: 15.0),
                               child: Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   CText(
@@ -100,27 +101,27 @@ class _SelectAgentsState extends State<SelectAgents> {
                                     padding: const EdgeInsets.only(
                                         right: 10, top: 10, bottom: 10),
                                     text: widget.list[index].entityName,
-                                    textColor: AppTheme.gray_Asparagus,
-                                    fontFamily: AppTheme.Urbanist,
+                                    textColor: AppTheme.grayAsparagus,
+                                    fontFamily: AppTheme.urbanist,
                                     fontSize: AppTheme.large,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     fontWeight: FontWeight.w600,
                                   ),
                                   selectedAgents.firstWhereOrNull((element) =>
-                                  element.entityId ==
-                                      widget.list[index].entityId) !=
-                                      null
+                                              element.entityId ==
+                                              widget.list[index].entityId) !=
+                                          null
                                       ? const Icon(
-                                    Icons.check_box,
-                                    size: 20,
-                                    color: AppTheme.colorPrimary,
-                                  )
+                                          Icons.check_box,
+                                          size: 20,
+                                          color: AppTheme.colorPrimary,
+                                        )
                                       : const Icon(
-                                    Icons.check_box_outline_blank,
-                                    size: 20,
-                                    color: AppTheme.grey,
-                                  ),
+                                          Icons.check_box_outline_blank,
+                                          size: 20,
+                                          color: AppTheme.grey,
+                                        ),
                                 ],
                               ),
                             ),
@@ -147,7 +148,7 @@ class _SelectAgentsState extends State<SelectAgents> {
                         child: Card(
                           shape: const RoundedRectangleBorder(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                           elevation: 0,
                           surfaceTintColor: AppTheme.white.withOpacity(0),
                           color: AppTheme.white.withOpacity(0),
@@ -171,7 +172,7 @@ class _SelectAgentsState extends State<SelectAgents> {
                             left: 0, right: 0, top: 35, bottom: 0),
                         text: "Select Agents",
                         textColor: AppTheme.white,
-                        fontFamily: AppTheme.Urbanist,
+                        fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.big,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

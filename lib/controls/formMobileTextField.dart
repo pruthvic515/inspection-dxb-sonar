@@ -73,7 +73,7 @@ class FormMobileTextField extends StatelessWidget {
             child: CText(
               textColor: AppTheme.black,
               fontSize: fontSize ?? AppTheme.large,
-              fontFamily: fontFamily ?? AppTheme.Urbanist,
+              fontFamily: fontFamily ?? AppTheme.urbanist,
               fontWeight: fontWeight ?? FontWeight.w600,
               text: title,
               // fontWeight: FontWeight.w400,
@@ -100,11 +100,11 @@ class FormMobileTextField extends StatelessWidget {
                         child: Row(
                           children: [
                             CText(
-                              padding: EdgeInsets.only(top: 5),
+                              padding: const EdgeInsets.only(top: 5),
                               text: "+9715",
-                              textColor: textColor ?? AppTheme.text_color,
+                              textColor: textColor ?? AppTheme.textColor,
                               fontSize: fontSize ?? AppTheme.large,
-                              fontFamily: fontFamily ?? AppTheme.Urbanist,
+                              fontFamily: fontFamily ?? AppTheme.urbanist,
                               fontWeight: fontWeight ?? FontWeight.w600,
                             ),
                             Expanded(
@@ -120,9 +120,9 @@ class FormMobileTextField extends StatelessWidget {
                               controller: controller,
                               maxLines: maxLines ?? 1,
                               minLines: minLines ?? 1,
-                              textColor: textColor ?? AppTheme.text_color,
+                              textColor: textColor ?? AppTheme.textColor,
                               fontSize: fontSize ?? AppTheme.large,
-                              fontFamily: fontFamily ?? AppTheme.Urbanist,
+                              fontFamily: fontFamily ?? AppTheme.urbanist,
                               fontWeight: fontWeight ?? FontWeight.w600,
                               textCapitalization:
                                   inputType == TextInputType.name
@@ -155,9 +155,9 @@ class FormMobileTextField extends StatelessWidget {
                             child: CText(
                               overflow: TextOverflow.ellipsis,
                               maxLines: maxLines,
-                              textColor: textColor ?? AppTheme.text_color,
+                              textColor: textColor ?? AppTheme.textColor,
                               fontSize: fontSize ?? AppTheme.large,
-                              fontFamily: fontFamily ?? AppTheme.Urbanist,
+                              fontFamily: fontFamily ?? AppTheme.urbanist,
                               fontWeight: fontWeight ?? FontWeight.w600,
                               text: value == null || value!.isEmpty
                                   ? hint!

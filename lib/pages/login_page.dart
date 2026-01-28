@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.main_background,
+      backgroundColor: AppTheme.mainBackground,
       body: Stack(
         children: [
           GestureDetector(
@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   text: "Login to your \nAccount",
                   textColor: AppTheme.black,
-                  fontFamily: AppTheme.Urbanist,
+                  fontFamily: AppTheme.urbanist,
                   fontSize: 40,
                   fontWeight: FontWeight.w700,
                 ),
@@ -204,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                             text: "Login",
                             textColor: AppTheme.white,
                             fontSize: AppTheme.big,
-                            fontFamily: AppTheme.Poppins,
+                            fontFamily: AppTheme.poppins,
                             fontWeight: FontWeight.w700,
                           ),
                   ),
@@ -242,12 +242,12 @@ class _LoginPageState extends State<LoginPage> {
           Expanded(
             child: CTextField(
               obscureText: obscureText,
-              textColor: AppTheme.text_color,
+              textColor: AppTheme.textColor,
               hint: hint,
               fontSize: AppTheme.medium,
               maxLines: 1,
               fontWeight: FontWeight.w500,
-              fontFamily: AppTheme.Poppins,
+              fontFamily: AppTheme.poppins,
               controller: controller,
               focusedBorder: InputBorder.none,
               inputBorder: InputBorder.none,
@@ -262,7 +262,7 @@ class _LoginPageState extends State<LoginPage> {
               },
               icon: Icon(
                 isPassword ? Icons.visibility_off : Icons.visibility,
-                color: AppTheme.text_color,
+                color: AppTheme.textColor,
                 size: 20,
               ),
             ),

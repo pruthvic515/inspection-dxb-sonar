@@ -58,7 +58,7 @@ class CTextFieldPhone extends StatelessWidget {
       inputFormatters: inputFormatters,
       textAlign: textAlign == null ? TextAlign.start : textAlign!,
       style: TextStyle(
-          fontFamily: fontFamily == null ? AppTheme.Poppins : fontFamily!,
+          fontFamily: fontFamily == null ? AppTheme.poppins : fontFamily!,
           fontWeight: fontWeight == null ? FontWeight.w300 : fontWeight!,
           color: textColor ?? AppTheme.black,
           fontSize: fontSize ?? AppTheme.medium),
@@ -74,7 +74,7 @@ class CTextFieldPhone extends StatelessWidget {
           hintText: hint,
           counterText: "",
           hintStyle: TextStyle(
-              fontFamily: fontFamily == null ? AppTheme.Poppins : fontFamily!,
+              fontFamily: fontFamily == null ? AppTheme.poppins : fontFamily!,
               fontWeight: fontWeight == null ? FontWeight.w300 : fontWeight!,
               color: textColor ?? AppTheme.black,
               fontSize: fontSize ?? AppTheme.medium)),
