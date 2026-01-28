@@ -12,9 +12,9 @@ class EncryptedHttpClient {
   final EncryptAndDecrypt _encryptAndDecrypt = EncryptAndDecrypt();
 
   Future<http.Response> get(
-    Uri url, {
-    Map<String, String>? headers,
-  }) async {
+      Uri url, {
+        Map<String, String>? headers,
+      }) async {
     try {
       // Check if encryption is required for this endpoint
       final requiresEncryption = EncryptionConfig.requiresEncryption(
@@ -61,11 +61,11 @@ class EncryptedHttpClient {
   }
 
   Future<http.Response> post(
-    Uri url, {
-    Map<String, String>? headers,
-    Object? body,
-    Encoding? encoding,
-  }) async {
+      Uri url, {
+        Map<String, String>? headers,
+        Object? body,
+        Encoding? encoding,
+      }) async {
     try {
       // Check if encryption is required for this endpoint
       final requiresEncryption = EncryptionConfig.requiresEncryption(
@@ -128,13 +128,41 @@ class EncryptedHttpClient {
       if (response.body.isEmpty) return response;
 
       final responseData = _tryParseJson(response.body);
-      if (responseData == null) return response;
 
-      if (!_containsEncryptedData(responseData)) return response;
+      // If response is not JSON, check if it's directly encrypted string
+      if (responseData == null) {
+        // Try to decrypt the full response body as a string
+        try {
+          final decrypted = await _decryptSingleItem(response.body);
+          if (decrypted != response.body) {
+            return _buildNewResponse(response, decrypted);
+          }
+        } catch (e) {
+          // If decryption fails, return original response
+        }
+        return response;
+      }
 
-      responseData['data'] = await _decryptResponseData(responseData['data']);
+      // Check if the encrypted payload is inside a 'data' key
+      if (responseData is Map && responseData.containsKey('data')) {
+        final decryptedData = await _decryptResponseData(responseData['data']);
+        responseData['data'] = decryptedData;
+        return _buildNewResponse(response, responseData);
+      }
 
-      return _buildNewResponse(response, responseData);
+      // If the encrypted payload comes directly in the response (as a string)
+      if (responseData is String) {
+        final decrypted = await _decryptSingleItem(responseData);
+        return _buildNewResponse(response, decrypted);
+      }
+
+      // If response is a List, decrypt each item
+      if (responseData is List) {
+        final decryptedList = await _decryptList(responseData);
+        return _buildNewResponse(response, decryptedList);
+      }
+
+      return response;
     } catch (e) {
       print('Response Processing Error: $e');
       return response;
@@ -149,9 +177,6 @@ class EncryptedHttpClient {
     }
   }
 
-  bool _containsEncryptedData(dynamic responseData) {
-    return responseData is Map && responseData.containsKey('data');
-  }
 
   Future<dynamic> _decryptResponseData(dynamic data) async {
     if (data is String) {
@@ -200,8 +225,17 @@ class EncryptedHttpClient {
 
   http.Response _buildNewResponse(
       http.Response response, dynamic responseData) {
+    String body;
+    if (responseData is String) {
+      // If it's already a string, use it directly (might be JSON string or plain text)
+      body = responseData;
+    } else {
+      // Otherwise, encode it as JSON
+      body = jsonEncode(responseData);
+    }
+
     return http.Response(
-      jsonEncode(responseData),
+      body,
       response.statusCode,
       headers: response.headers,
       request: response.request,

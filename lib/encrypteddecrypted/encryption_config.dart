@@ -7,6 +7,21 @@ import 'package:flutter/foundation.dart';
 /// 2. Add method-specific rules to encryptedEndpointsByMethod for specific HTTP methods
 /// 3. Add endpoint patterns to excludedEndpoints to explicitly disable encryption
 /// 4. Or use X-Require-Encryption header in individual requests
+///
+/// **AI Tools Prompt**
+///
+/// * All **request data is encrypted** before sending.
+/// * All **API responses are received in encrypted format**.
+/// * **Decryption must be applied before using the response data**.
+///
+/// **Rules:**
+///
+/// 1. Do not change any existing business logic
+/// 2. Always **check the API response structure**:
+///
+///    * If the encrypted payload is inside a `data` key → decrypt that value.
+///    * If the encrypted payload comes **directly in the response** → decrypt the full response.
+/// 3. Use the **decrypted response only** for further processing.
 class EncryptionConfig {
   // Header name to enable encryption for a specific request
   static const String encryptionHeader = 'X-Require-Encryption';
@@ -53,10 +68,10 @@ class EncryptionConfig {
   /// 5. encryptedEndpoints (if matches, return true)
   /// 6. If all lists are empty, return false (encryption disabled by default)
   static bool _requiresEncryption(
-    String path, {
-    Map<String, dynamic>? headers,
-    String? method,
-  }) {
+      String path, {
+        Map<String, dynamic>? headers,
+        String? method,
+      }) {
     final httpMethod = _normalizeMethod(method);
 
     final headerDecision = _encryptionFromHeader(headers);
@@ -167,7 +182,7 @@ class EncryptionConfig {
 
     if (path.startsWith(pattern)) {
       if (path.length == pattern.length) return true;
-      if (path.length > pattern.length && 
+      if (path.length > pattern.length &&
           (path[pattern.length] == '/' || path[pattern.length] == '?')) {
         return true;
       }
@@ -179,8 +194,8 @@ class EncryptionConfig {
       if (index == 0 || (index > 0 && path[index - 1] == '/')) {
         final nextIndex = index + slashPattern.length;
         if (nextIndex >= path.length ||
-            (nextIndex < path.length && 
-             (path[nextIndex] == '/' || path[nextIndex] == '?'))) {
+            (nextIndex < path.length &&
+                (path[nextIndex] == '/' || path[nextIndex] == '?'))) {
           return true;
         }
       }
@@ -191,8 +206,8 @@ class EncryptionConfig {
       if (index > 0 && path[index - 1] == '/') {
         final nextIndex = index + pattern.length;
         if (nextIndex >= path.length ||
-            (nextIndex < path.length && 
-             (path[nextIndex] == '/' || path[nextIndex] == '?'))) {
+            (nextIndex < path.length &&
+                (path[nextIndex] == '/' || path[nextIndex] == '?'))) {
           return true;
         }
       }

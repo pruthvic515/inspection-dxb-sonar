@@ -1,22 +1,39 @@
 name: Build
+
 on:
   push:
     branches:
       - main
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
-  sonarqube:
-    name: SonarQube
+  sonarcloud:
+    name: SonarCloud
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      # The analysis requires to retrieve dependencies and build successfully
+          fetch-depth: 0
+
+      # Setup Flutter
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.38.7"
+
+      # Get dependencies
       - name: Build
-        run: <mark><commands_to_build_your_project></mark>
+        run: |
+          flutter pub get
+
+      # SonarCloud Scan
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
+        continue-on-error: true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_BASE_DIR: .

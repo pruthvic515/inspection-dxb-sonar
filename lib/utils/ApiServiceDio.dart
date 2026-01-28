@@ -146,8 +146,8 @@ class ApiServiceDio {
   }
 
   Future<ApiResponse<T>> _request<T>(
-    Future<Response> Function() apiCall,
-  ) async {
+      Future<Response> Function() apiCall,
+      ) async {
     try {
       final response = await apiCall();
       return _handleResponse<T>(response);
@@ -169,19 +169,19 @@ class ApiServiceDio {
   }
 
   Future<ApiResponse<T>> put<T>(
-    String endpoint, {
-    Map<String, dynamic>? data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
+      String endpoint, {
+        Map<String, dynamic>? data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+      }) async {
     try {
       final response = await _dio.put(
         endpoint,
         data: data,
         queryParameters: queryParameters,
         options: options?.copyWith(
-              contentType: Headers.jsonContentType,
-            ) ??
+          contentType: Headers.jsonContentType,
+        ) ??
             Options(contentType: Headers.jsonContentType),
       );
 
@@ -194,10 +194,10 @@ class ApiServiceDio {
   }
 
   Future<ApiResponse<T>> delete<T>(
-    String endpoint, {
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
+      String endpoint, {
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+      }) async {
     try {
       final response = await _dio.delete(
         endpoint,
@@ -214,11 +214,11 @@ class ApiServiceDio {
   }
 
   Future<ApiResponse<T>> uploadFiles<T>(
-    String endpoint,
-    Map<String, String> fields,
-    List<String> filePaths,
-    String fileFieldName,
-  ) async {
+      String endpoint,
+      Map<String, String> fields,
+      List<String> filePaths,
+      String fileFieldName,
+      ) async {
     try {
       final formData = FormData();
 
@@ -253,11 +253,11 @@ class ApiServiceDio {
   }
 
   Future<ApiResponse<T>> uploadSingleFile<T>(
-    String endpoint,
-    Map<String, String> fields,
-    String filePath,
-    String EmiratedIdBack,
-  ) async {
+      String endpoint,
+      Map<String, String> fields,
+      String filePath,
+      String EmiratedIdBack,
+      ) async {
     return uploadFiles<T>(
       endpoint,
       fields,
@@ -267,12 +267,12 @@ class ApiServiceDio {
   }
 
   Future<ApiResponse<T>> uploadSingleFileFromBytes<T>(
-    String endpoint,
-    Map<String, String> fields,
-    List<int> fileBytes, {
-    String fileFieldName = 'file',
-    String? fileName,
-  }) async {
+      String endpoint,
+      Map<String, String> fields,
+      List<int> fileBytes, {
+        String fileFieldName = 'file',
+        String? fileName,
+      }) async {
     try {
       final formData = FormData();
 
@@ -288,7 +288,7 @@ class ApiServiceDio {
           MultipartFile.fromBytes(
             fileBytes,
             filename:
-                fileName ?? '${DateTime.now().millisecondsSinceEpoch}.jpg',
+            fileName ?? '${DateTime.now().millisecondsSinceEpoch}.jpg',
             // contentType: Headers.parseMediaType('image/jpeg'),
           ),
         ),
@@ -310,9 +310,9 @@ class ApiServiceDio {
   }
 
   Future<ApiResponse<T>> postBarcode<T>(
-    String endpoint,
-    String barcode,
-  ) async {
+      String endpoint,
+      String barcode,
+      ) async {
     try {
       final response = await _dio.post(
         endpoint,
@@ -395,8 +395,8 @@ class ApiServiceDio {
     try {
       final response = await instance.put(
         "api/Mobile/Notification/UpdateFcmToken"
-        "?departmentUserId=${storeUserData.getInt(USER_ID)}"
-        "&fcmToken=${storeUserData.getString(USER_FCM)}",
+            "?departmentUserId=${storeUserData.getInt(USER_ID)}"
+            "&fcmToken=${storeUserData.getString(USER_FCM)}",
       );
       if (response.isSuccess) {
         debugPrint("✅ FCM Token updated: ${response.data}");
@@ -429,16 +429,16 @@ class ApiResponse<T> {
   });
 
   factory ApiResponse.success(T data, [int? statusCode]) => ApiResponse._(
-        isSuccess: true,
-        data: data,
-        statusCode: statusCode,
-      );
+    isSuccess: true,
+    data: data,
+    statusCode: statusCode,
+  );
 
   factory ApiResponse.error(String error, [int? statusCode]) => ApiResponse._(
-        isSuccess: false,
-        error: error,
-        statusCode: statusCode,
-      );
+    isSuccess: false,
+    error: error,
+    statusCode: statusCode,
+  );
 
   bool get isError => !isSuccess;
 }
@@ -522,6 +522,8 @@ class _EncryptionInterceptor extends Interceptor {
 
     try {
       final responseData = response.data;
+
+      // Check if the encrypted payload is inside a 'data' key
       if (responseData is Map<String, dynamic> &&
           responseData.containsKey('data')) {
         final encryptedData = responseData['data'];
@@ -530,6 +532,16 @@ class _EncryptionInterceptor extends Interceptor {
           responseData['data'] = decryptedData;
           response.data = responseData;
         }
+      }
+      // If the encrypted payload comes directly in the response
+      else if (responseData is String) {
+        final decryptedData = await _decryptResponseData(responseData);
+        response.data = decryptedData;
+      }
+      // If response is a List, decrypt each item
+      else if (responseData is List) {
+        final decryptedList = await _decryptList(responseData);
+        response.data = decryptedList;
       }
     } catch (e) {
       debugPrint('Decryption error: $e');
