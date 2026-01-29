@@ -33,6 +33,7 @@ class EncryptionConfig {
       'api/Department/User/GetInspectionList',
       'api/Department/User/GetAllUser',
       'api/Mobile/Entity/GetAllEntityBasicDetail',
+      "api/Mobile/ProduectDetail/GetProductCategory"
     ],
     'POST': [
       // POST methods that require encryption
@@ -47,8 +48,13 @@ class EncryptionConfig {
       'api/Mobile/Inspection/CreateInspection',
       'api/Mobile/Inspection/UpdateInspection',
       'api/Mobile/ProduectDetail/GetAllProduct',
+      'api/Mobile/ProduectDetail/Create',
+      'api/Mobile/ProduectDetail/Update',
+      'api/Mobile/ProduectDetail/Delete',
+
     ],
   };
+
 
   // List of API endpoint patterns that should NOT use encryption (for all methods)
   // These take priority over encryptedEndpoints
@@ -106,7 +112,6 @@ class EncryptionConfig {
 
     final pathToCheck = _extractPath(path);
 
-    // Check encrypted endpoints first - specific encrypted endpoints override general exclusions
     if (_isEncryptedForMethod(pathToCheck, path, httpMethod)) {
       return true;
     }

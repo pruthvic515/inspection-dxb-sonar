@@ -154,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
         LoadingIndicatorDialog().dismiss();
         if (!mounted) return;
 
-        debugPrint(value);
+        // debugPrint(value);
         try {
           if (value == null || value.isEmpty) {
             _hasFetchedTasks = false;

@@ -19,7 +19,7 @@ class Api {
       headers = {
         'Accept-Language': "EN",
         'Authorization': storeUserData.getString(constants.USER_TOKEN),
-        'Accept': "*/*",
+        'Accept': "text/plain",
         "Content-Type":"application/json"
       };
     } else {
@@ -33,7 +33,7 @@ class Api {
   }
 
   callAPI(BuildContext context, String function,
-      Map<String, dynamic> fields) async {
+      Map<String, dynamic>? fields) async {
     if (storeUserData.getString(constants.USER_TOKEN).isNotEmpty) {
       print("token  ${storeUserData.getString(constants.USER_TOKEN)}");
     }
@@ -81,9 +81,7 @@ class Api {
       Utils().showAlert(
           buildContext: context,
           message: "Internal Server Error",
-          onPressed: () {
-            Navigator.of(context).pop();
-          });
+          onPressed: () {});
       return "{\"message\":\"Internal Server Error\"}";
     } else {
       if (isValidJson(response.body)) {
@@ -91,9 +89,7 @@ class Api {
         Utils().showAlert(
             buildContext: context,
             message: jsonDecode(response.body)["message"],
-            onPressed: () {
-              Navigator.of(context).pop();
-            });
+            onPressed: () {});
         return response.body;
       } else {
         if (!context.mounted) return;
@@ -101,9 +97,7 @@ class Api {
             buildContext: context,
             title: "StatusCode : ${response.statusCode}",
             message: "Response Null",
-            onPressed: () {
-              Navigator.of(context).pop();
-            });
+            onPressed: () {});
         return null;
       }
     }

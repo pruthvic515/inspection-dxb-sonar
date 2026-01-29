@@ -1,0 +1,34 @@
+API Method : Department/Task/GetTaskStatus -> done
+HTTP Method : GET
+Description : Fetches the list of task statuses.
+
+API Method : Department/Task/GetTask -> done
+HTTP Method : POST
+Description : Fetches tasks for the logged-in user.
+
+API Method : Department/Task/UpdateInspectionTaskStatus -> done
+HTTP Method : POST
+Description : Updates the status of an inspection task (e.g., rejecting an inspection).
+
+API Method : Mobile/Entity/GetEntity -> done
+HTTP Method : POST
+Description : Searches for entities based on category and location.
+
+API Method : Department/User/Login -> done
+HTTP Method : POST
+Description : User login endpoint for department users.
+
+
+
+http://4.161.39.155:8092/inspectionApi/swagger/index.html
+Login details
+InspectionDXB
+Test@123
+
+
+
+API Method : Mobile/ProduectDetail/GetLiquorSizeEnum (master data)
+HTTP Method : GET
+Description : Fetches enumeration values for liquor sizes.
+
+

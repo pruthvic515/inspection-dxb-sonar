@@ -63,37 +63,37 @@ class EntityDetailModel {
 
   factory EntityDetailModel.fromJson(Map<String, dynamic> json) {
     return EntityDetailModel(
-      inspectionId: json['inspectionId'],
-      inspectorId: json['inspectorId'],
-      inspectionStatusId: json['inspectionStatusId'],
-      entityID: json['entityID'] ?? 0,
-      entityName: json['entityName'] ?? "-",
-      location: json['location'] == null
+      inspectionId: json['InspectionId'],
+      inspectorId: json['InspectorId'],
+      inspectionStatusId: json['InspectionStatusId'],
+      entityID: json['EntityID'] ?? 0,
+      entityName: json['EntityName'] ?? "-",
+      location: json['Location'] == null
           ? null
-          : LocationModel.fromJson(json['location']),
-      classification: json['classification'] ?? "",
-      categoryId: json["categoryId"] ?? 0,
-      categoryName: json['categoryName'] ?? "",
-      ownerShipType: json['ownerShipType'] ?? "",
-      monthlyLimit: json['monthlyLimit'] ?? 0,
-      openingTime: json['openingTime'] ?? "-",
-      closingTime: json['closingTime'] ?? "-",
-      logoUrl: json['logoUrl'],
-      licenseStatus: json['licenseStatus'] ?? "-",
-      licenseNumber: json['licenseNumber'] ?? "",
-      licenseExpiryDate: json['licenseExpiryDate'] == null
+          : LocationModel.fromJson(json['Location']),
+      classification: json['Classification'] ?? "",
+      categoryId: json["CategoryId"] ?? 0,
+      categoryName: json['CategoryName'] ?? "",
+      ownerShipType: json['OwnerShipType'] ?? "",
+      monthlyLimit: json['MonthlyLimit'] ?? 0,
+      openingTime: json['OpeningTime'] ?? "-",
+      closingTime: json['ClosingTime'] ?? "-",
+      logoUrl: json['LogoUrl'],
+      licenseStatus: json['LicenseStatus'] ?? "-",
+      licenseNumber: json['LicenseNumber'] ?? "",
+      licenseExpiryDate: json['LicenseExpiryDate'] == null
           ? Utils().getCurrentGSTTime()
-          : DateTime.parse(json['licenseExpiryDate']),
-      managerName: json['managerName'] ?? "-",
-      managerEmailId: json['managerEmailId'] ?? "-",
-      managerContactNumber: json['managerContactNumber'] ?? "-",
-      roleName: json['roleName'] ?? "-",
-      outletModels: json["outletModels"] == null
+          : DateTime.parse(json['LicenseExpiryDate']),
+      managerName: json['ManagerName'] ?? "-",
+      managerEmailId: json['ManagerEmailId'] ?? "-",
+      managerContactNumber: json['ManagerContactNumber'] ?? "-",
+      roleName: json['RoleName'] ?? "-",
+      outletModels: json["OutletModels"] == null
           ? []
           : List<OutletData>.from(
-              json['outletModels'].map((x) => OutletData.fromJson(x))),
-      lastVisitedDate: json['lastVisitedDate'],
-      message: json['message'] ?? "-",
+              json['OutletModels'].map((x) => OutletData.fromJson(x))),
+      lastVisitedDate: json['LastVisitedDate'],
+      message: json['Message'] ?? "-",
     );
   }
 }

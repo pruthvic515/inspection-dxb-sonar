@@ -23,7 +23,7 @@ const String ASSET_PATH = "assets/images/";
 // todo change prod date 08-11-2024
 // const String baseUrl = "https://licensedxb.ae/Inspectionapi/";
 // todo change UAT date 16-10-2025
-const String baseUrl = "http://4.161.39.155:8092/inspectionapi/";
+const String baseUrl = "http://4.161.39.155:8092/inspectionApi/";
 // todo change prod date 16-10-2025
 // const String baseUrl = "https://licensedxb.ae/Inspectionapi/";
 

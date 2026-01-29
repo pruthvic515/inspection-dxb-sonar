@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils/api.dart';
@@ -88,7 +89,7 @@ class EncryptedHttpClient {
       String? encryptedBody;
 
       // Encrypt request body if provided
-      if (body != null) {
+      if (body != null ) {
         final bodyString = body is String ? body : jsonEncode(body);
         print('   Original Value: $bodyString');
         // Encrypt without URL encoding for request body
@@ -185,6 +186,14 @@ class EncryptedHttpClient {
 
     if (data is List) {
       return _decryptList(data);
+    }
+
+    if (data is Map && data.containsKey('result') && data['result'] is List) {
+      final result = data['result'] as List;
+      final decryptedResult = await _decryptList(result);
+      data = Map<String, dynamic>.from(data);
+      data['result'] = decryptedResult;
+      return data;
     }
 
     return data;

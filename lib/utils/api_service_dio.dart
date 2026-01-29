@@ -27,7 +27,7 @@ class ApiServiceDio {
       headers = {
         'Accept-Language': "EN",
         'Authorization': storeUserData.getString(constants.USER_TOKEN),
-        'Accept': "*/*",
+        'accept': "text/plain",
         'Connection': 'keep-alive',
         'Accept-Encoding': 'gzip, deflate, br',
         'Cache-Control': 'keep-alive',

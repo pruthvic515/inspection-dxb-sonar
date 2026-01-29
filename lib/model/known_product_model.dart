@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:patrol_system/encrypteddecrypted/encrypt_and_decrypt.dart';
+
 KnownProductModel knownProductFromJson(String str) =>
     KnownProductModel.fromJson(json.decode(str));
 
@@ -42,11 +44,45 @@ class KnownProductData {
 
   factory KnownProductData.fromJson(Map<String, dynamic> json) {
     return KnownProductData(
-      productId: json['productId'],
-      categoryId: json['categoryId'] ?? 1,
-      productName: json['productName'],
-      quantity: json['quantity'] ?? 0,
-      serialNumber: json['serialNumber'],
+      productId: json['ProductId'],
+      categoryId: json['CategoryId'] ?? 1,
+      productName: json['ProductName'],
+      quantity: json['Quantity'] ?? 0,
+      serialNumber: json['SerialNumber'],
     );
   }
 }
+
+Future<KnownProductModel> parseKnownProducts(dynamic apiResponse) async {
+  final decoded = apiResponse is String ? json.decode(apiResponse) : apiResponse;
+  if (decoded == null || decoded['data'] == null || decoded['data']['result'] == null) {
+    return KnownProductModel(
+      statusCode: decoded?['statusCode'] ?? 0,
+      data: [],
+      message: decoded?['message'],
+    );
+  }
+  
+
+
+  List<KnownProductData> list = [];
+  final EncryptAndDecrypt _encryptAndDecrypt = EncryptAndDecrypt();
+  final result = decoded['data']['result'] as List;
+
+  for (final item in result) {
+    if (item is String) {
+      final decrypted = await _encryptAndDecrypt.decryption(payload: item);
+      final map = json.decode(decrypted) as Map<String, dynamic>;
+      list.add(KnownProductData.fromJson(map));
+    } else if (item is Map<String, dynamic>) {
+      list.add(KnownProductData.fromJson(item));
+    }
+  }
+
+  return KnownProductModel(
+    statusCode: decoded['statusCode'],
+    data: list,
+    message: decoded['message'],
+  );
+}
+

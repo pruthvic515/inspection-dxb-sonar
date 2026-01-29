@@ -31,9 +31,14 @@ class Utils {
 
     showDialog(
         context: buildContext,
-        builder: (BuildContext context) {
+        builder: (BuildContext dialogContext) {
           return CustomDialog(
-              title: title, message: message, onOkPressed: onPressed);
+              title: title,
+              message: message,
+              onOkPressed: () {
+                Navigator.of(dialogContext).pop();
+                onPressed();
+              });
         });
   }
 

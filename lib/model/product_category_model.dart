@@ -32,6 +32,6 @@ class ProductCategoryData {
 
   factory ProductCategoryData.fromJson(Map<String, dynamic> json) {
     return ProductCategoryData(
-        productCategoryId: json['productCategoryId'], name: json['name']);
+        productCategoryId: json['ProductCategoryId'], name: json['Name']);
   }
 }

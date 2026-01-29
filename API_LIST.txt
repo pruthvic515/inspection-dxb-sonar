@@ -1,0 +1,172 @@
+API Method : Department/Task/GetTaskStatus
+HTTP Method : GET
+Description : Fetches the list of task statuses.
+
+API Method : Department/Task/GetTask
+HTTP Method : POST
+Description : Fetches tasks for the logged-in user.
+
+API Method : Department/Task/GetAll
+HTTP Method : POST
+Description : Fetches all tasks for agents with pagination and search.
+
+API Method : Department/Task/UpdateTaskStatus
+HTTP Method : POST
+Description : Updates the status of a specific task.
+
+API Method : Department/Task/UpdateInspectionTaskStatus
+HTTP Method : POST
+Description : Updates the status of an inspection task (e.g., rejecting an inspection).
+
+API Method : Department/User/GetAllUser
+HTTP Method : GET
+Description : Fetches a list of all users in the department.
+
+API Method : Department/InspectionReasonMaster/InspectionReasonDropDown
+HTTP Method : GET
+Description : Fetches the list of reasons for inspection outcomes.
+
+API Method : Mobile/Entity/GetEntity
+HTTP Method : POST
+Description : Searches for entities based on category and location.
+
+API Method : Mobile/Entity/GetEntityInspectionDetails
+HTTP Method : POST
+Description : Retrieves detailed information about an entity and its related inspection data.
+
+API Method : Mobile/Entity/GetEntityRole
+HTTP Method : GET
+Description : Fetches available roles associated with entities.
+
+API Method : Mobile/Entity/GetOutletService
+HTTP Method : GET
+Description : Fetches the list of available outlet services.
+
+API Method : Mobile/Entity/GetOwnershipDetails
+HTTP Method : GET
+Description : Fetches the list of ownership types.
+
+API Method : Mobile/Inspection/GetInspectionDetails
+HTTP Method : POST
+Description : Retrieves details for a specific inspection.
+
+API Method : Mobile/Inspection/CreateInspection
+HTTP Method : POST
+Description : Creates a new inspection record.
+
+API Method : Mobile/Inspection/UpdateInspection
+HTTP Method : POST
+Description : Updates an existing inspection.
+
+API Method : Mobile/InspectionDocument/Create
+HTTP Method : POST
+Description : Uploads documents (images/videos) related to an inspection.
+
+API Method : Mobile/InspectionDocument/GetAllByInspectionId
+HTTP Method : GET
+Description : Fetches all documents attached to a specific inspection.
+
+API Method : Mobile/ProduectDetail/GetLiquorSizeEnum
+HTTP Method : GET
+Description : Fetches enumeration values for liquor sizes.
+
+API Method : Mobile/ProduectDetail/GetProductCategory
+HTTP Method : GET
+Description : Fetches product categories.
+
+API Method : Mobile/ProduectDetail/GetAllProduct
+HTTP Method : POST
+Description : Searches for products in the database.
+
+API Method : Mobile/Notification/UpdateFcmToken
+HTTP Method : PUT
+Description : Updates the user's FCM token for notifications.
+
+http://4.161.39.155:8092/inspectionApi/swagger/index.html
+Login details
+InspectionDXB
+Test@123
+
+
+// API Method : Department/User/Login
+// HTTP Method : POST
+// Description : User login endpoint for department users.
+
+// API Method : Agent/Employee/Login
+// HTTP Method : POST
+// Description : Employee login endpoint for agents.
+
+// API Method : Department/Task/AppVersion
+// HTTP Method : GET
+// Description : Fetches the current application version.
+
+// API Method : Department/Task/CreateTask
+// HTTP Method : POST
+// Description : Creates a new task.
+
+// API Method : Department/Task/GetAssignedTaskInspectors
+// HTTP Method : GET
+// Description : Fetches list of inspectors assigned to a task.
+
+// API Method : Department/Report/ViewReport
+// HTTP Method : GET
+// Description : Retrieves report view for a task and inspection.
+
+// API Method : Mobile/Entity/GetArea
+// HTTP Method : GET
+// Description : Fetches list of areas.
+
+// API Method : Mobile/Entity/GetCategory
+// HTTP Method : GET
+// Description : Fetches list of entity categories.
+
+// API Method : Mobile/Entity/GetPatrolLogs
+// HTTP Method : POST
+// Description : Retrieves patrol logs for an entity.
+
+// API Method : Mobile/ProduectDetail/Update
+// HTTP Method : POST
+// Description : Updates product detail information.
+
+// API Method : Mobile/ProduectDetail/Create
+// HTTP Method : POST
+// Description : Creates a new product detail record.
+
+// API Method : Mobile/ProduectDetail/Delete
+// HTTP Method : GET
+// Description : Deletes a product detail by ID.
+
+// API Method : Mobile/NewOutlet/Create
+// HTTP Method : POST
+// Description : Creates a new outlet record.
+
+// API Method : Mobile/NewOutlet/Update
+// HTTP Method : POST
+// Description : Updates an existing outlet record.
+
+// API Method : Mobile/NewOutlet/Delete
+// HTTP Method : GET
+// Description : Deletes an outlet by ID.
+
+// API Method : Mobile/EntityRepresentative/Create
+// HTTP Method : POST
+// Description : Creates a new entity representative record.
+
+// API Method : Mobile/EntityRepresentative/Update
+// HTTP Method : POST
+// Description : Updates an existing entity representative record.
+
+// API Method : Mobile/EntityRepresentative/Delete
+// HTTP Method : GET
+// Description : Deletes an entity representative by ID.
+
+// API Method : Mobile/EntityRepresentative/GetInspectionDetail
+// HTTP Method : GET
+// Description : Fetches inspection details for entity representative.
+
+// API Method : Mobile/Patrol/GetAll
+// HTTP Method : POST
+// Description : Fetches all patrol records with filters.
+
+
+

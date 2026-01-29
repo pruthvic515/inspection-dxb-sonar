@@ -95,14 +95,13 @@ class _EntityDetailsState extends State<EntityDetails> {
   final List<AreaData> taskStatus = [];
   var restaurantInspectionStatusId = 0;
 
-
   String googleAddress = "";
 
   List<Map<String, dynamic>> reasonList = [];
 
   @override
   void initState() {
-    entityId=widget.entityId;
+    entityId = widget.entityId;
     getEntityDetail();
     if (widget.category == 1) {
       getOutletService();
@@ -151,33 +150,39 @@ class _EntityDetailsState extends State<EntityDetails> {
       if (widget.task != null) {
         final encryptedMainTaskId = await encryptAndDecrypt.encryption(
           payload: widget.task!.mainTaskId.toString(),
-          urlEncode: true,
+          urlEncode: false,
         );
         final encryptedEntityId = await encryptAndDecrypt.encryption(
           payload: widget.entityId.toString(),
-          urlEncode: true,
+          urlEncode: false,
         );
+
+        debugPrint("Original MainTaskId ${widget.task!.mainTaskId}");
         debugPrint("encryptedMainTaskId $encryptedMainTaskId");
+        debugPrint("Original EntityId ${widget.entityId}");
         debugPrint("encryptedEntityId $encryptedEntityId");
         endPoint =
-            "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=$encryptedMainTaskId&entityId=$encryptedEntityId";
+            "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}";
       } else {
         final encryptedEntityId = await encryptAndDecrypt.encryption(
           payload: widget.entityId.toString(),
-          urlEncode: true,
+          urlEncode: false,
         );
         endPoint =
-            "Mobile/Entity/GetEntityInspectionDetails?entityId=$encryptedEntityId";
+            "Mobile/Entity/GetEntityInspectionDetails?entityId=${Uri.encodeComponent(encryptedEntityId)}";
       }
 
       if (!mounted) {
         return;
       }
 
-      Api().callAPI(context, endPoint, {}).then((value) async {
-        LoadingIndicatorDialog().dismiss();
+
+      Api().callAPI(context, endPoint, null).then((value) async {
+
         if (value != null) {
           if (!mounted) return;
+          LoadingIndicatorDialog().dismiss();
+          debugPrint("Response with $value");
           setState(() {
             entity = entityFromJson(value);
             if (entity != null) {
@@ -236,7 +241,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
           Utils().showAlert(
               buildContext: context,
-              message:noEntityMessage,
+              message: noEntityMessage,
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
@@ -945,7 +950,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment:
@@ -1025,8 +1031,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                       top: 8),
                                                   color: tabType == 1
                                                       ? AppTheme.colorPrimary
-                                                      : AppTheme
-                                                          .mainBackground,
+                                                      : AppTheme.mainBackground,
                                                 )
                                               ],
                                             ),
@@ -1073,8 +1078,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                       top: 8),
                                                   color: tabType == 2
                                                       ? AppTheme.colorPrimary
-                                                      : AppTheme
-                                                          .mainBackground,
+                                                      : AppTheme.mainBackground,
                                                 )
                                               ],
                                             ),
