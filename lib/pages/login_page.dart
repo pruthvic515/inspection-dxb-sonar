@@ -37,179 +37,228 @@ class _LoginPageState extends State<LoginPage> {
 
   // New: Track which login type is selected
   String loginType = "CID"; // options: "CID" or "Agent"
-
+var errorMessage ="An error occurred. Please try again.";
+var validMessage ="Please enter valid credentials.";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.mainBackground,
       body: Stack(
         children: [
-          GestureDetector(
-            onTap: () {
-              Get.back();
-            },
-            child: Container(
-                margin: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  top: 50,
-                ),
-                height: 45,
-                width: 45,
-                decoration: const BoxDecoration(
-                    color: AppTheme.white,
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                child: const Icon(
-                  Icons.arrow_back_ios,
-                  color: AppTheme.black,
-                  size: 18,
-                )),
-          ),
+          _buildBackButton(),
           Center(
             child: SingleChildScrollView(
-                child: Column(
-              // mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CText(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  text: "Login to your \nAccount",
-                  textColor: AppTheme.black,
-                  fontFamily: AppTheme.urbanist,
-                  fontSize: 40,
-                  fontWeight: FontWeight.w700,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                // Login Type Selection using Radio Buttons
-                RadioTheme(
-                  data: RadioThemeData(
-                    fillColor: WidgetStateProperty.resolveWith<Color>((states) {
-                      if (states.contains(WidgetState.selected)) {
-                        return AppTheme.colorPrimary; // selected
-                      }
-                      return Colors.black; // unselected border
-                    }),
-                  ),
-                  child: RadioGroup<String>(
-                    groupValue: loginType,
-                    onChanged: (value) {
-                      setState(() {
-                        loginType = value!;
-                      });
-                    },
-                    child: const Row(
-                      children: [
-                        SizedBox(width: 20),
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Radio<String>(value: "CID"),
-                              Text("CID Login", style: TextStyle(fontSize: 16)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Radio<String>(value: "Agent"),
-                              Text("Agent Login",
-                                  style: TextStyle(fontSize: 16)),
-                            ],
-
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
-                // Show fields based on login type
-                if (loginType == "CID") ...[
-                  _buildTextField(
-                      icon: "user.png",
-                      hint: "Username",
-                      controller: _userName,
-                      obscureText: false),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildTitle(),
                   const SizedBox(height: 20),
-                  _buildTextField(
-                      icon: "lock.png",
-                      hint: "Password",
-                      controller: _password,
-                      obscureText: !isPassword,
-                      showPasswordToggle: true),
-                ] else ...[
-                  _buildTextField(
-                      icon: "email.png",
-                      hint: "Email",
-                      controller: _email,
-                      obscureText: false),
-                  const SizedBox(height: 20),
-                  _buildTextField(
-                      icon: "lock.png",
-                      hint: "Password",
-                      controller: _agentPassword,
-                      obscureText: !isPassword,
-                      showPasswordToggle: true),
+                  _buildLoginTypeSelector(),
+                  const SizedBox(height: 30),
+                  _buildLoginFields(),
+                  _buildLoginButton(),
                 ],
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if ((loginType == "CID" &&
-                              (_userName.text.isEmpty ||
-                                  _password.text.isEmpty)) ||
-                          (loginType == "Agent" &&
-                              (_email.text.isEmpty ||
-                                  _agentPassword.text.isEmpty))) {
-                        Utils().showAlert(
-                            buildContext: context,
-                            title: "Alert",
-                            message: "Please fill all the information.",
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            });
-                      } else {
-                        if (await Utils().hasNetwork(context, setState)) {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          if (loginType == "CID") {
-                            login();
-                          } else {
-                            loginAgent();
-                          }
-                        }
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      backgroundColor: AppTheme.colorPrimary,
-                      minimumSize: const Size.fromHeight(63),
-                    ),
-                    child: isLoading
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                            color: AppTheme.white,
-                          ))
-                        : CText(
-                            text: "Login",
-                            textColor: AppTheme.white,
-                            fontSize: AppTheme.big,
-                            fontFamily: AppTheme.poppins,
-                            fontWeight: FontWeight.w700,
-                          ),
-                  ),
-                ),
-              ],
-            )),
-          )
+              ),
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBackButton() {
+    return GestureDetector(
+      onTap: () {
+        Get.back();
+      },
+      child: Container(
+        margin: const EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 50,
+        ),
+        height: 45,
+        width: 45,
+        decoration: const BoxDecoration(
+          color: AppTheme.white,
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+        child: const Icon(
+          Icons.arrow_back_ios,
+          color: AppTheme.black,
+          size: 18,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return CText(
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      text: "Login to your \nAccount",
+      textColor: AppTheme.black,
+      fontFamily: AppTheme.urbanist,
+      fontSize: 40,
+      fontWeight: FontWeight.w700,
+    );
+  }
+
+  Widget _buildLoginTypeSelector() {
+    return RadioTheme(
+      data: RadioThemeData(
+        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppTheme.colorPrimary;
+          }
+          return Colors.black;
+        }),
+      ),
+      child: RadioGroup<String>(
+        groupValue: loginType,
+        onChanged: (value) {
+          setState(() {
+            loginType = value!;
+          });
+        },
+        child: const Row(
+          children: [
+            SizedBox(width: 20),
+            Expanded(
+              child: Row(
+                children: [
+                  Radio<String>(value: "CID"),
+                  Text("CID Login", style: TextStyle(fontSize: 16)),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                children: [
+                  Radio<String>(value: "Agent"),
+                  Text("Agent Login", style: TextStyle(fontSize: 16)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginFields() {
+    if (loginType == "CID") {
+      return _buildCIDFields();
+    }
+    return _buildAgentFields();
+  }
+
+  Widget _buildCIDFields() {
+    return Column(
+      children: [
+        _buildTextField(
+          icon: "user.png",
+          hint: "Username",
+          controller: _userName,
+          obscureText: false,
+        ),
+        const SizedBox(height: 20),
+        _buildTextField(
+          icon: "lock.png",
+          hint: "Password",
+          controller: _password,
+          obscureText: !isPassword,
+          showPasswordToggle: true,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAgentFields() {
+    return Column(
+      children: [
+        _buildTextField(
+          icon: "email.png",
+          hint: "Email",
+          controller: _email,
+          obscureText: false,
+        ),
+        const SizedBox(height: 20),
+        _buildTextField(
+          icon: "lock.png",
+          hint: "Password",
+          controller: _agentPassword,
+          obscureText: !isPassword,
+          showPasswordToggle: true,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+      child: ElevatedButton(
+        onPressed: _handleLogin,
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          backgroundColor: AppTheme.colorPrimary,
+          minimumSize: const Size.fromHeight(63),
+        ),
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: AppTheme.white,
+                ),
+              )
+            : CText(
+                text: "Login",
+                textColor: AppTheme.white,
+                fontSize: AppTheme.big,
+                fontFamily: AppTheme.poppins,
+                fontWeight: FontWeight.w700,
+              ),
+      ),
+    );
+  }
+
+  Future<void> _handleLogin() async {
+    if (!_validateFields()) {
+      _showValidationError();
+      return;
+    }
+
+    if (!await Utils().hasNetwork(context, setState)) {
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    if (loginType == "CID") {
+      login();
+    } else {
+      loginAgent();
+    }
+  }
+
+  bool _validateFields() {
+    if (loginType == "CID") {
+      return _userName.text.isNotEmpty && _password.text.isNotEmpty;
+    }
+    return _email.text.isNotEmpty && _agentPassword.text.isNotEmpty;
+  }
+
+  void _showValidationError() {
+    Utils().showAlert(
+      buildContext: context,
+      title: "Alert",
+      message: "Please fill all the information.",
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
     );
   }
 
@@ -280,12 +329,12 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (response == null) {
-        _handleError("An error occurred. Please try again.");
+        _handleError(errorMessage);
         return;
       }
 
       if (response.statusCode != 200) {
-        _handleError("Please enter valid credentials.");
+        _handleError(validMessage);
         return;
       }
 
@@ -298,7 +347,7 @@ class _LoginPageState extends State<LoginPage> {
           encryptedData == null ||
           encryptedData is! String) {
         _handleError(
-            message.isNotEmpty ? message : "Please enter valid credentials.");
+            message.isNotEmpty ? message : validMessage);
         return;
       }
 
@@ -306,13 +355,13 @@ class _LoginPageState extends State<LoginPage> {
           await _encryptAndDecrypt.decryption(payload: encryptedData);
       debugPrint("decryptedData $decryptedData");
       if (decryptedData.isEmpty) {
-        _handleError("Please enter valid credentials.");
+        _handleError(validMessage);
         return;
       }
 
       final profileData = profileFromJson(decryptedData);
       if (profileData.data == null) {
-        _handleError("Please enter valid credentials.");
+        _handleError(validMessage);
         return;
       }
 
@@ -328,7 +377,7 @@ class _LoginPageState extends State<LoginPage> {
         isAgentLogin: false,
       );
     } catch (_) {
-      _handleError("An error occurred. Please try again.");
+      _handleError(errorMessage);
     }
   }
 
@@ -352,13 +401,13 @@ class _LoginPageState extends State<LoginPage> {
         print("encryptedPayload ${response?.request?.url}");
       }*/
       if (response == null) {
-        _handleError("An error occurred. Please try again.");
+        _handleError(errorMessage);
         return;
       }
 
       debugPrint(" LOGIN:- ${response.body}");
       if (response.statusCode != 200) {
-        _handleError("Please enter valid credentials.");
+        _handleError(validMessage);
         return;
       }
 
@@ -371,7 +420,7 @@ class _LoginPageState extends State<LoginPage> {
           encryptedData == null ||
           encryptedData is! String) {
         _handleError(
-            message.isNotEmpty ? message : "Please enter valid credentials.");
+            message.isNotEmpty ? message : validMessage);
         return;
       }
 
@@ -379,13 +428,13 @@ class _LoginPageState extends State<LoginPage> {
           await _encryptAndDecrypt.decryption(payload: encryptedData);
 
       if (decryptedData.isEmpty) {
-        _handleError("Please enter valid credentials.");
+        _handleError(validMessage);
         return;
       }
 
       final data = jsonDecode(decryptedData);
       if (data == null) {
-        _handleError("Please enter valid credentials.");
+        _handleError(validMessage);
         return;
       }
 
@@ -400,7 +449,7 @@ class _LoginPageState extends State<LoginPage> {
         isAgentLogin: true,
       );
     } catch (_) {
-      _handleError("An error occurred. Please try again.");
+      _handleError(errorMessage);
     }
   }
 

@@ -242,79 +242,77 @@ class _AllAttachmentsScreenState extends State<AllAttachmentsScreen> {
 
   void getThumbnails(Attachments data) {
     attachmentList.clear();
-    for (var i in data.data) {
-      if (i.documentContentType.startsWith("video")) {
-        if (Platform.isAndroid) {
-          getExternalStorageDirectory().then((value1) async {
-            try {
-              var thumbnail = await FlutterVideoThumbnailPlus.thumbnailFile(
-                video: i.documentUrl,
-                thumbnailPath: value1!.absolute.path,
-                imageFormat: ImageFormat.png,
-                quality: 100,
-              );
-              if (thumbnail != null) {
-                print("thumbnail path: $thumbnail");
-                setState(() {
-                  i.thumbnail = thumbnail;
-                  attachmentList.add(i);
-                });
-              } else {
-                setState(() {
-                  i.thumbnail = "";
-                  attachmentList.add(i);
-                  print("return thumbnail path: 1");
-                });
-              }
-            } on Exception catch (e) {
-              setState(() {
-                i.thumbnail = "";
-                attachmentList.add(i);
-                print(e);
-                print("return thumbnail path: catch");
-              });
-            }
-          });
-        } else {
-          getApplicationDocumentsDirectory().then((value1) async {
-            try {
-              var thumbnail = await FlutterVideoThumbnailPlus.thumbnailFile(
-                video: i.documentUrl,
-                thumbnailPath: value1.absolute.path,
-                imageFormat: ImageFormat.png,
-                quality: 100,
-              );
-              if (thumbnail != null) {
-                print("thumbnail path: $thumbnail");
-                setState(() {
-                  i.thumbnail = thumbnail;
-                  attachmentList.add(i);
-                });
-              } else {
-                setState(() {
-                  i.thumbnail = "";
-                  attachmentList.add(i);
-                  print("return thumbnail path: 1");
-                });
-              }
-            } on Exception catch (e) {
-              setState(() {
-                i.thumbnail = "";
-                attachmentList.add(i);
-                print(e);
-                print("return thumbnail path: catch");
-              });
-            }
-          });
-        }
+    for (var attachment in data.data) {
+      if (_isVideoAttachment(attachment)) {
+        _processVideoAttachment(attachment);
       } else {
-        setState(() {
-          attachmentList.add(i);
-        });
+        _addNonVideoAttachment(attachment);
       }
     }
     setState(() {
       isLoading = false;
+    });
+  }
+
+  bool _isVideoAttachment(AttachmentData attachment) {
+    return attachment.documentContentType.startsWith("video");
+  }
+
+  void _processVideoAttachment(AttachmentData attachment) {
+    _getStorageDirectory().then((directory) async {
+      await _generateThumbnail(attachment, directory);
+    });
+  }
+
+  Future<Directory> _getStorageDirectory() {
+    if (Platform.isAndroid) {
+      return getExternalStorageDirectory().then((value) => value!);
+    } else {
+      return getApplicationDocumentsDirectory();
+    }
+  }
+
+  Future<void> _generateThumbnail(
+      AttachmentData attachment, Directory directory) async {
+    try {
+      final thumbnail = await FlutterVideoThumbnailPlus.thumbnailFile(
+        video: attachment.documentUrl,
+        thumbnailPath: directory.absolute.path,
+        imageFormat: ImageFormat.png,
+        quality: 100,
+      );
+      _addAttachmentWithThumbnail(attachment, thumbnail);
+    } on Exception catch (e) {
+      _addAttachmentWithError(attachment, e);
+    }
+  }
+
+  void _addAttachmentWithThumbnail(
+      AttachmentData attachment, String? thumbnail) {
+    setState(() {
+      attachment.thumbnail = thumbnail ?? "";
+      attachmentList.add(attachment);
+    });
+
+    if (thumbnail != null) {
+      print("thumbnail path: $thumbnail");
+    } else {
+      print("return thumbnail path: 1");
+    }
+  }
+
+  void _addAttachmentWithError(AttachmentData attachment, Exception error) {
+    setState(() {
+      attachment.thumbnail = "";
+      attachmentList.add(attachment);
+    });
+    print(error);
+    print("return thumbnail path: catch");
+  }
+
+  void _addNonVideoAttachment(AttachmentData attachment) {
+    setState(() {
+      attachmentList.add(attachment);
     });
   }
 }

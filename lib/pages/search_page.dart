@@ -37,352 +37,410 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> getPlaces() async {
     print(widget.categoryId);
-    if (await Utils().hasNetwork(context, setState)) {
-      if (!mounted) return;
-      LoadingIndicatorDialog().show(context);
-      Api().callAPI(context, "Mobile/Entity/GetEntity", {
+    if (!await Utils().hasNetwork(context, setState)) {
+      return;
+    }
+
+    if (!mounted) return;
+
+    LoadingIndicatorDialog().show(context);
+    try {
+      final value = await Api().callAPI(context, "Mobile/Entity/GetEntity", {
         "categoryId": int.parse(widget.categoryId),
         "location": widget.location
-      }).then((value) async {
-        LoadingIndicatorDialog().dismiss();
-        try {
-          debugPrint(value.toString().substring(0, 15));
-          // value = "LdKiHhGNCz64i3X"
-
-          final encryptAndDecrypt = EncryptAndDecrypt();
-
-          final decryptedData = await encryptAndDecrypt.decryption(
-            payload: value,
-          );
-
-          if (decryptedData.isEmpty) {
-            print("Decryption failed");
-            return;
-          }
-
-          // print("Decrypted response => $decryptedData");
-
-          // ✅ THEN parse JSON
-          // final jsonResponse = jsonDecode(decryptedData);
-
-          debugPrint("response $decryptedData");
-          setState(() {
-            var data = placesFromJson(decryptedData);
-            if (data.data.isNotEmpty) {
-              list.addAll(data.data);
-              places.addAll(data.data);
-            } else {
-              if (data.message.isNotEmpty) {
-                Utils().showAlert(
-                    buildContext: context,
-                    message: data.message,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    });
-              }
-            }
-          });
-        } catch (jsonError) {
-          print("Error parsing JSON: $jsonError");
-        }
       });
+
+      LoadingIndicatorDialog().dismiss();
+      await _processApiResponse(value);
+    } catch (error) {
+      LoadingIndicatorDialog().dismiss();
+      print("Error in getPlaces: $error");
+    }
+  }
+
+  Future<void> _processApiResponse(String value) async {
+    try {
+      debugPrint(value.toString().substring(0, 15));
+      final decryptedData = await _decryptResponse(value);
+
+      if (decryptedData.isEmpty) {
+        print("Decryption failed");
+        return;
+      }
+
+      debugPrint("response $decryptedData");
+      _updatePlacesList(decryptedData);
+    } catch (jsonError) {
+      print("Error parsing JSON: $jsonError");
+    }
+  }
+
+  Future<String> _decryptResponse(String value) async {
+    final encryptAndDecrypt = EncryptAndDecrypt();
+    return await encryptAndDecrypt.decryption(payload: value);
+  }
+
+  void _updatePlacesList(String decryptedData) {
+    setState(() {
+      final data = placesFromJson(decryptedData);
+      if (data.data.isNotEmpty) {
+        list.addAll(data.data);
+        places.addAll(data.data);
+      } else {
+        _showEmptyDataMessage(data.message);
+      }
+    });
+  }
+
+  void _showEmptyDataMessage(String message) {
+    if (message.isNotEmpty) {
+      Utils().showAlert(
+        buildContext: context,
+        message: message,
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppTheme.mainBackground,
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.only(top: 190),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                    height: 45,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.0),
-                      color: AppTheme.white,
-                    ),
-                    child: TextFormField(
-                      controller: _searchController,
-                      onChanged: _filterList,
-                      maxLines: 1,
-                      cursorColor: AppTheme.colorPrimary,
-                      cursorWidth: 2,
-                      decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.all(5),
-                          hintText: "Search...",
-                          border: InputBorder.none,
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: AppTheme.grey,
-                          ),
-                          hintStyle: TextStyle(
-                              fontFamily: AppTheme.poppins,
-                              fontWeight: FontWeight.w400,
-                              color: AppTheme.black,
-                              fontSize: AppTheme.large)),
-                    ),
-                  ),
-                  ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: list.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            try {
-                              final data = list[index].toJson();
-                              final jsonStr = jsonEncode(data);
-                              debugPrint("EntityDetails: $jsonStr");
-                            } catch (e) {
-                              debugPrint(
-                                  "EntityDetails: Error encoding JSON → $e");
-                            }
-                            Get.to(
-                                transition: Transition.rightToLeft,
-                                EntityDetails(
-                                    fromActive: false,
-                                    isAgentEmployees: true,
-                                    entityId: list[index].entityID!,
-                                    statusId: 1,
-                                    inspectionId: 0,
-                                    completeStatus: false,
-                                    // taskType: 0,
-                                    category: (widget.categoryId == "1" ||
-                                            (list[index]
-                                                    .categoryName
-                                                    .toLowerCase() ==
-                                                "hotel"))
-                                        ? 1
-                                        : 0));
-                          },
-                          child: Card(
-                            color: AppTheme.white,
-                            margin: const EdgeInsets.only(
-                                left: 20, right: 20, bottom: 10),
-                            surfaceTintColor: AppTheme.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 15.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: CText(
-                                          textAlign: TextAlign.start,
-                                          padding: const EdgeInsets.only(
-                                              right: 10, top: 20, bottom: 5),
-                                          text: list[index].entityName,
-                                          textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.urbanist,
-                                          fontSize: AppTheme.large,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.all(5),
-                                        margin: const EdgeInsets.only(
-                                            right: 10, top: 5, bottom: 5),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12.0),
-                                          color: list[index]
-                                                      .status
-                                                      .toLowerCase() ==
-                                                  "active"
-                                              ? AppTheme.active
-                                              : list[index]
-                                                          .status
-                                                          .toLowerCase() ==
-                                                      "expired"
-                                                  ? AppTheme.expired
-                                                  : list[index]
-                                                              .status
-                                                              .toLowerCase() ==
-                                                          "freezed"
-                                                      ? AppTheme.freezed
-                                                      : list[index]
-                                                                  .status
-                                                                  .toLowerCase() ==
-                                                              "canceled"
-                                                          ? AppTheme.cancelled
-                                                          : list[index]
-                                                                      .status
-                                                                      .toLowerCase() ==
-                                                                  "Closed"
-                                                              ? AppTheme.closed
-                                                              : AppTheme
-                                                                  .colorPrimary,
-                                        ),
-                                        child: CText(
-                                          textAlign: TextAlign.start,
-                                          text: list[index].status,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontWeight: FontWeight.w600,
-                                          textColor: AppTheme.white,
-                                          fontFamily: AppTheme.urbanist,
-                                          fontSize: AppTheme.small,
-                                          maxLines: 1,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  CText(
-                                    textAlign: TextAlign.start,
-                                    padding: const EdgeInsets.only(
-                                        right: 10, top: 0, bottom: 5),
-                                    text: list[index].location?.address ?? "",
-                                    textColor: AppTheme.grayAsparagus,
-                                    fontFamily: AppTheme.urbanist,
-                                    fontSize: AppTheme.large,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  CText(
-                                    textAlign: TextAlign.start,
-                                    padding: const EdgeInsets.only(
-                                        right: 10, top: 10),
-                                    text:
-                                        "${list[index].categoryName} ${list[index].classificationName.isNotEmpty ? " - ${list[index].classificationName}" : ""}",
-                                    textColor: AppTheme.grayAsparagus,
-                                    fontFamily: AppTheme.urbanist,
-                                    fontSize: AppTheme.large,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  CText(
-                                    textAlign: TextAlign.start,
-                                    padding: const EdgeInsets.only(
-                                        right: 10, top: 0),
-                                    text:
-                                        "Monthly Limit : ${list[index].monthlyLimit}",
-                                    textColor: AppTheme.grayAsparagus,
-                                    fontFamily: AppTheme.urbanist,
-                                    fontSize: AppTheme.large,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  Visibility(
-                                      visible:
-                                          list[index].lastVisitedDate != null &&
-                                              list[index]
-                                                  .lastVisitedDate!
-                                                  .isNotEmpty,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          CText(
-                                            textAlign: TextAlign.end,
-                                            padding: const EdgeInsets.only(
-                                                right: 5, top: 15),
-                                            text: "Last Inspection Visit :",
-                                            textColor: AppTheme.colorPrimary,
-                                            fontFamily: AppTheme.urbanist,
-                                            fontSize: AppTheme.medium,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          CText(
-                                            textAlign: TextAlign.end,
-                                            padding: const EdgeInsets.only(
-                                                right: 20, top: 15),
-                                            text: list[index].lastVisitedDate !=
-                                                    null
-                                                ? DateFormat(
-                                                        "dd-MM-yyyy hh:mm:ss aa")
-                                                    .format(DateFormat(
-                                                            "yyyy-MM-ddTHH:mm:ss.SSS")
-                                                        .parse(list[index]
-                                                            .lastVisitedDate!))
-                                                : "",
-                                            textColor: AppTheme.black,
-                                            fontFamily: AppTheme.urbanist,
-                                            fontSize: AppTheme.medium,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ],
-                                      )),
-                                  const SizedBox(
-                                    height: 15,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }),
-                  Utils().sizeBoxHeight()
-                ],
-              ),
+      backgroundColor: AppTheme.mainBackground,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.only(top: 190),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSearchField(),
+                _buildPlacesList(),
+                Utils().sizeBoxHeight(),
+              ],
             ),
-            Container(
-                height: 182,
-                color: AppTheme.colorPrimary,
-                width: double.infinity,
-                child: Stack(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 10, top: 50, right: 10, bottom: 20),
-                        child: Card(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
-                          elevation: 0,
-                          surfaceTintColor: AppTheme.white.withValues(alpha: 0),
-                          color: AppTheme.white.withValues(alpha: 0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Image.asset(
-                              "${ASSET_PATH}back.png",
-                              height: 15,
-                              width: 15,
-                              color: AppTheme.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: CText(
-                        textAlign: TextAlign.center,
-                        padding: const EdgeInsets.only(
-                            left: 0, right: 0, top: 35, bottom: 0),
-                        text: "Search Results",
-                        textColor: AppTheme.textPrimary,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.big,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                )),
-          ],
-        ));
+          ),
+          _buildHeader(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Container(
+      margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      height: 45,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        color: AppTheme.white,
+      ),
+      child: TextFormField(
+        controller: _searchController,
+        onChanged: _filterList,
+        maxLines: 1,
+        cursorColor: AppTheme.colorPrimary,
+        cursorWidth: 2,
+        decoration: const InputDecoration(
+          contentPadding: EdgeInsets.all(5),
+          hintText: "Search...",
+          border: InputBorder.none,
+          prefixIcon: Icon(
+            Icons.search,
+            color: AppTheme.grey,
+          ),
+          hintStyle: TextStyle(
+            fontFamily: AppTheme.poppins,
+            fontWeight: FontWeight.w400,
+            color: AppTheme.black,
+            fontSize: AppTheme.large,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlacesList() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        return _buildPlaceCard(index);
+      },
+    );
+  }
+
+  Widget _buildPlaceCard(int index) {
+    return GestureDetector(
+      onTap: () => _navigateToEntityDetails(index),
+      child: Card(
+        color: AppTheme.white,
+        margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+        surfaceTintColor: AppTheme.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildPlaceHeader(index),
+              _buildPlaceAddress(index),
+              _buildPlaceCategory(index),
+              _buildPlaceMonthlyLimit(index),
+              _buildLastVisitedDate(index),
+              const SizedBox(height: 15),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlaceHeader(int index) {
+    return Row(
+      children: [
+        Expanded(
+          child: CText(
+            textAlign: TextAlign.start,
+            padding: const EdgeInsets.only(right: 10, top: 20, bottom: 5),
+            text: list[index].entityName,
+            textColor: AppTheme.colorPrimary,
+            fontFamily: AppTheme.urbanist,
+            fontSize: AppTheme.large,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        _buildStatusBadge(index),
+      ],
+    );
+  }
+
+  Widget _buildStatusBadge(int index) {
+    return Container(
+      padding: const EdgeInsets.all(5),
+      margin: const EdgeInsets.only(right: 10, top: 5, bottom: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        color: _getStatusColor(list[index].status),
+      ),
+      child: CText(
+        textAlign: TextAlign.start,
+        text: list[index].status,
+        overflow: TextOverflow.ellipsis,
+        fontWeight: FontWeight.w600,
+        textColor: AppTheme.white,
+        fontFamily: AppTheme.urbanist,
+        fontSize: AppTheme.small,
+        maxLines: 1,
+      ),
+    );
+  }
+
+  Color _getStatusColor(String status) {
+    final statusLower = status.toLowerCase();
+    if (statusLower == "active") return AppTheme.active;
+    if (statusLower == "expired") return AppTheme.expired;
+    if (statusLower == "freezed") return AppTheme.freezed;
+    if (statusLower == "canceled") return AppTheme.cancelled;
+    if (statusLower == "closed") return AppTheme.closed;
+    return AppTheme.colorPrimary;
+  }
+
+  Widget _buildPlaceAddress(int index) {
+    return CText(
+      textAlign: TextAlign.start,
+      padding: const EdgeInsets.only(right: 10, top: 0, bottom: 5),
+      text: list[index].location?.address ?? "",
+      textColor: AppTheme.grayAsparagus,
+      fontFamily: AppTheme.urbanist,
+      fontSize: AppTheme.large,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      fontWeight: FontWeight.w600,
+    );
+  }
+
+  Widget _buildPlaceCategory(int index) {
+    final categoryText = list[index].classificationName.isNotEmpty
+        ? "${list[index].categoryName} - ${list[index].classificationName}"
+        : list[index].categoryName;
+
+    return CText(
+      textAlign: TextAlign.start,
+      padding: const EdgeInsets.only(right: 10, top: 10),
+      text: categoryText,
+      textColor: AppTheme.grayAsparagus,
+      fontFamily: AppTheme.urbanist,
+      fontSize: AppTheme.large,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      fontWeight: FontWeight.w600,
+    );
+  }
+
+  Widget _buildPlaceMonthlyLimit(int index) {
+    return CText(
+      textAlign: TextAlign.start,
+      padding: const EdgeInsets.only(right: 10, top: 0),
+      text: "Monthly Limit : ${list[index].monthlyLimit}",
+      textColor: AppTheme.grayAsparagus,
+      fontFamily: AppTheme.urbanist,
+      fontSize: AppTheme.large,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      fontWeight: FontWeight.w600,
+    );
+  }
+
+  Widget _buildLastVisitedDate(int index) {
+    final lastVisitedDate = list[index].lastVisitedDate;
+    final hasLastVisitedDate =
+        lastVisitedDate != null && lastVisitedDate.isNotEmpty;
+
+    if (!hasLastVisitedDate) {
+      return const SizedBox.shrink();
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        CText(
+          textAlign: TextAlign.end,
+          padding: const EdgeInsets.only(right: 5, top: 15),
+          text: "Last Inspection Visit :",
+          textColor: AppTheme.colorPrimary,
+          fontFamily: AppTheme.urbanist,
+          fontSize: AppTheme.medium,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          fontWeight: FontWeight.w600,
+        ),
+        CText(
+          textAlign: TextAlign.end,
+          padding: const EdgeInsets.only(right: 20, top: 15),
+          text: _formatLastVisitedDate(lastVisitedDate),
+          textColor: AppTheme.black,
+          fontFamily: AppTheme.urbanist,
+          fontSize: AppTheme.medium,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          fontWeight: FontWeight.w600,
+        ),
+      ],
+    );
+  }
+
+  String _formatLastVisitedDate(String dateString) {
+    try {
+      final parsedDate = DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(dateString);
+      return DateFormat("dd-MM-yyyy hh:mm:ss aa").format(parsedDate);
+    } catch (e) {
+      return "";
+    }
+  }
+
+  void _navigateToEntityDetails(int index) {
+    try {
+      final data = list[index].toJson();
+      final jsonStr = jsonEncode(data);
+      debugPrint("EntityDetails: $jsonStr");
+    } catch (e) {
+      debugPrint("EntityDetails: Error encoding JSON → $e");
+    }
+
+    final category = _calculateCategory(index);
+    Get.to(
+      transition: Transition.rightToLeft,
+      EntityDetails(
+        fromActive: false,
+        isAgentEmployees: true,
+        entityId: list[index].entityID!,
+        statusId: 1,
+        inspectionId: 0,
+        completeStatus: false,
+        category: category,
+      ),
+    );
+  }
+
+  int _calculateCategory(int index) {
+    final isCategoryOne = widget.categoryId == "1";
+    final isHotel = list[index].categoryName.toLowerCase() == "hotel";
+    return (isCategoryOne || isHotel) ? 1 : 0;
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      height: 182,
+      color: AppTheme.colorPrimary,
+      width: double.infinity,
+      child: Stack(
+        children: [
+          _buildBackButton(),
+          _buildHeaderTitle(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBackButton() {
+    return GestureDetector(
+      onTap: () {
+        Get.back();
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 10,
+          top: 50,
+          right: 10,
+          bottom: 20,
+        ),
+        child: Card(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+          elevation: 0,
+          surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+          color: AppTheme.white.withValues(alpha: 0),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Image.asset(
+              "${ASSET_PATH}back.png",
+              height: 15,
+              width: 15,
+              color: AppTheme.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeaderTitle() {
+    return Align(
+      alignment: Alignment.center,
+      child: CText(
+        textAlign: TextAlign.center,
+        padding: const EdgeInsets.only(
+          left: 0,
+          right: 0,
+          top: 35,
+          bottom: 0,
+        ),
+        text: "Search Results",
+        textColor: AppTheme.textPrimary,
+        fontFamily: AppTheme.urbanist,
+        fontSize: AppTheme.big,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        fontWeight: FontWeight.w700,
+      ),
+    );
   }
 
   void _filterList(String searchText) {

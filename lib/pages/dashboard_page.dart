@@ -29,196 +29,254 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppTheme.mainBackground,
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.only(top: 182),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, top: 20),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: FormTextField(
-                          hint: "",
-                          value: startDate != null
-                              ? DateFormat("dd-MM-yyyy").format(startDate!)
-                              : "",
-                          title: 'From Date:',
-                          onTap: () async {
-                            final DateTime? date = await showDatePicker(
-                              context: context,
-                              initialDate:
-                                  startDate ?? Utils().getCurrentGSTTime(),
-                              firstDate: DateTime(2015, 8),
-                              lastDate: DateTime(2101),
-                            );
-                            if (date != null) {
-                              if (endDate != null && date.isAfter(endDate!)) {
-                                if (!context.mounted) return;
-
-                                Utils().showAlert(
-                                    buildContext: context,
-                                    message:
-                                        "Please select date before to date",
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
-                              } else {
-                                setState(() {
-                                  startDate = date;
-
-                                  if (endDate != null) {
-                                    isLoading = true;
-                                    getCount();
-                                  }
-                                });
-                              }
-                            }
-                          },
-                        )),
-                        Expanded(
-                            child: FormTextField(
-                          hint: "",
-                          value: endDate != null
-                              ? DateFormat("dd-MM-yyyy").format(endDate!)
-                              : "",
-                          title: 'To Date:',
-                          onTap: () async {
-                            final DateTime? date = await showDatePicker(
-                              context: context,
-                              initialDate:
-                                  endDate ?? Utils().getCurrentGSTTime(),
-                              firstDate: DateTime(2015, 8),
-                              lastDate: DateTime(2101),
-                            );
-                            if (date != null) {
-                              if (startDate != null &&
-                                  date.isBefore(startDate!)) {
-                                if (!context.mounted) return;
-
-                                Utils().showAlert(
-                                    buildContext: context,
-                                    message:
-                                        "Please select date after from date",
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
-                              } else {
-                                setState(() {
-                                  endDate = DateTime(date.year, date.month,
-                                      date.day, 23, 59, 59);
-                                  if (startDate != null) {
-                                    isLoading = true;
-                                    getCount();
-                                  }
-                                });
-                              }
-                            }
-                          },
-                        ))
-                      ],
-                    ),
-                  ),
-                  isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                          color: AppTheme.black,
-                        ))
-                      : count > 0
-                          ? Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(20),
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: AppTheme.border, width: 1),
-                                color: AppTheme.white,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(20)),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  CText(
-                                    textAlign: TextAlign.center,
-                                    text: "Total Sites Visited",
-                                    textColor: AppTheme.textColorTwo,
-                                    fontFamily: AppTheme.urbanist,
-                                    fontSize: AppTheme.large,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                  CText(
-                                    padding: const EdgeInsets.only(top: 2),
-                                    textAlign: TextAlign.center,
-                                    text: "$count",
-                                    textColor: AppTheme.textColorTwo,
-                                    fontFamily: AppTheme.urbanist,
-                                    fontSize: AppTheme.large,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ],
-                              ))
-                          : Container()
-                ],
-              ),
+      backgroundColor: AppTheme.mainBackground,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.only(top: 182),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDateFields(),
+                _buildContentArea(),
+              ],
             ),
-            Container(
-                height: 182,
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: AppTheme.colorPrimary,
-                ),
-                child: Stack(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20, top: 50, right: 20, bottom: 20),
-                        child: Card(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
-                          elevation: 0,
-                          surfaceTintColor: AppTheme.white.withValues(alpha: 0.67),
-                          color: AppTheme.white.withValues(alpha: 0.67),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Image.asset(
-                              "${ASSET_PATH}back.png",
-                              height: 15,
-                              width: 15,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: CText(
-                        textAlign: TextAlign.center,
-                        padding: const EdgeInsets.only(
-                            left: 10, right: 10, top: 20, bottom: 20),
-                        text: "Dashboard",
-                        textColor: AppTheme.white,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.big,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                )),
-          ],
-        ));
+          ),
+          _buildHeader(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateFields() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      child: Row(
+        children: [
+          Expanded(child: _buildStartDateField()),
+          Expanded(child: _buildEndDateField()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStartDateField() {
+    final startDateValue = startDate != null
+        ? DateFormat("dd-MM-yyyy").format(startDate!)
+        : "";
+
+    return FormTextField(
+      hint: "",
+      value: startDateValue,
+      title: 'From Date:',
+      onTap: _handleStartDateSelection,
+    );
+  }
+
+  Widget _buildEndDateField() {
+    final endDateValue = endDate != null
+        ? DateFormat("dd-MM-yyyy").format(endDate!)
+        : "";
+
+    return FormTextField(
+      hint: "",
+      value: endDateValue,
+      title: 'To Date:',
+      onTap: _handleEndDateSelection,
+    );
+  }
+
+  Future<void> _handleStartDateSelection() async {
+    final DateTime? date = await showDatePicker(
+      context: context,
+      initialDate: startDate ?? Utils().getCurrentGSTTime(),
+      firstDate: DateTime(2015, 8),
+      lastDate: DateTime(2101),
+    );
+
+    if (date == null) return;
+
+    if (_isStartDateAfterEndDate(date)) {
+      _showDateValidationError("Please select date before to date");
+      return;
+    }
+
+    _updateStartDate(date);
+  }
+
+  Future<void> _handleEndDateSelection() async {
+    final DateTime? date = await showDatePicker(
+      context: context,
+      initialDate: endDate ?? Utils().getCurrentGSTTime(),
+      firstDate: DateTime(2015, 8),
+      lastDate: DateTime(2101),
+    );
+
+    if (date == null) return;
+
+    if (_isEndDateBeforeStartDate(date)) {
+      _showDateValidationError("Please select date after from date");
+      return;
+    }
+
+    _updateEndDate(date);
+  }
+
+  bool _isStartDateAfterEndDate(DateTime date) {
+    return endDate != null && date.isAfter(endDate!);
+  }
+
+  bool _isEndDateBeforeStartDate(DateTime date) {
+    return startDate != null && date.isBefore(startDate!);
+  }
+
+  void _showDateValidationError(String message) {
+    if (!context.mounted) return;
+    Utils().showAlert(
+      buildContext: context,
+      message: message,
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  void _updateStartDate(DateTime date) {
+    setState(() {
+      startDate = date;
+      if (endDate != null) {
+        isLoading = true;
+        getCount();
+      }
+    });
+  }
+
+  void _updateEndDate(DateTime date) {
+    setState(() {
+      endDate = DateTime(date.year, date.month, date.day, 23, 59, 59);
+      if (startDate != null) {
+        isLoading = true;
+        getCount();
+      }
+    });
+  }
+
+  Widget _buildContentArea() {
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(color: AppTheme.black),
+      );
+    }
+
+    if (count > 0) {
+      return _buildCountCard();
+    }
+
+    return Container();
+  }
+
+  Widget _buildCountCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppTheme.border, width: 1),
+        color: AppTheme.white,
+        borderRadius: const BorderRadius.all(Radius.circular(20)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          CText(
+            textAlign: TextAlign.center,
+            text: "Total Sites Visited",
+            textColor: AppTheme.textColorTwo,
+            fontFamily: AppTheme.urbanist,
+            fontSize: AppTheme.large,
+            fontWeight: FontWeight.w700,
+          ),
+          CText(
+            padding: const EdgeInsets.only(top: 2),
+            textAlign: TextAlign.center,
+            text: "$count",
+            textColor: AppTheme.textColorTwo,
+            fontFamily: AppTheme.urbanist,
+            fontSize: AppTheme.large,
+            fontWeight: FontWeight.w400,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      height: 182,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: AppTheme.colorPrimary,
+      ),
+      child: Stack(
+        children: [
+          _buildBackButton(),
+          _buildHeaderTitle(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBackButton() {
+    return GestureDetector(
+      onTap: () {
+        Get.back();
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 20,
+          top: 50,
+          right: 20,
+          bottom: 20,
+        ),
+        child: Card(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+          elevation: 0,
+          surfaceTintColor: AppTheme.white.withValues(alpha: 0.67),
+          color: AppTheme.white.withValues(alpha: 0.67),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Image.asset(
+              "${ASSET_PATH}back.png",
+              height: 15,
+              width: 15,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeaderTitle() {
+    return Center(
+      child: CText(
+        textAlign: TextAlign.center,
+        padding: const EdgeInsets.only(
+          left: 10,
+          right: 10,
+          top: 20,
+          bottom: 20,
+        ),
+        text: "Dashboard",
+        textColor: AppTheme.white,
+        fontFamily: AppTheme.urbanist,
+        fontSize: AppTheme.big,
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+        fontWeight: FontWeight.w700,
+      ),
+    );
   }
 
   Future<void> getCount() async {
