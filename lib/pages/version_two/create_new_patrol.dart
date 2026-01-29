@@ -201,7 +201,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         } else {
           Utils().showAlert(
               buildContext: context,
-              message: "No Entity Found",
+              message: noEntityMessage,
               onPressed: () {
                 Navigator.of(context).pop();
               });

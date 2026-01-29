@@ -8,8 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:patrol_system/controls/text_field.dart';
-import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:patrol_system/utils/api.dart';
+import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
 
@@ -391,7 +391,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
         } else {
           Utils().showAlert(
               buildContext: context,
-              message: "No Entity Found",
+              message: noEntityMessage,
               onPressed: () {
                 Navigator.of(context).pop();
               });

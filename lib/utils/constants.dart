@@ -10,9 +10,8 @@ const String USER_BADGE_NUMBER = "USER_BADGE_NUMBER";
 const String INACTIVE_OUTLETS = "INACTIVE_OUTLETS";
 const String LATEST_APP_VERSION = "LATEST_APP_VERSION";
 const String IS_AGENT_LOGIN = "IS_AGENT_LOGIN";
-bool isOpen=false;
+bool isOpen = false;
 const String linePrint = '────────────────────────────────────────────────────';
-
 
 const String ASSET_PATH = "assets/images/";
 //Live
@@ -76,3 +75,5 @@ const double SIZE_400 = 400;
 const double SIZE_440 = 440;
 const double SIZE_500 = 500;
 const double SIZE_600 = 600;
+
+const noEntityMessage = "No Entity Found";
