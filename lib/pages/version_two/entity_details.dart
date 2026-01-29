@@ -3270,7 +3270,6 @@ class _EntityDetailsState extends State<EntityDetails> {
   void createInspection() {
     var agentMap = [];
 
-    //TODO ids check and implement API
     var inspectorMap = [];
     var map = {
       "inspectionId": 0,
