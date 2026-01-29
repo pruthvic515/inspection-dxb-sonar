@@ -9,7 +9,7 @@ import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-import '../controls/customDialog.dart';
+import '../controls/custom_dialog.dart';
 import '../controls/custom_yes_no_dialog.dart';
 import 'color_const.dart';
 import 'constants.dart';
@@ -109,6 +109,7 @@ class Utils {
   }
 
   bool isValidEmail(String text) {
+    // ignore: deprecated_member_use
     return RegExp(
             r'^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
         .hasMatch(text);
@@ -210,6 +211,7 @@ class Utils {
         .replaceAll("7", "g")
         .replaceAll("8", "h")
         .replaceAll("9", "i")
+        // ignore: deprecated_member_use
         .replaceAllMapped(RegExp(r'(.)\1{3,}'), (match) => match.group(1)!)
         .capitalizeFirst
         .toString();

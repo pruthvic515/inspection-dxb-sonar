@@ -83,50 +83,46 @@ class _LoginPageState extends State<LoginPage> {
                   height: 20,
                 ),
                 // Login Type Selection using Radio Buttons
-                Row(
-                  children: [
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Radio<String>(
-                            value: "CID",
-                            groupValue: loginType,
-                            activeColor: AppTheme.colorPrimary,
-                            onChanged: (value) {
-                              setState(() {
-                                loginType = value!;
-                              });
-                            },
+                RadioTheme(
+                  data: RadioThemeData(
+                    fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return AppTheme.colorPrimary; // selected
+                      }
+                      return Colors.black; // unselected border
+                    }),
+                  ),
+                  child: RadioGroup<String>(
+                    groupValue: loginType,
+                    onChanged: (value) {
+                      setState(() {
+                        loginType = value!;
+                      });
+                    },
+                    child: const Row(
+                      children: [
+                        SizedBox(width: 20),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Radio<String>(value: "CID"),
+                              Text("CID Login", style: TextStyle(fontSize: 16)),
+                            ],
                           ),
-                          const Text("CID Login",
-                              style: TextStyle(fontSize: 16)),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Radio<String>(
-                            value: "Agent",
-                            groupValue: loginType,
-                            activeColor: AppTheme.colorPrimary,
-                            onChanged: (value) {
-                              setState(() {
-                                loginType = value!;
-                              });
-                            },
+                        ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Radio<String>(value: "Agent"),
+                              Text("Agent Login",
+                                  style: TextStyle(fontSize: 16)),
+                            ],
+
                           ),
-                          const Text("Agent Login",
-                              style: TextStyle(fontSize: 16)),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
                 const SizedBox(height: 30),
                 // Show fields based on login type
@@ -371,7 +367,6 @@ class _LoginPageState extends State<LoginPage> {
       final encryptedData = responseData["data"];
       final message = responseData["message"] ?? "";
 
-
       if (statusCode != 200 ||
           encryptedData == null ||
           encryptedData is! String) {
@@ -379,7 +374,6 @@ class _LoginPageState extends State<LoginPage> {
             message.isNotEmpty ? message : "Please enter valid credentials.");
         return;
       }
-
 
       final decryptedData =
           await _encryptAndDecrypt.decryption(payload: encryptedData);
@@ -395,8 +389,7 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
-      storeUserData.setString(
-          USER_TOKEN, "Bearer ${data["AccessToken"]}");
+      storeUserData.setString(USER_TOKEN, "Bearer ${data["AccessToken"]}");
 
       _handleSuccessfulLogin(
         userId: data["AgentEmployeeId"],

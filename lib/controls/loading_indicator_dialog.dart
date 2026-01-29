@@ -29,35 +29,36 @@ class LoadingIndicatorDialog {
           builder: (BuildContext context) {
             _context = context;
             isDisplayed = true;
-            return WillPopScope(
-                child: SimpleDialog(
-                  backgroundColor: AppTheme.transparent,
-                  elevation: 0,
-                  children: [
-                    Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Padding(
-                            padding:
-                                EdgeInsets.only(left: 16, top: 16, right: 16),
-                            child: CircularProgressIndicator(
-                              strokeWidth: 3.0,
-                              color: AppTheme.black,
-                            ),
+            return PopScope(
+              canPop: false, //
+              child: SimpleDialog(
+                backgroundColor: AppTheme.transparent,
+                elevation: 0,
+                children: [
+                  Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Padding(
+                          padding:
+                              EdgeInsets.only(left: 16, top: 16, right: 16),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3.0,
+                            color: AppTheme.black,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: CText(
-                              text: text,
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                onWillPop: () async => false);
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: CText(
+                            text: text,
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            );
           });
     });
   }

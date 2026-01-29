@@ -610,7 +610,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(12))),
                               elevation: 0,
-                              surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                              surfaceTintColor:
+                                  AppTheme.white.withValues(alpha: 0),
                               color: AppTheme.white.withValues(alpha: 0),
                               child: Padding(
                                 padding: const EdgeInsets.all(12),
@@ -1585,8 +1586,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                                   "Product code - ${index + 1}:",
                                               inputBorder: InputBorder.none,
                                               focusedBorder: InputBorder.none,
-                                              textColor:
-                                                  AppTheme.grayAsparagus,
+                                              textColor: AppTheme.grayAsparagus,
                                               inputType: TextInputType.text,
                                               inputFormatters: [
                                                 LengthLimitingTextInputFormatter(
@@ -1606,8 +1606,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                               title: "Size - ${index + 1} :",
                                               inputBorder: InputBorder.none,
                                               focusedBorder: InputBorder.none,
-                                              textColor:
-                                                  AppTheme.grayAsparagus,
+                                              textColor: AppTheme.grayAsparagus,
                                               onTap: () {
                                                 showSizeSheet(node, sizeList,
                                                     index, setState);
@@ -3244,6 +3243,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   String formatEmiratesID(String id) {
+    // ignore: deprecated_member_use
     id = id.replaceAll(RegExp(r'\D'), '');
     if (id.length != 15) {
       throw const FormatException(
@@ -3255,6 +3255,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   void showAddManagerSheet(RepresentativeData? model, int type) {
     var maskFormatter = MaskTextInputFormatter(
         mask: 'XXX-XXXX-XXXXXXX-X',
+        // ignore: deprecated_member_use
         filter: {"X": RegExp(r'[0-9]')},
         type: MaskAutoCompletionType.lazy);
     final name = TextEditingController();
@@ -3327,9 +3328,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         focusNode: node1,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
+                            // ignore: deprecated_member_use
                               RegExp(r'^[a-zA-Z\u0600-\u06FF\s]+$')
-                              //   RegExp("^[\u0000-\u007F]+\$")
-                              //RegExp(r'[a-zA-Z\s]')
                               ),
                         ],
                         controller: name,

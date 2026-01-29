@@ -202,7 +202,8 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                     decoration: BoxDecoration(
                         color: AppTheme.white,
                         border: Border.all(color: AppTheme.grey),
-                        borderRadius: const BorderRadius.all(Radius.circular(10))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10))),
                     child: CTextField(
                       textColor: AppTheme.textColor,
                       hint: "Notes here.....",
@@ -670,7 +671,8 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
               message: data["message"],
               onPressed: () {
                 Navigator.of(context).pop();
-                Get.offAll(transition: Transition.rightToLeft, const HomeScreen());
+                Get.offAll(
+                    transition: Transition.rightToLeft, const HomeScreen());
               });
         } else {
           Utils().showAlert(
@@ -801,22 +803,25 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                           separatorBuilder: (_, __) => const Divider(height: 1),
                           itemBuilder: (context, index) {
                             final reason = reasonList[index];
-                            return RadioListTile<int>(
-                              contentPadding: EdgeInsets.zero,
-                              value: index,
+                            return RadioGroup<int>(
                               groupValue: selectedIndex,
-                              title: CText(
-                                text: reason["name"],
-                                textColor: AppTheme.black,
-                                fontFamily: AppTheme.urbanist,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                              ),
                               onChanged: (value) {
                                 setState(() {
                                   selectedIndex = value ?? -1;
                                 });
                               },
+                              child: RadioListTile<int>(
+                                contentPadding: EdgeInsets.zero,
+                                value: index,
+                                title: CText(
+                                  text: reason["name"],
+                                  textColor: AppTheme.black,
+                                  fontFamily: AppTheme.urbanist,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                onChanged: (_) {}, // required but ignored
+                              ),
                             );
                           },
                         ),

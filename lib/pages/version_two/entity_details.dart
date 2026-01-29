@@ -2537,6 +2537,7 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   String formatEmiratesID(String id) {
+    // ignore: deprecated_member_use
     id = id.replaceAll(RegExp(r'\D'), '');
     if (id.length != 15) {
       throw const FormatException(
@@ -2548,6 +2549,7 @@ class _EntityDetailsState extends State<EntityDetails> {
   void showAddOutletSheet(OutletData? model) {
     var maskFormatter = MaskTextInputFormatter(
         mask: 'XXX-XXXX-XXXXXXX-X',
+        // ignore: deprecated_member_use
         filter: {"X": RegExp(r'[0-9]')},
         type: MaskAutoCompletionType.lazy);
     final itemName = TextEditingController();
