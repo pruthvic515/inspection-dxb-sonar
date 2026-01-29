@@ -56,121 +56,151 @@ class FormTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var currentWidth = MediaQuery.of(context).size.width;
+    final currentWidth = MediaQuery.of(context).size.width;
     hint = hint ?? "";
-    /*  if (controller == null) {
-      controller = TextEditingController();
-      controller!.text = value ?? "";
-    }*/
+    final isLargeScreen = currentWidth > SIZE_600;
 
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(
-                bottom: currentWidth > SIZE_600 ? 20 : 10,
-                top: currentWidth > SIZE_600 ? 20 : 10,
-                left: currentWidth > SIZE_600 ? 15 : 10,
-                right: currentWidth > SIZE_600 ? 15 : 10),
-            child: Row(
-              children: [
-                Expanded(
-                  flex:1,
-                  child: CText(
-                    textColor: AppTheme.black,
-                    fontSize: fontSize ?? AppTheme.large,
-                    fontFamily: fontFamily ?? AppTheme.urbanist,
-                    fontWeight: fontWeight ?? FontWeight.w600,
-                    text: title,
-                  ),
-                ),
-                titleWidget ?? Container()
-              ],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _buildTitle(isLargeScreen),
+        onTap == null
+            ? _buildEditableField(isLargeScreen)
+            : _buildReadOnlyField(isLargeScreen),
+      ],
+    );
+  }
+
+  Widget _buildTitle(bool isLargeScreen) {
+    final margin = isLargeScreen ? 20.0 : 10.0;
+    final horizontalMargin = isLargeScreen ? 15.0 : 10.0;
+
+    return Container(
+      margin: EdgeInsets.only(
+        bottom: margin,
+        top: margin,
+        left: horizontalMargin,
+        right: horizontalMargin,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: CText(
+              textColor: AppTheme.black,
+              fontSize: fontSize ?? AppTheme.large,
+              fontFamily: fontFamily ?? AppTheme.urbanist,
+              fontWeight: fontWeight ?? FontWeight.w600,
+              text: title,
             ),
           ),
-          onTap == null
-              ? Container(
-                  margin: EdgeInsets.only(
-                      left: currentWidth > SIZE_600 ? 15 : 10,
-                      right: currentWidth > SIZE_600 ? 15 : 10),
-                  child: Card(
-                      surfaceTintColor: cardColor ?? AppTheme.white,
-                      elevation: 2,
-                      margin: EdgeInsets.only(
-                          top: currentWidth > SIZE_600 ? 15 : 10),
-                      color: cardColor ?? AppTheme.white,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12))),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: currentWidth > SIZE_600 ? 10 : 5),
-                        child: CTextField(
-                          inputFormatters: inputFormatters,
-                          onChange: onChange,
-                          focusedBorder: focusedBorder ?? InputBorder.none,
-                          inputBorder: inputBorder ?? InputBorder.none,
-                          enabled: enabled,
-                          hint: hint,
-                          focusNode: focusNode,
-                          inputType: inputType,
-                          controller: controller,
-                          maxLines: maxLines ?? 1,
-                          minLines: minLines ?? 1,
-                          textColor: textColor ?? AppTheme.textColor,
-                          fontSize: fontSize ?? AppTheme.large,
-                          fontFamily: fontFamily ?? AppTheme.urbanist,
-                          fontWeight: fontWeight ?? FontWeight.w600,
-                          textCapitalization: inputType == TextInputType.name
-                              ? TextCapitalization.words
-                              : TextCapitalization.none,
-                        ),
-                      )))
-              : Card(
-                  elevation: 2,
-                  margin: EdgeInsets.only(
-                      top: currentWidth > SIZE_600 ? 15 : 10,
-                      left: currentWidth > SIZE_600 ? 15 : 10,
-                      right: currentWidth > SIZE_600 ? 15 : 10),
-                  surfaceTintColor: cardColor ?? AppTheme.white,
+          titleWidget ?? Container(),
+        ],
+      ),
+    );
+  }
 
-                  color: cardColor ?? AppTheme.white,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12))),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: onTap,
-                    child: Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: CText(
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: maxLines,
-                              textColor: textColor ?? AppTheme.textColor,
-                              fontSize: fontSize ?? AppTheme.large,
-                              fontFamily: fontFamily ?? AppTheme.urbanist,
-                              fontWeight: fontWeight ?? FontWeight.w600,
-                              text: value == null || value!.isEmpty
-                                  ? hint!
-                                  : value!,
-                            ),
-                          ),
-                          hideIcon == null || hideIcon != true
-                              ? Image.asset(
-                                  '${constants.ASSET_PATH}arrow_down.png',
-                                  height: 15,
-                                  color: AppTheme.colorPrimary,
-                                  width: 15,
-                                )
-                              : Container(),
-                        ],
-                      ),
-                    ),
-                  ),
+  Widget _buildEditableField(bool isLargeScreen) {
+    final horizontalMargin = isLargeScreen ? 15.0 : 10.0;
+    final topMargin = isLargeScreen ? 15.0 : 10.0;
+    final padding = isLargeScreen ? 10.0 : 5.0;
+    final textCapitalization = inputType == TextInputType.name
+        ? TextCapitalization.words
+        : TextCapitalization.none;
+
+    return Container(
+      margin: EdgeInsets.only(
+        left: horizontalMargin,
+        right: horizontalMargin,
+      ),
+      child: Card(
+        surfaceTintColor: cardColor ?? AppTheme.white,
+        elevation: 2,
+        margin: EdgeInsets.only(top: topMargin),
+        color: cardColor ?? AppTheme.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: padding),
+          child: CTextField(
+            inputFormatters: inputFormatters,
+            onChange: onChange,
+            focusedBorder: focusedBorder ?? InputBorder.none,
+            inputBorder: inputBorder ?? InputBorder.none,
+            enabled: enabled,
+            hint: hint,
+            focusNode: focusNode,
+            inputType: inputType,
+            controller: controller,
+            maxLines: maxLines ?? 1,
+            minLines: minLines ?? 1,
+            textColor: textColor ?? AppTheme.textColor,
+            fontSize: fontSize ?? AppTheme.large,
+            fontFamily: fontFamily ?? AppTheme.urbanist,
+            fontWeight: fontWeight ?? FontWeight.w600,
+            textCapitalization: textCapitalization,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReadOnlyField(bool isLargeScreen) {
+    final margin = isLargeScreen ? 15.0 : 10.0;
+    final displayText = (value == null || value!.isEmpty) ? hint! : value!;
+    final arrowIcon = _buildArrowIcon();
+
+    return Card(
+      elevation: 2,
+      margin: EdgeInsets.only(
+        top: margin,
+        left: margin,
+        right: margin,
+      ),
+      surfaceTintColor: cardColor ?? AppTheme.white,
+      color: cardColor ?? AppTheme.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 1,
+                child: CText(
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: maxLines,
+                  textColor: textColor ?? AppTheme.textColor,
+                  fontSize: fontSize ?? AppTheme.large,
+                  fontFamily: fontFamily ?? AppTheme.urbanist,
+                  fontWeight: fontWeight ?? FontWeight.w600,
+                  text: displayText,
                 ),
-        ]);
+              ),
+              arrowIcon,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildArrowIcon() {
+    if (hideIcon == true) {
+      return Container();
+    }
+
+    return Image.asset(
+      '${constants.ASSET_PATH}arrow_down.png',
+      height: 15,
+      color: AppTheme.colorPrimary,
+      width: 15,
+    );
   }
 }

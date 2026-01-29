@@ -55,6 +55,16 @@ class CardFormTextField extends StatelessWidget {
 
     hint = hint ?? "";
     final displayText = (value == null || value!.isEmpty) ? hint! : value!;
+    final textCapitalization = inputType == TextInputType.name
+        ? TextCapitalization.words
+        : TextCapitalization.none;
+    final arrowIcon = isShowDropDownArrow == true
+        ? Image.asset(
+            '${constants.ASSET_PATH}arrow_down.png',
+            height: 25,
+            width: 20,
+          )
+        : const SizedBox();
     
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,9 +113,7 @@ class CardFormTextField extends StatelessWidget {
                           fontSize: formTextFontSize ?? AppTheme.large,
                           fontFamily: formTextFontFamily ?? AppTheme.urbanist,
                           fontWeight: formTextFontWeight ?? FontWeight.w600,
-                          textCapitalization: inputType == TextInputType.name
-                              ? TextCapitalization.words
-                              : TextCapitalization.none,
+                          textCapitalization: textCapitalization,
                         ),
                       )))
               : Container(
@@ -140,13 +148,7 @@ class CardFormTextField extends StatelessWidget {
                                 text: displayText,
                               ),
                             ),
-                            isShowDropDownArrow == true
-                                ? Image.asset(
-                                    '${constants.ASSET_PATH}arrow_down.png',
-                                    height: 25,
-                                    width: 20,
-                                  )
-                                : const SizedBox(),
+                            arrowIcon,
                           ],
                         ),
                       ),

@@ -174,46 +174,64 @@ class EncryptionConfig {
     return false;
   }
   static bool _matchesPattern(String path, String pattern) {
-    if (path == pattern) return true;
+    if (_isExactMatch(path, pattern)) return true;
+    if (_matchesEnd(path, pattern)) return true;
+    if (_matchesStart(path, pattern)) return true;
+    if (_matchesSlashPattern(path, pattern)) return true;
+    if (_matchesPatternWithBoundaries(path, pattern)) return true;
 
-    if (path.endsWith('/$pattern') || path.endsWith(pattern)) {
-      return true;
-    }
+    return false;
+  }
 
-    if (path.startsWith(pattern)) {
-      if (path.length == pattern.length) return true;
-      if (path.length > pattern.length &&
-          (path[pattern.length] == '/' || path[pattern.length] == '?')) {
-        return true;
-      }
-    }
+  static bool _isExactMatch(String path, String pattern) {
+    return path == pattern;
+  }
 
-    final slashPattern = '/$pattern';
-    if (path.contains(slashPattern)) {
-      final index = path.indexOf(slashPattern);
-      if (index == 0 || (index > 0 && path[index - 1] == '/')) {
-        final nextIndex = index + slashPattern.length;
-        if (nextIndex >= path.length ||
-            (nextIndex < path.length &&
-                (path[nextIndex] == '/' || path[nextIndex] == '?'))) {
-          return true;
-        }
-      }
-    }
+  static bool _matchesEnd(String path, String pattern) {
+    return path.endsWith('/$pattern') || path.endsWith(pattern);
+  }
 
-    if (path.contains(pattern)) {
-      final index = path.indexOf(pattern);
-      if (index > 0 && path[index - 1] == '/') {
-        final nextIndex = index + pattern.length;
-        if (nextIndex >= path.length ||
-            (nextIndex < path.length &&
-                (path[nextIndex] == '/' || path[nextIndex] == '?'))) {
-          return true;
-        }
-      }
+  static bool _matchesStart(String path, String pattern) {
+    if (!path.startsWith(pattern)) return false;
+    if (path.length == pattern.length) return true;
+
+    if (path.length > pattern.length) {
+      final nextChar = path[pattern.length];
+      return nextChar == '/' || nextChar == '?';
     }
 
     return false;
+  }
+
+  static bool _matchesSlashPattern(String path, String pattern) {
+    final slashPattern = '/$pattern';
+    if (!path.contains(slashPattern)) return false;
+
+    final index = path.indexOf(slashPattern);
+    if (!_isValidStartBoundary(path, index)) return false;
+
+    final nextIndex = index + slashPattern.length;
+    return _isValidEndBoundary(path, nextIndex);
+  }
+
+  static bool _matchesPatternWithBoundaries(String path, String pattern) {
+    if (!path.contains(pattern)) return false;
+
+    final index = path.indexOf(pattern);
+    if (index <= 0 || path[index - 1] != '/') return false;
+
+    final nextIndex = index + pattern.length;
+    return _isValidEndBoundary(path, nextIndex);
+  }
+
+  static bool _isValidStartBoundary(String path, int index) {
+    return index == 0 || (index > 0 && path[index - 1] == '/');
+  }
+
+  static bool _isValidEndBoundary(String path, int nextIndex) {
+    if (nextIndex >= path.length) return true;
+    final char = path[nextIndex];
+    return char == '/' || char == '?';
   }
 
 

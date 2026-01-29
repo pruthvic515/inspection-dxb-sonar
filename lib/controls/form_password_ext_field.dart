@@ -48,92 +48,117 @@ class FormPasswordTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var currentWidth = MediaQuery.of(context).size.width;
+    final currentWidth = MediaQuery.of(context).size.width;
     hint = hint ?? "";
+    final isLargeScreen = currentWidth > SIZE_600;
+
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(
-                top: currentWidth > SIZE_600 ? 20 : 10,
-                left: currentWidth > SIZE_600 ? 15 : 10,
-                right: currentWidth > SIZE_600 ? 15 : 10),
-            child: CText(
-              textColor: textColor ?? AppTheme.black,
-              fontSize: fontSize ?? AppTheme.large,
-              fontFamily: fontFamily ?? AppTheme.urbanist,
-              fontWeight: fontWeight ?? FontWeight.w300,
-              text: title,
-              // fontWeight: FontWeight.w400,
-              // textColor: AppTheme.black,
-              // fontSize: currentWidth > SIZE_600 ? 16 : 12
-            ),
-          ),
-          onTap == null
-              ? Container(
-                  margin: EdgeInsets.only(
-                      left: currentWidth > SIZE_600 ? 15 : 10,
-                      right: currentWidth > SIZE_600 ? 15 : 10),
-                  child: Card(
-                      elevation: 0,
-                      margin: EdgeInsets.only(
-                          top: currentWidth > SIZE_600 ? 15 : 10),
-                      color: AppTheme.transparent,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(
-                              currentWidth > SIZE_600 ? 10 : 5))),
-                      child: CTextFieldPassword(
-                        inputBorder: inputBorder,
-                        enabled: enabled,
-                        hint: hint,
-                        inputType: inputType,
-                        textAlign:
-                            textAlign == null ? TextAlign.start : textAlign!,
-                        controller: controller,
-                        // maxLines: maxLines ?? 1,
-                        textColor: textColor ?? AppTheme.black,
-                        fontSize: fontSize ?? AppTheme.large,
-                        fontFamily: fontFamily ?? AppTheme.poppins,
-                        fontWeight: fontWeight ?? FontWeight.w300,
-                        isPassword: isPassword,
-                        suffixIcon: suffixIcon,
-                      )))
-              : Container(
-                  decoration: const BoxDecoration(
-                      color: AppTheme.white,
-                      border: Border(
-                          bottom: BorderSide(width: 1, color: AppTheme.grey))),
-                  width: double.infinity,
-                  margin: EdgeInsets.only(
-                      left: currentWidth > SIZE_600 ? 15 : 10,
-                      right: currentWidth > SIZE_600 ? 15 : 10),
-                  child: InkWell(
-                    highlightColor: AppTheme.transparent,
-                    splashColor: AppTheme.transparent,
-                    onTap: onTap,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 15, bottom: 10),
-                            child: CText(
-                              fontFamily: AppTheme.poppins,
-                              fontSize: currentWidth > SIZE_600
-                                  ? AppTheme.medium
-                                  : AppTheme.small,
-                              text: value == null || value!.isEmpty
-                                  ? hint!
-                                  : value!,
-                            ),
-                          ),
-                        ),
-                        Image.asset('${constants.ASSET_PATH}right_arrow.png',
-                            height: 15)
-                      ],
-                    ),
-                  ),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _buildTitle(isLargeScreen),
+        onTap == null
+            ? _buildEditableField(isLargeScreen)
+            : _buildReadOnlyField(isLargeScreen),
+      ],
+    );
+  }
+
+  Widget _buildTitle(bool isLargeScreen) {
+    final topMargin = isLargeScreen ? 20.0 : 10.0;
+    final horizontalMargin = isLargeScreen ? 15.0 : 10.0;
+
+    return Container(
+      margin: EdgeInsets.only(
+        top: topMargin,
+        left: horizontalMargin,
+        right: horizontalMargin,
+      ),
+      child: CText(
+        textColor: textColor ?? AppTheme.black,
+        fontSize: fontSize ?? AppTheme.large,
+        fontFamily: fontFamily ?? AppTheme.urbanist,
+        fontWeight: fontWeight ?? FontWeight.w300,
+        text: title,
+      ),
+    );
+  }
+
+  Widget _buildEditableField(bool isLargeScreen) {
+    final horizontalMargin = isLargeScreen ? 15.0 : 10.0;
+    final topMargin = isLargeScreen ? 15.0 : 10.0;
+    final borderRadius = isLargeScreen ? 10.0 : 5.0;
+
+    return Container(
+      margin: EdgeInsets.only(
+        left: horizontalMargin,
+        right: horizontalMargin,
+      ),
+      child: Card(
+        elevation: 0,
+        margin: EdgeInsets.only(top: topMargin),
+        color: AppTheme.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+        ),
+        child: CTextFieldPassword(
+          inputBorder: inputBorder,
+          enabled: enabled,
+          hint: hint,
+          inputType: inputType,
+          textAlign: textAlign ?? TextAlign.start,
+          controller: controller,
+          textColor: textColor ?? AppTheme.black,
+          fontSize: fontSize ?? AppTheme.large,
+          fontFamily: fontFamily ?? AppTheme.poppins,
+          fontWeight: fontWeight ?? FontWeight.w300,
+          isPassword: isPassword,
+          suffixIcon: suffixIcon,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReadOnlyField(bool isLargeScreen) {
+    final horizontalMargin = isLargeScreen ? 15.0 : 10.0;
+    final displayText = (value == null || value!.isEmpty) ? hint! : value!;
+    final fontSizeValue = isLargeScreen ? AppTheme.medium : AppTheme.small;
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppTheme.white,
+        border: Border(
+          bottom: BorderSide(width: 1, color: AppTheme.grey),
+        ),
+      ),
+      width: double.infinity,
+      margin: EdgeInsets.only(
+        left: horizontalMargin,
+        right: horizontalMargin,
+      ),
+      child: InkWell(
+        highlightColor: AppTheme.transparent,
+        splashColor: AppTheme.transparent,
+        onTap: onTap,
+        child: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 15, bottom: 10),
+                child: CText(
+                  fontFamily: AppTheme.poppins,
+                  fontSize: fontSizeValue,
+                  text: displayText,
                 ),
-        ]);
+              ),
+            ),
+            Image.asset(
+              '${constants.ASSET_PATH}right_arrow.png',
+              height: 15,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
