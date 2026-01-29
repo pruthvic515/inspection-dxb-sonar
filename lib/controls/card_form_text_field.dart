@@ -54,6 +54,8 @@ class CardFormTextField extends StatelessWidget {
     final layout = LayoutValues.fromWidth(currentWidth);
 
     hint = hint ?? "";
+    final displayText = (value == null || value!.isEmpty) ? hint! : value!;
+    
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -135,9 +137,7 @@ class CardFormTextField extends StatelessWidget {
                                     formTextFontFamily ?? AppTheme.urbanist,
                                 fontWeight:
                                     formTextFontWeight ?? FontWeight.w600,
-                                text: value == null || value!.isEmpty
-                                    ? hint!
-                                    : value!,
+                                text: displayText,
                               ),
                             ),
                             isShowDropDownArrow == true
