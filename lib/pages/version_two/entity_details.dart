@@ -3152,8 +3152,6 @@ class _EntityDetailsState extends State<EntityDetails> {
     });
   }
 
-  //todo download pdf
-
   Future<void> getDownloadReport() async {
     if (await Utils().hasNetwork(context, setState)) {
       if (!mounted) {

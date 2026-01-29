@@ -2523,7 +2523,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               getAllUsers();
             },
           ),
-          // todo Representative
           Visibility(
             visible: widget.isAgentEmployees,
             child: FormTextField(
@@ -2769,7 +2768,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         "agentEmployeeId": element.agentEmployeeId
       });
     }
-    //TODO ids check and implement API
     var inspectorMap = [];
     for (var element in selectedInspectors) {
       inspectorMap.add({
