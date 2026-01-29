@@ -37,8 +37,8 @@ class AllUserData {
 
   factory AllUserData.fromJson(Map<String, dynamic> json) {
     return AllUserData(
-        departmentUserId: json['departmentUserId'] ?? 0,
-        name: json['name'] ?? "-",
-        userName: json['userName'] ?? "-");
+        departmentUserId: json['DepartmentUserId'] ?? 0,
+        name: json['Name'] ?? "-",
+        userName: json['UserName'] ?? "-");
   }
 }

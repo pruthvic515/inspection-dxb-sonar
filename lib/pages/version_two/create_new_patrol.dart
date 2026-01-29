@@ -58,17 +58,18 @@ class CreateNewPatrol extends StatefulWidget {
   final bool isAgentEmployees;
   final int taskType;
 
-  const CreateNewPatrol({super.key,
-    required this.entityId,
-    this.taskId,
-    required this.statusId,
-    required this.inspectionId,
-    this.outletData,
-    required this.mainTaskId,
-    required this.newAdded,
-    required this.isAgentEmployees,
-    required this.primary,
-    required this.taskType});
+  const CreateNewPatrol(
+      {super.key,
+      required this.entityId,
+      this.taskId,
+      required this.statusId,
+      required this.inspectionId,
+      this.outletData,
+      required this.mainTaskId,
+      required this.newAdded,
+      required this.isAgentEmployees,
+      required this.primary,
+      required this.taskType});
 
   @override
   State<CreateNewPatrol> createState() => _CreateNewPatrolState();
@@ -147,6 +148,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   EntityDetailModel? entity;
   Timer? timer;
   List<Map<String, dynamic>> reasonList = [];
+  final encryptAndDecrypt = EncryptAndDecrypt();
 
   @override
   void dispose() {
@@ -185,7 +187,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Future<void> getEntityDetail() async {
-    final encryptAndDecrypt = EncryptAndDecrypt();
     final encryptedMainTaskId = await encryptAndDecrypt.encryption(
       payload: widget.mainTaskId.toString(),
       urlEncode: false,
@@ -196,18 +197,16 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
 
     debugPrint(
-        "Original value ${widget
-            .mainTaskId} encrypted value :- $encryptedMainTaskId");
+        "Original value ${widget.mainTaskId} encrypted value :- $encryptedMainTaskId");
     debugPrint(
-        "Original value ${widget
-            .entityId} encrypted value :- $encryptedEntityId");
+        "Original value ${widget.entityId} encrypted value :- $encryptedEntityId");
 
     if (!mounted) return;
     Api()
         .callAPI(
-        context,
-        "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}",
-        null)
+            context,
+            "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}",
+            null)
         .then((value) async {
       setState(() {
         entity = entityFromJson(value);
@@ -260,10 +259,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       final value = await Api().callAPI(
         context,
         "Mobile/Inspection/GetInspectionDetails",
-        {
-          "mainTaskId": widget.mainTaskId,
-          "inspectionId": inspectionId
-        },
+        {"mainTaskId": widget.mainTaskId, "inspectionId": inspectionId},
       );
 
       final data = detailFromJson(value);
@@ -320,8 +316,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void _processEntityRepresentatives(
-      List<RepresentativeData> representatives) {
+  void _processEntityRepresentatives(List<RepresentativeData> representatives) {
     for (var representative in representatives) {
       if (representative.typeId == 1) {
         managerList.add(representative);
@@ -489,7 +484,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       if (value == null) return;
       debugPrint("ProduectDetail $value");
       final parsed = value is String ? jsonDecode(value) : value;
-      if (parsed != null && parsed["data"] != null && parsed["data"]["result"] != null) {
+      if (parsed != null &&
+          parsed["data"] != null &&
+          parsed["data"]["result"] != null) {
         final KnownProductModel data = await parseKnownProducts(value);
         if (data.data.isNotEmpty) {
           myState(() {
@@ -521,7 +518,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       }).then((value) async {
         if (value == null) return;
         final result = value is String ? jsonDecode(value) : value;
-        if (result != null && result["data"] != null && result["data"]["result"] != null) {
+        if (result != null &&
+            result["data"] != null &&
+            result["data"]["result"] != null) {
           final KnownProductModel data = await parseKnownProducts(value);
           if (data.data.isNotEmpty) {
             myState(() {
@@ -653,15 +652,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   @override
   Widget build(BuildContext context) {
-    currentWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    currentWidth = MediaQuery.of(context).size.width;
 
-    currentHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
+    currentHeight = MediaQuery.of(context).size.height;
     return WillPopScope(
         onWillPop: () async {
           Get.back(result: {
@@ -698,10 +691,10 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                             child: Card(
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
+                                      BorderRadius.all(Radius.circular(12))),
                               elevation: 0,
                               surfaceTintColor:
-                              AppTheme.white.withValues(alpha: 0),
+                                  AppTheme.white.withValues(alpha: 0),
                               color: AppTheme.white.withValues(alpha: 0),
                               child: Padding(
                                 padding: const EdgeInsets.all(12),
@@ -891,7 +884,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     )),
                 Container(
                     padding:
-                    const EdgeInsets.only(top: 10, right: 10, left: 10),
+                        const EdgeInsets.only(top: 10, right: 10, left: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -900,7 +893,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  if (tabType == 1) {} else {
+                                  if (tabType == 1) {
+                                  } else {
                                     setState(() {
                                       tabType--;
                                     });
@@ -1267,7 +1261,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       LoadingIndicatorDialog().show(context);
       Api()
           .getAPI(context,
-          "Mobile/ProduectDetail/Delete?productDetailsId=$productId")
+              "Mobile/ProduectDetail/Delete?productDetailsId=$productId")
           .then((value) async {
         LoadingIndicatorDialog().dismiss();
         LogPrint().log("response : $value");
@@ -1862,32 +1856,32 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                               backgroundColor: productName.text.isNotEmpty &&
                                       serial
                                           .where((element) =>
-                                      ((element.text.isEmpty ||
-                                          element.text.length < 5)))
+                                              ((element.text.isEmpty ||
+                                                  element.text.length < 5)))
                                           .isEmpty &&
                                       quantity != 0 &&
                                       sizeList
                                           .where((element) => element == null)
                                           .isEmpty
-                                      ? AppTheme.colorPrimary
-                                      : AppTheme.paleGray,
-                                  minimumSize: const Size.fromHeight(50),
-                                ),
-                                child: CText(
-                                  text: "SAVE",
-                                  textColor: AppTheme.textPrimary,
-                                  fontSize: AppTheme.large,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
+                                  ? AppTheme.colorPrimary
+                                  : AppTheme.paleGray,
+                              minimumSize: const Size.fromHeight(50),
+                            ),
+                            child: CText(
+                              text: "SAVE",
+                              textColor: AppTheme.textPrimary,
+                              fontSize: AppTheme.large,
+                              fontFamily: AppTheme.urbanist,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
-                          Utils().sizeBoxHeight(height: 250)
-                        ],
-                      )),
-                );
-              });
+                        ),
+                      ),
+                      Utils().sizeBoxHeight(height: 250)
+                    ],
+                  )),
+            );
+          });
         }).whenComplete(() {
       setState(() {
         productName.text = "";
@@ -1897,8 +1891,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-  void showQuantitySheet(ProductDetail knownProductModel, bool isEdit,
-      int? position) {
+  void showQuantitySheet(
+      ProductDetail knownProductModel, bool isEdit, int? position) {
     LogPrint().log("edit : $isEdit $position");
     ProductDetail model = knownProductModel;
     var quantity = 0;
@@ -1906,7 +1900,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     List<TextEditingController> controllers = [];
     List<FocusNode> focusNodes = [];
     ScrollController scrollController =
-    ScrollController(); // Add scroll controller
+        ScrollController(); // Add scroll controller
 
     setState(() {
       if (model.qty > 0 && isEdit) {
@@ -1936,60 +1930,58 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
-              return Container(
-                decoration: const BoxDecoration(
-                    color: AppTheme.mainBackground,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15))),
-                height: currentHeight - 50,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery
-                        .of(context)
-                        .viewInsets
-                        .bottom, // Adjust padding based on keyboard
+          return Container(
+            decoration: const BoxDecoration(
+                color: AppTheme.mainBackground,
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15))),
+            height: currentHeight - 50,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context)
+                    .viewInsets
+                    .bottom, // Adjust padding based on keyboard
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  const SizedBox(
+                    height: 5,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      FormTextField(
-                        //  controller: quantity,
-                        hint: "",
-                        value: quantity.toString(),
-                        title: 'Quantity :',
-                        inputBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        textColor: AppTheme.grayAsparagus,
-                        inputType: TextInputType.number,
-                        onTap: () {
-                          Get.to(const SelectQuantity())?.then((value) {
-                            if (value != null) {
-                              myState(() {
-                                quantity = value;
-                                if (quantity > controllers.length) {
-                                  for (int i = controllers.length;
+                  FormTextField(
+                    //  controller: quantity,
+                    hint: "",
+                    value: quantity.toString(),
+                    title: 'Quantity :',
+                    inputBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    textColor: AppTheme.grayAsparagus,
+                    inputType: TextInputType.number,
+                    onTap: () {
+                      Get.to(const SelectQuantity())?.then((value) {
+                        if (value != null) {
+                          myState(() {
+                            quantity = value;
+                            if (quantity > controllers.length) {
+                              for (int i = controllers.length;
                                   i < quantity;
                                   i++) {
-                                    controllers.add(TextEditingController());
-                                    focusNodes.add(FocusNode());
-                                  }
-                                } else if (quantity < controllers.length) {
-                                  controllers =
-                                      controllers.sublist(0, quantity);
-                                  focusNodes = focusNodes.sublist(0, quantity);
-                                }
-                              });
+                                controllers.add(TextEditingController());
+                                focusNodes.add(FocusNode());
+                              }
+                            } else if (quantity < controllers.length) {
+                              controllers = controllers.sublist(0, quantity);
+                              focusNodes = focusNodes.sublist(0, quantity);
                             }
                           });
-                        },
-                      ),
-                      controllers.isNotEmpty
-                          ? ListView.builder(
+                        }
+                      });
+                    },
+                  ),
+                  controllers.isNotEmpty
+                      ? ListView.builder(
                           controller: scrollController,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -2004,7 +1996,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   Utils().showYesNoAlert(
                                       context: buildContext,
                                       message:
-                                      "Are you sure delete this serial number?",
+                                          "Are you sure delete this serial number?",
                                       onNoPressed: () {
                                         Navigator.of(context).pop();
                                       },
@@ -2042,135 +2034,133 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                               inputType: TextInputType.text,
                             );
                           })
-                          : Container(),
-                      Visibility(
-                          visible: quantity != 0 &&
-                              controllers
-                                  .where((element) => ((element.text.isEmpty)))
-                                  .isEmpty,
-                          child: FormTextField(
-                            onChange: (value) {
-                              setState(() {});
-                            },
-                            hint: "",
-                            controller: notes,
-                            textColor: AppTheme.grayAsparagus,
-                            fontFamily: AppTheme.urbanist,
-                            title: 'Notes',
-                            maxLines: 3,
-                            minLines: 1,
-                          )),
-                      Center(
-                        child: Container(
-                          width: 200,
-                          margin: const EdgeInsets.symmetric(vertical: 20),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (quantity == 0) {
-                                Utils().showAlert(
-                                    buildContext: buildContext,
-                                    message: "Please select quantity",
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
-                              } else if (controllers
-                                  .where((element) =>
-                              ((element.text.isEmpty ||
+                      : Container(),
+                  Visibility(
+                      visible: quantity != 0 &&
+                          controllers
+                              .where((element) => ((element.text.isEmpty)))
+                              .isEmpty,
+                      child: FormTextField(
+                        onChange: (value) {
+                          setState(() {});
+                        },
+                        hint: "",
+                        controller: notes,
+                        textColor: AppTheme.grayAsparagus,
+                        fontFamily: AppTheme.urbanist,
+                        title: 'Notes',
+                        maxLines: 3,
+                        minLines: 1,
+                      )),
+                  Center(
+                    child: Container(
+                      width: 200,
+                      margin: const EdgeInsets.symmetric(vertical: 20),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (quantity == 0) {
+                            Utils().showAlert(
+                                buildContext: buildContext,
+                                message: "Please select quantity",
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                });
+                          } else if (controllers
+                              .where((element) => ((element.text.isEmpty ||
                                   element.text.length < 5)))
-                                  .isNotEmpty) {
-                                Utils().showAlert(
-                                    buildContext: buildContext,
-                                    message: "Please enter valid serial number",
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
-                              } else {
-                                setState(() {
-                                  if (isEdit) {
-                                    List<Map<String, dynamic>> products = [];
-                                    for (var element in controllers) {
-                                      products.add(Product(
+                              .isNotEmpty) {
+                            Utils().showAlert(
+                                buildContext: buildContext,
+                                message: "Please enter valid serial number",
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                });
+                          } else {
+                            setState(() {
+                              if (isEdit) {
+                                List<Map<String, dynamic>> products = [];
+                                for (var element in controllers) {
+                                  products.add(Product(
                                           productSerialNumberId: 0,
                                           productDetailsId: model.productId,
                                           serialNumber: element.text)
-                                          .toJson());
-                                    }
-                                    Navigator.of(context).pop();
-                                    updateProduct({
-                                      "productDetailsId": model
-                                          .productDetailsId,
-                                      "inspectionId": inspectionId,
-                                      "typeId": productTab,
-                                      "products": products,
-                                      "productId": model.productId,
-                                      "productName": model.productName,
-                                      "qty": quantity,
-                                      "createdOn":
+                                      .toJson());
+                                }
+                                Navigator.of(context).pop();
+                                updateProduct({
+                                  "productDetailsId": model.productDetailsId,
+                                  "inspectionId": inspectionId,
+                                  "typeId": productTab,
+                                  "products": products,
+                                  "productId": model.productId,
+                                  "productName": model.productName,
+                                  "qty": quantity,
+                                  "createdOn":
                                       DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
                                           .format(Utils().getCurrentGSTTime()),
-                                      "categoryId": model.categoryId,
-                                      "notes": notes.text
-                                    });
-                                    LogPrint().log("$isEdit $model");
-                                  } else {
-                                    LogPrint().log("$isEdit $model");
-                                    List<Map<String, dynamic>> products = [];
-                                    for (var element in controllers) {
-                                      products.add(Product(
+                                  "categoryId": model.categoryId,
+                                  "notes": notes.text
+                                });
+                                LogPrint().log("$isEdit $model");
+                              } else {
+                                LogPrint().log("$isEdit $model");
+                                List<Map<String, dynamic>> products = [];
+                                for (var element in controllers) {
+                                  products.add(Product(
                                           productSerialNumberId: 0,
                                           productDetailsId: 0,
                                           serialNumber: element.text)
-                                          .toJson());
-                                    }
-                                    Navigator.of(context).pop();
-                                    addProduct({
-                                      "productDetailsId": 0,
-                                      "inspectionId": inspectionId,
-                                      "typeId": productTab,
-                                      "products": products,
-                                      "productId": model.productId,
-                                      "productName": model.productName,
-                                      "qty": quantity,
-                                      "createdOn":
+                                      .toJson());
+                                }
+                                Navigator.of(context).pop();
+                                addProduct({
+                                  "productDetailsId": 0,
+                                  "inspectionId": inspectionId,
+                                  "typeId": productTab,
+                                  "products": products,
+                                  "productId": model.productId,
+                                  "productName": model.productName,
+                                  "qty": quantity,
+                                  "createdOn":
                                       DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
                                           .format(Utils().getCurrentGSTTime()),
-                                      "categoryId": model.categoryId,
-                                      "notes": notes.text
-                                    });
-                                  }
+                                  "categoryId": model.categoryId,
+                                  "notes": notes.text
                                 });
                               }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              backgroundColor: quantity != 0 &&
+                            });
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          backgroundColor: quantity != 0 &&
                                   controllers
                                       .where((element) =>
-                                  ((element.text.isEmpty ||
-                                      element.text.length < 5)))
+                                          ((element.text.isEmpty ||
+                                              element.text.length < 5)))
                                       .isEmpty
-                                  ? AppTheme.colorPrimary
-                                  : AppTheme.paleGray,
-                              minimumSize: const Size.fromHeight(50),
-                            ),
-                            child: CText(
-                              text: "SAVE",
-                              textColor: AppTheme.textPrimary,
-                              fontSize: AppTheme.large,
-                              fontFamily: AppTheme.urbanist,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                              ? AppTheme.colorPrimary
+                              : AppTheme.paleGray,
+                          minimumSize: const Size.fromHeight(50),
+                        ),
+                        child: CText(
+                          text: "SAVE",
+                          textColor: AppTheme.textPrimary,
+                          fontSize: AppTheme.large,
+                          fontFamily: AppTheme.urbanist,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      //  Utils().sizeBoxHeight(height: 250)
-                    ],
+                    ),
                   ),
-                ),
-              );
-            });
+                  //  Utils().sizeBoxHeight(height: 250)
+                ],
+              ),
+            ),
+          );
+        });
       },
     ).whenComplete(() {
       setState(() {
@@ -2189,122 +2179,121 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                decoration: const BoxDecoration(
-                    color: AppTheme.mainBackground,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15))),
-                height: currentHeight - 50,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: CText(
-                          padding: const EdgeInsets.all(10),
-                          textAlign: TextAlign.center,
-                          text: "DONE",
-                          textColor: AppTheme.black,
-                          fontFamily: AppTheme.urbanist,
-                          fontSize: AppTheme.medium,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+          return Container(
+            decoration: const BoxDecoration(
+                color: AppTheme.mainBackground,
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15))),
+            height: currentHeight - 50,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: CText(
+                      padding: const EdgeInsets.all(10),
+                      textAlign: TextAlign.center,
+                      text: "DONE",
+                      textColor: AppTheme.black,
+                      fontFamily: AppTheme.urbanist,
+                      fontSize: AppTheme.medium,
+                      fontWeight: FontWeight.w700,
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                          left: 20, right: 20, top: 20),
-                      height: 45,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.0),
-                        color: AppTheme.white,
-                      ),
-                      child: TextFormField(
-                        controller: _searchSize,
-                        onChanged: (searchText) {
-                          sizeList.clear();
-                          myState(() {
-                            if (searchText.isEmpty) {
-                              sizeList.addAll(searchSizeList);
-                            } else {
-                              for (var item in searchSizeList) {
-                                if (item.text
-                                    .toLowerCase()
-                                    .contains(searchText.toLowerCase())) {
-                                  sizeList.add(item);
-                                }
-                              }
-                            }
-                          });
-                        },
-                        maxLines: 1,
-                        cursorColor: AppTheme.colorPrimary,
-                        cursorWidth: 2,
-                        decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.all(5),
-                            hintText: "Search...",
-                            border: InputBorder.none,
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: AppTheme.grey,
-                            ),
-                            hintStyle: TextStyle(
-                                fontFamily: AppTheme.urbanist,
-                                fontWeight: FontWeight.w400,
-                                color: AppTheme.black,
-                                fontSize: AppTheme.large)),
-                      ),
-                    ),
-                    ListView.builder(
-                        padding: const EdgeInsets.only(top: 10),
-                        shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        itemCount: sizeList.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            color: AppTheme.white,
-                            margin: const EdgeInsets.only(
-                                left: 20, right: 20, bottom: 10),
-                            surfaceTintColor: AppTheme.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  size![position] = sizeList[index];
-                                });
-                                Navigator.of(context).pop();
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 15.0),
-                                child: CText(
-                                  textAlign: TextAlign.start,
-                                  padding: const EdgeInsets.only(
-                                      right: 10, top: 10, bottom: 10),
-                                  text: sizeList[index].text,
-                                  textColor: AppTheme.grayAsparagus,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.large,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                    Utils().sizeBoxHeight()
-                  ],
+                  ),
                 ),
-              );
-            });
+                Container(
+                  margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                  height: 45,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: AppTheme.white,
+                  ),
+                  child: TextFormField(
+                    controller: _searchSize,
+                    onChanged: (searchText) {
+                      sizeList.clear();
+                      myState(() {
+                        if (searchText.isEmpty) {
+                          sizeList.addAll(searchSizeList);
+                        } else {
+                          for (var item in searchSizeList) {
+                            if (item.text
+                                .toLowerCase()
+                                .contains(searchText.toLowerCase())) {
+                              sizeList.add(item);
+                            }
+                          }
+                        }
+                      });
+                    },
+                    maxLines: 1,
+                    cursorColor: AppTheme.colorPrimary,
+                    cursorWidth: 2,
+                    decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.all(5),
+                        hintText: "Search...",
+                        border: InputBorder.none,
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: AppTheme.grey,
+                        ),
+                        hintStyle: TextStyle(
+                            fontFamily: AppTheme.urbanist,
+                            fontWeight: FontWeight.w400,
+                            color: AppTheme.black,
+                            fontSize: AppTheme.large)),
+                  ),
+                ),
+                ListView.builder(
+                    padding: const EdgeInsets.only(top: 10),
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    itemCount: sizeList.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        color: AppTheme.white,
+                        margin: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 10),
+                        surfaceTintColor: AppTheme.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              size![position] = sizeList[index];
+                            });
+                            Navigator.of(context).pop();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 15.0),
+                            child: CText(
+                              textAlign: TextAlign.start,
+                              padding: const EdgeInsets.only(
+                                  right: 10, top: 10, bottom: 10),
+                              text: sizeList[index].text,
+                              textColor: AppTheme.grayAsparagus,
+                              fontFamily: AppTheme.urbanist,
+                              fontSize: AppTheme.large,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                Utils().sizeBoxHeight()
+              ],
+            ),
+          );
+        });
       },
     ).whenComplete(() {
       myState(() {
@@ -2324,85 +2313,83 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
-              return Container(
-                decoration: const BoxDecoration(
-                    color: AppTheme.mainBackground,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15))),
-                height: currentHeight - 50,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery
-                        .of(context)
-                        .viewInsets
-                        .bottom, // Adjust padding based on keyboard
+          return Container(
+            decoration: const BoxDecoration(
+                color: AppTheme.mainBackground,
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15))),
+            height: currentHeight - 50,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context)
+                    .viewInsets
+                    .bottom, // Adjust padding based on keyboard
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: CText(
+                        padding: const EdgeInsets.all(20),
+                        textAlign: TextAlign.center,
+                        text: "DONE",
+                        textColor: AppTheme.black,
+                        fontFamily: AppTheme.urbanist,
+                        fontSize: AppTheme.medium,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: CText(
-                            padding: const EdgeInsets.all(20),
-                            textAlign: TextAlign.center,
-                            text: "DONE",
-                            textColor: AppTheme.black,
-                            fontFamily: AppTheme.urbanist,
-                            fontSize: AppTheme.medium,
-                            fontWeight: FontWeight.w700,
+                  Container(
+                    margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                    height: 45,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.0),
+                      color: AppTheme.white,
+                    ),
+                    child: TextFormField(
+                      controller: _searchKnownProduct,
+                      onChanged: (searchText) {
+                        myState(() {
+                          productName.text = _searchKnownProduct.text;
+                        });
+                        getSearchAllKnownProducts(myState);
+                      },
+                      maxLines: 1,
+                      cursorColor: AppTheme.colorPrimary,
+                      cursorWidth: 2,
+                      decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(5),
+                          hintText: "Search...",
+                          border: InputBorder.none,
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: AppTheme.grey,
                           ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(
-                            left: 20, right: 20, top: 10),
-                        height: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.0),
-                          color: AppTheme.white,
-                        ),
-                        child: TextFormField(
-                          controller: _searchKnownProduct,
-                          onChanged: (searchText) {
-                            myState(() {
-                              productName.text = _searchKnownProduct.text;
-                            });
-                            getSearchAllKnownProducts(myState);
-                          },
-                          maxLines: 1,
-                          cursorColor: AppTheme.colorPrimary,
-                          cursorWidth: 2,
-                          decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.all(5),
-                              hintText: "Search...",
-                              border: InputBorder.none,
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: AppTheme.grey,
-                              ),
-                              hintStyle: TextStyle(
-                                  fontFamily: AppTheme.urbanist,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppTheme.black,
-                                  fontSize: AppTheme.large)),
-                        ),
-                      ),
-                      ListView.builder(
-                          padding: const EdgeInsets.only(top: 10),
-                          shrinkWrap: true,
-                          physics: const ClampingScrollPhysics(),
-                          itemCount: knownProductList.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                /*    var data = ProductDetail(
+                          hintStyle: TextStyle(
+                              fontFamily: AppTheme.urbanist,
+                              fontWeight: FontWeight.w400,
+                              color: AppTheme.black,
+                              fontSize: AppTheme.large)),
+                    ),
+                  ),
+                  ListView.builder(
+                      padding: const EdgeInsets.only(top: 10),
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      itemCount: knownProductList.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            /*    var data = ProductDetail(
                                 productDetailsId: 0,
                                 inspectionId: inspectionId,
                                 typeId: 1,
@@ -2414,29 +2401,28 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                 qty: 1,
                                 createdOn: '',
                                 notes: "");*/
-                                productName.text =
-                                    knownProductList[index].productName;
-                                focusNode.requestFocus();
-                                _searchKnownProduct.clear();
-                                knownProductList.clear();
-                                Navigator.of(context).pop();
+                            productName.text =
+                                knownProductList[index].productName;
+                            focusNode.requestFocus();
+                            _searchKnownProduct.clear();
+                            knownProductList.clear();
+                            Navigator.of(context).pop();
 
-                                // showQuantitySheet(data, false, null);
-                              },
-                              child: Card(
-                                color: AppTheme.white,
-                                margin: const EdgeInsets.only(
-                                    left: 20, right: 20, bottom: 10),
-                                surfaceTintColor: AppTheme.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 15.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: [
-                                      /*  CText(
+                            // showQuantitySheet(data, false, null);
+                          },
+                          child: Card(
+                            color: AppTheme.white,
+                            margin: const EdgeInsets.only(
+                                left: 20, right: 20, bottom: 10),
+                            surfaceTintColor: AppTheme.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 15.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  /*  CText(
                                     textAlign: TextAlign.start,
                                     padding: const EdgeInsets.only(
                                         right: 10, top: 20, bottom: 5),
@@ -2452,31 +2438,30 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                     overflow: TextOverflow.ellipsis,
                                     fontWeight: FontWeight.w700,
                                   ),*/
-                                      CText(
-                                        textAlign: TextAlign.start,
-                                        padding: const EdgeInsets.only(
-                                            right: 10, top: 10, bottom: 10),
-                                        text: knownProductList[index]
-                                            .productName,
-                                        textColor: AppTheme.grayAsparagus,
-                                        fontFamily: AppTheme.urbanist,
-                                        fontSize: AppTheme.large,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ],
+                                  CText(
+                                    textAlign: TextAlign.start,
+                                    padding: const EdgeInsets.only(
+                                        right: 10, top: 10, bottom: 10),
+                                    text: knownProductList[index].productName,
+                                    textColor: AppTheme.grayAsparagus,
+                                    fontFamily: AppTheme.urbanist,
+                                    fontSize: AppTheme.large,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                ),
+                                ],
                               ),
-                            );
-                          }),
-                      Utils().sizeBoxHeight()
-                    ],
-                  ),
-                ),
-              );
-            });
+                            ),
+                          ),
+                        );
+                      }),
+                  Utils().sizeBoxHeight()
+                ],
+              ),
+            ),
+          );
+        });
       },
     ).whenComplete(() {
       setState(() {
@@ -2648,22 +2633,28 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           .getAPI(context,
               "Department/Task/GetAssignedTaskInspectors?mainTaskId=${widget.mainTaskId}")
           .then((value) async {
-        LoadingIndicatorDialog().dismiss();
-        setState(() {
-          var data = allUsersFromJson(value);
-          if (data.data.isNotEmpty) {
-            showInspectorSheet(data.data);
-          } else {
-            Utils().showAlert(
-                buildContext: context,
-                message: data.data.isEmpty
-                    ? "No Data Found"
-                    : "Something Went Wrong",
-                onPressed: () {
-                  Navigator.of(context).pop();
-                });
-          }
-        });
+        try {
+          LoadingIndicatorDialog().dismiss();
+          setState(() {
+            var data = allUsersFromJson(value);
+            if (data.data.isNotEmpty) {
+
+              showInspectorSheet(data.data);
+            } else {
+              Utils().showAlert(
+                  buildContext: context,
+                  message: data.data.isEmpty
+                      ? "No Data Found"
+                      : "Something Went Wrong",
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  });
+            }
+          });
+        } catch (e) {
+          LoadingIndicatorDialog().dismiss();
+          setState(() {});
+        }
       });
     }
   }
@@ -2969,7 +2960,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               )),
           Container(
             margin:
-            const EdgeInsets.only(top: 30, right: 20, left: 20, bottom: 30),
+                const EdgeInsets.only(top: 30, right: 20, left: 20, bottom: 30),
             child: ElevatedButton(
               onPressed: () {
                 if (inspectorId == storeUserData.getInt(USER_ID) ||
@@ -2980,15 +2971,15 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     Utils().showYesNoAlert(
                         context: context,
                         message:
-                        "Are you sure you want to finish the inspections?",
+                            "Are you sure you want to finish the inspections?",
                         onYesPressed: () {
                           Navigator.of(context).pop();
                           if (widget.taskType == 2 || widget.taskType == 3) {
                             reasonBottomSheet(context, reasonList,
                                 onSelected: (selected) {
-                                  submitInspection(
-                                      selected["inspectionReasonMasterId"]);
-                                });
+                              submitInspection(
+                                  selected["inspectionReasonMasterId"]);
+                            });
                           } else {
                             submitInspection(0);
                           }
@@ -3004,7 +2995,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   borderRadius: BorderRadius.circular(30),
                 ),
                 backgroundColor:
-                validateNext() ? AppTheme.colorPrimary : AppTheme.grey,
+                    validateNext() ? AppTheme.colorPrimary : AppTheme.grey,
                 minimumSize: const Size.fromHeight(55),
               ),
               child: CText(
@@ -3426,9 +3417,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         focusNode: node1,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
-                            // ignore: deprecated_member_use
-                              RegExp(r'^[a-zA-Z\u0600-\u06FF\s]+$')
-                              ),
+                              // ignore: deprecated_member_use
+                              RegExp(r'^[a-zA-Z\u0600-\u06FF\s]+$')),
                         ],
                         controller: name,
                         hint: "",

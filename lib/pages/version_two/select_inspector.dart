@@ -50,6 +50,7 @@ class _SelectInspectorState extends State<SelectInspector> {
       if (!mounted) return;
       LoadingIndicatorDialog().show(context);
       Api().getAPI(context, "Department/User/GetAllUser").then((value) async {
+        debugPrint(value);
         setState(() {
           searchList.clear();
           list.clear();

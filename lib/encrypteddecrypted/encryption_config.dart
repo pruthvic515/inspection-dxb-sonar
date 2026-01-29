@@ -33,7 +33,10 @@ class EncryptionConfig {
       'api/Department/User/GetInspectionList',
       'api/Department/User/GetAllUser',
       'api/Mobile/Entity/GetAllEntityBasicDetail',
-      "api/Mobile/ProduectDetail/GetProductCategory"
+      "api/Mobile/ProduectDetail/GetProductCategory",
+      'api/Agent/Agent/GetAssignedTaskEmployees',
+      'api/Department/Task/GetAssignedTaskInspectors',
+      'api/Mobile/InspectionDocument/GetAllByInspectionId',
     ],
     'POST': [
       // POST methods that require encryption
@@ -51,18 +54,16 @@ class EncryptionConfig {
       'api/Mobile/ProduectDetail/Create',
       'api/Mobile/ProduectDetail/Update',
       'api/Mobile/ProduectDetail/Delete',
-
+      'api/Department/Task/CreateTask',
+      'api/Mobile/EntityRepresentative/Create',
+      'api/Mobile/EntityRepresentative/Delete',
+      'api/Mobile/InspectionDocument/Create',
     ],
   };
 
-
   // List of API endpoint patterns that should NOT use encryption (for all methods)
   // These take priority over encryptedEndpoints
-  static final List<String> excludedEndpoints = [
-
-  ];
-
-
+  static final List<String> excludedEndpoints = [];
 
   /// Check if an endpoint requires encryption
   ///
@@ -74,10 +75,10 @@ class EncryptionConfig {
   /// 5. encryptedEndpoints (if matches, return true)
   /// 6. If all lists are empty, return false (encryption disabled by default)
   static bool _requiresEncryption(
-      String path, {
-        Map<String, dynamic>? headers,
-        String? method,
-      }) {
+    String path, {
+    Map<String, dynamic>? headers,
+    String? method,
+  }) {
     final httpMethod = _normalizeMethod(method);
 
     final headerDecision = _encryptionFromHeader(headers);
@@ -99,10 +100,10 @@ class EncryptionConfig {
   }
 
   static bool requiresEncryption(
-      String path, {
-        Map<String, dynamic>? headers,
-        String? method,
-      }) {
+    String path, {
+    Map<String, dynamic>? headers,
+    String? method,
+  }) {
     final httpMethod = _normalizeMethod(method);
 
     final headerDecision = _encryptionFromHeader(headers);
@@ -122,9 +123,11 @@ class EncryptionConfig {
 
     return false;
   }
+
   static String _normalizeMethod(String? method) {
     return (method ?? 'GET').toUpperCase();
   }
+
   static bool? _encryptionFromHeader(Map<String, dynamic>? headers) {
     if (headers == null || !headers.containsKey(encryptionHeader)) {
       return null;
@@ -144,6 +147,7 @@ class EncryptionConfig {
       return path;
     }
   }
+
   static bool _isExcluded(String pathToCheck, String originalPath) {
     for (final excluded in excludedEndpoints) {
       if (_matchesPattern(pathToCheck, excluded)) {
@@ -155,11 +159,12 @@ class EncryptionConfig {
     }
     return false;
   }
+
   static bool _isEncryptedForMethod(
-      String pathToCheck,
-      String originalPath,
-      String httpMethod,
-      ) {
+    String pathToCheck,
+    String originalPath,
+    String httpMethod,
+  ) {
     final patterns = encryptedEndpointsByMethod[httpMethod];
     if (patterns == null) {
       debugPrint("❌ No patterns found for method: $httpMethod");
@@ -170,7 +175,7 @@ class EncryptionConfig {
       if (_matchesPattern(pathToCheck, pattern)) {
         debugPrint(
           "✅ encryptedEndpointsByMethod[$httpMethod]: "
-              "$pattern matches",
+          "$pattern matches",
         );
         return true;
       }
@@ -178,6 +183,7 @@ class EncryptionConfig {
     debugPrint("❌ No pattern matched for path: $pathToCheck");
     return false;
   }
+
   static bool _matchesPattern(String path, String pattern) {
     if (_isExactMatch(path, pattern)) return true;
     if (_matchesEnd(path, pattern)) return true;
@@ -239,11 +245,9 @@ class EncryptionConfig {
     return char == '/' || char == '?';
   }
 
-
   /// Enable encryption for all APIs (use with caution)
   static void enableForAll() {
     // This would require modifying the logic, but for now,
     // you can add a wildcard pattern or set the header globally
   }
-
 }

@@ -39,11 +39,10 @@ class AttachmentData {
   String documentContentType;
   String documentFileName;
   String documentUrl;
-  bool? isDeleted;
+  // bool? isDeleted;
   DateTime createdOn;
   String? thumbnail;
-  dynamic
-      file; // This can be of any type, adjust it based on the actual data type
+  // dynamic file; // This can be of any type, adjust it based on the actual data type
 
   AttachmentData({
     this.inspectionDocumentId,
@@ -52,23 +51,23 @@ class AttachmentData {
     required this.documentContentType,
     required this.documentFileName,
     required this.documentUrl,
-    this.isDeleted,
+    // this.isDeleted,
     required this.createdOn,
-    this.file,
+    // this.file,
     this.thumbnail,
   });
 
   factory AttachmentData.fromJson(Map<String, dynamic> json) {
     return AttachmentData(
-      inspectionDocumentId: json['inspectionDocumentId'],
-      inspectionId: json['inspectionId'],
-      documentExtension: json['documentExtension'],
-      documentContentType: json['documentContentType'],
-      documentFileName: json['documentFileName'],
-      documentUrl: json['documentUrl'],
-      isDeleted: json['isDeleted'],
-      createdOn: DateTime.parse(json['createdOn']),
-      file: json['file'],
+      inspectionDocumentId: json['InspectionDocumentId'],
+      inspectionId: json['InspectionId'],
+      documentExtension: json['DocumentExtension'],
+      documentContentType: json['DocumentContentType'],
+      documentFileName: json['DocumentFileName'],
+      documentUrl: json['DocumentUrl'],
+      // isDeleted: json['IsDeleted'],
+      createdOn: DateTime.parse(json['CreatedOn']),
+      // file: json['file'],
       thumbnail: json['thumbnail'],
     );
   }
@@ -78,12 +77,13 @@ class AttachmentData {
     data['inspectionDocumentId'] = inspectionDocumentId;
     data['inspectionId'] = inspectionId;
     data['documentExtension'] = documentExtension;
+
     data['documentContentType'] = documentContentType;
     data['documentFileName'] = documentFileName;
     data['documentUrl'] = documentUrl;
-    data['isDeleted'] = isDeleted;
+    // data['isDeleted'] = isDeleted;
     data['createdOn'] = createdOn.toIso8601String();
-    data['file'] = file;
+    // data['file'] = file;
     data['thumbnail'] = thumbnail;
     return data;
   }

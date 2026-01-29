@@ -103,6 +103,7 @@ class _EntityDetailsState extends State<EntityDetails> {
   void initState() {
     entityId = widget.entityId;
     getEntityDetail();
+
     if (widget.category == 1) {
       getOutletService();
       getOutletOwnerShip();
@@ -176,9 +177,7 @@ class _EntityDetailsState extends State<EntityDetails> {
         return;
       }
 
-
       Api().callAPI(context, endPoint, null).then((value) async {
-
         if (value != null) {
           if (!mounted) return;
           LoadingIndicatorDialog().dismiss();
@@ -1921,12 +1920,13 @@ class _EntityDetailsState extends State<EntityDetails> {
             outletServiceList.addAll(data.data);
           });
         } else {
-          Utils().showAlert(
-              buildContext: context,
-              message: data.message,
-              onPressed: () {
-                Navigator.of(context).pop();
-              });
+          debugPrint("getOutletService ${data.message}");
+          // Utils().showAlert(
+          //     buildContext: context,
+          //     message: data.message,
+          //     onPressed: () {
+          //       Navigator.of(context).pop();
+          //     });
         }
       });
     }
@@ -1947,12 +1947,13 @@ class _EntityDetailsState extends State<EntityDetails> {
             ownerShipList.addAll(data.data);
           });
         } else {
-          Utils().showAlert(
+          debugPrint("getOutletOwnerShip ${data.message}");
+          /*  Utils().showAlert(
               buildContext: context,
               message: data.message,
               onPressed: () {
                 Navigator.of(context).pop();
-              });
+              });*/
         }
       });
     }

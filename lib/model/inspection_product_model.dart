@@ -59,17 +59,17 @@ class ProductDetail {
 
   factory ProductDetail.fromJson(Map<String, dynamic> json) {
     return ProductDetail(
-      productDetailsId: json['productDetailsId'],
-      inspectionId: json['inspectionId'],
-      typeId: json['typeId'],
+      productDetailsId: json['ProductDetailsId'],
+      inspectionId: json['InspectionId'],
+      typeId: json['TypeId'],
       products:
-          List<Product>.from(json['products'].map((x) => Product.fromJson(x))),
-      productId: json['productId'],
-      productName: json['productName'],
-      qty: json['qty']??1,
-      createdOn: json['createdOn'],
-      categoryId: json['categoryId'] ?? 0,
-      notes: json['notes'] ?? "",
+          List<Product>.from(json['Products'].map((x) => Product.fromJson(x))),
+      productId: json['ProductId'],
+      productName: json['ProductName'],
+      qty: json['Qty']??1,
+      createdOn: json['CreatedOn'],
+      categoryId: json['CategoryId'] ?? 0,
+      notes: json['Notes'] ?? "",
     );
   }
 
@@ -104,10 +104,10 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      productSerialNumberId: json['productSerialNumberId'],
-      productDetailsId: json['productDetailsId'],
-      serialNumber: json['serialNumber'],
-      size: json['size'],
+      productSerialNumberId: json['ProductSerialNumberId'],
+      productDetailsId: json['ProductDetailsId'],
+      serialNumber: json['SerialNumber'],
+      size: json['Size'],
     );
   }
 

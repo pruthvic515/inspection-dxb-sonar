@@ -60,16 +60,16 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> _processApiResponse(String value) async {
     try {
-      debugPrint(value.toString().substring(0, 15));
-      final decryptedData = await _decryptResponse(value);
 
-      if (decryptedData.isEmpty) {
+      // final decryptedData = await _decryptResponse(value);
+      debugPrint(value);
+      if (value.isEmpty) {
         print("Decryption failed");
         return;
       }
 
-      debugPrint("response $decryptedData");
-      _updatePlacesList(decryptedData);
+      debugPrint("response $value");
+      _updatePlacesList(value);
     } catch (jsonError) {
       print("Error parsing JSON: $jsonError");
     }

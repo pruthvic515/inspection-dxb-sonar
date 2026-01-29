@@ -36,7 +36,6 @@ class Utils {
               title: title,
               message: message,
               onOkPressed: () {
-                Navigator.of(dialogContext).pop();
                 onPressed();
               });
         });

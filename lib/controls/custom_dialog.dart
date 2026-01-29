@@ -7,18 +7,22 @@ class CustomDialog extends StatelessWidget {
   String message;
   VoidCallback onOkPressed;
 
+  
   CustomDialog(
       {super.key,
       this.title,
       required this.message,
       required this.onOkPressed});
 
+
   @override
   Widget build(BuildContext context) {
     if (title != null && title!.isNotEmpty) {
       return Dialog(
-        backgroundColor: AppTheme.white,
-        surfaceTintColor: AppTheme.white,
+        backgroundColor: AppTheme.transparent,
+        surfaceTintColor: AppTheme.transparent,
+        elevation: 0.0,
+        shadowColor: AppTheme.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),

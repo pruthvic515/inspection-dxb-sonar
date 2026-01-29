@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:patrol_system/utils/utils.dart';
 
@@ -20,7 +21,7 @@ class Api {
         'Accept-Language': "EN",
         'Authorization': storeUserData.getString(constants.USER_TOKEN),
         'Accept': "text/plain",
-        "Content-Type":"application/json"
+        "Content-Type": "application/json"
       };
     } else {
       headers = {
@@ -37,10 +38,10 @@ class Api {
     if (storeUserData.getString(constants.USER_TOKEN).isNotEmpty) {
       print("token  ${storeUserData.getString(constants.USER_TOKEN)}");
     }
-    
+
     final url = Uri.parse('${constants.baseUrl}$version/$function');
     final headers = await getHeaders();
-    
+
     // Check if encryption is required for this endpoint
     final requiresEncryption = EncryptionConfig.requiresEncryption(
       url.toString(),
@@ -48,9 +49,8 @@ class Api {
       method: 'POST',
     );
 
-
     http.Response response;
-    
+
     if (requiresEncryption) {
       print("API URL is :- $url");
       // Use encrypted HTTP client for this endpoint
@@ -60,7 +60,6 @@ class Api {
         headers: headers,
         body: jsonEncode(fields),
       );
-
     } else {
       // Use normal HTTP client
       response = await http.post(
@@ -69,7 +68,7 @@ class Api {
         body: jsonEncode(fields),
       );
     }
-    
+
     print("${response.request!.url} ${response.statusCode}");
     print("fields : ${jsonEncode(fields)}");
 
@@ -97,7 +96,9 @@ class Api {
             buildContext: context,
             title: "StatusCode : ${response.statusCode}",
             message: "Response Null",
-            onPressed: () {});
+            onPressed: () {
+              Get.back();
+            });
         return null;
       }
     }
@@ -162,19 +163,19 @@ class Api {
     if (storeUserData.getString(constants.USER_TOKEN).isNotEmpty) {
       print("token  ${storeUserData.getString(constants.USER_TOKEN)}");
     }
-    
+
     final url = Uri.parse('${constants.baseUrl}$version/$function');
     final headers = await getHeaders();
-    
+
     // Check if encryption is required for this endpoint
     final requiresEncryption = EncryptionConfig.requiresEncryption(
       url.toString(),
       headers: headers,
       method: 'GET',
     );
-    
+
     http.Response response;
-    
+
     if (requiresEncryption) {
       // Use encrypted HTTP client for this endpoint
       final encryptedClient = EncryptedHttpClient();
@@ -183,7 +184,7 @@ class Api {
       // Use normal HTTP client
       response = await http.get(url, headers: headers);
     }
-    
+
     print("${response.request!.url.toString()} ${response.statusCode}");
 
     if (response.statusCode == 200) {

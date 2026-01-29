@@ -50,7 +50,7 @@ class InspectionData {
     return InspectionData(
       inspectionDetails: InspectionDetails.fromJson(json['inspectiondetails']),
       inspectorAndAgentEmployee:
-          InspectorAndAgentEmployee.fromJson(json['inspectorAndAgentEmployee']),
+          InspectorAndAgentEmployee.fromJson(json['InspectorAndAgentEmployee']),
       productDetailModels: List<ProductDetail>.from(
           json['productDetailModels'].map((x) => ProductDetail.fromJson(x))),
       attachments: List<AttachmentData>.from(
@@ -63,6 +63,7 @@ class InspectionData {
   }
 }
 
+
 class NotesModel {
   String? taskNotes;
   String? inspectionNotes;
@@ -72,9 +73,9 @@ class NotesModel {
 
   factory NotesModel.fromJson(Map<String, dynamic> json) {
     return NotesModel(
-      taskNotes: json['taskNotes'] ?? "-",
-      inspectionNotes: json['inspectionNotes'] ?? "-",
-      finalNotes: json['finalNotes'] ?? "",
+      taskNotes: json['TaskNotes'] ?? "-",
+      inspectionNotes: json['InspectionNotes'] ?? "-",
+      finalNotes: json['FinalNotes'] ?? "",
     );
   }
 }
@@ -96,14 +97,15 @@ class InspectionDetails {
 
   factory InspectionDetails.fromJson(Map<String, dynamic> json) {
     return InspectionDetails(
-      taskId: json['taskId'],
-      taskName: json['taskName'],
-      entityName: json['entityName'] ?? "-",
-      outletName: json['outletName'] ?? "-",
-      createdOn: json['createdon'],
+      taskId: json['TaskId'],
+      taskName: json['TaskName'],
+      entityName: json['EntityName'] ?? "-",
+      outletName: json['OutletName'] ?? "-",
+      createdOn: json['Createdon'],
     );
   }
 }
+
 
 class InspectorAndAgentEmployee {
   List<WitnessData> agentEmployeeModels;
