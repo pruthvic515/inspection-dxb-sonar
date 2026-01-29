@@ -71,11 +71,11 @@ class EntityDetails extends StatefulWidget {
       this.task});
 
   @override
-  State<EntityDetails> createState() => _EntityDetailsState(entityId);
+  State<EntityDetails> createState() => _EntityDetailsState();
 }
 
 class _EntityDetailsState extends State<EntityDetails> {
-  int entityId;
+  late int entityId;
   var storeUserData = StoreUserData();
   EntityDetailModel? entity;
   var tabType = 1;
@@ -95,7 +95,6 @@ class _EntityDetailsState extends State<EntityDetails> {
   final List<AreaData> taskStatus = [];
   var restaurantInspectionStatusId = 0;
 
-  _EntityDetailsState(this.entityId);
 
   String googleAddress = "";
 
@@ -103,6 +102,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   @override
   void initState() {
+    entityId=widget.entityId;
     getEntityDetail();
     if (widget.category == 1) {
       getOutletService();
@@ -223,7 +223,7 @@ class _EntityDetailsState extends State<EntityDetails> {
             } else {
               Utils().showAlert(
                   buildContext: context,
-                  message: "No Entity Found",
+                  message: noEntityMessage,
                   onPressed: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
@@ -236,7 +236,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
           Utils().showAlert(
               buildContext: context,
-              message: "No Entity Found",
+              message:noEntityMessage,
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
@@ -945,7 +945,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment:
@@ -2042,9 +2042,9 @@ class _EntityDetailsState extends State<EntityDetails> {
                             users.clear();
                             selectedUsers.clear();
                             selectedPrimaryUsers = value;
-                            selectedPrimaryUsers.forEach((test) {
+                            for (var test in selectedPrimaryUsers) {
                               primaryUsers.add(test.name);
-                            });
+                            }
                             node.unfocus();
                             notesNode.unfocus();
                             FocusScope.of(context).unfocus();
@@ -2084,9 +2084,9 @@ class _EntityDetailsState extends State<EntityDetails> {
                             myState(() {
                               users.clear();
                               selectedUsers = value;
-                              selectedUsers.forEach((test) {
+                              for (var test in selectedUsers) {
                                 users.add(test.name);
-                              });
+                              }
                               node.unfocus();
                               notesNode.unfocus();
                               FocusScope.of(context).unfocus();
@@ -2123,9 +2123,9 @@ class _EntityDetailsState extends State<EntityDetails> {
                             myState(() {
                               agents.clear();
                               selectedAgents = value;
-                              selectedAgents.forEach((test) {
+                              for (var test in selectedAgents) {
                                 agents.add(test.entityName);
-                              });
+                              }
                               node.unfocus();
                               notesNode.unfocus();
                               FocusScope.of(context).unfocus();
@@ -2171,7 +2171,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                               (!isHideAgents || selectedAgents.isNotEmpty)) {
                             addTask(
                                 taskName.text,
-                                selectedPrimaryUsers!,
+                                selectedPrimaryUsers,
                                 selectedUsers,
                                 selectedAgents,
                                 notes.text,
@@ -2228,23 +2228,25 @@ class _EntityDetailsState extends State<EntityDetails> {
       if (!entityList.contains(widget.entityId)) {
         entityList.add(widget.entityId);
       }*/
-      agents.forEach((entity) => agentUserId.add(entity.entityId));
+      for (var entity in agents) {
+        agentUserId.add(entity.entityId);
+      }
       List<Map<String, dynamic>> users = [];
 
 // Assuming primaryUsers is now a List
 //       List<AllUserData> primaryUsers = [primaryUser]; // or already a list
 
-      primaryUser.forEach((pUser) {
+      for (var pUser in primaryUser) {
         users.add({"item1": pUser.departmentUserId, "item2": true});
-      });
+      }
 
-      otherUsers.forEach((user) {
+      for (var user in otherUsers) {
         // Only add if not in primaryUsers
         if (!primaryUser
             .any((pUser) => pUser.departmentUserId == user.departmentUserId)) {
           users.add({"item1": user.departmentUserId, "item2": false});
         }
-      });
+      }
       var fields = {
         "taskName": taskName,
         "entityId": [widget.entityId],
@@ -2468,6 +2470,9 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   Future<void> rejectTask(int id, String notes) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) {
+        return;
+      }
       LoadingIndicatorDialog().show(context);
       Api().callAPI(context, "Department/Task/UpdateInspectionTaskStatus", {
         "inspectionTaskId": id,
@@ -2498,6 +2503,9 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   Future<void> deleteOutlet(int outletId) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) {
+        return;
+      }
       LoadingIndicatorDialog().show(context);
       Api()
           .getAPI(context, "Mobile/NewOutlet/Delete?newOutletid=$outletId")
@@ -2527,7 +2535,7 @@ class _EntityDetailsState extends State<EntityDetails> {
         } else {
           Utils().showAlert(
               buildContext: context,
-              message: "No Entity Found",
+              message: noEntityMessage,
               onPressed: () {
                 Navigator.of(context).pop();
               });
@@ -2900,6 +2908,9 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   Future<void> updateOutlet(StateSetter myState, OutletData model) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) {
+        return;
+      }
       LoadingIndicatorDialog().show(context);
       Api().callAPI(context, "Mobile/NewOutlet/Update", {
         "newOutletId": model.outletId,
@@ -2948,7 +2959,7 @@ class _EntityDetailsState extends State<EntityDetails> {
         } else {
           Utils().showAlert(
               buildContext: context,
-              message: "No Entity Found",
+              message: noEntityMessage,
               onPressed: () {
                 Navigator.of(context).pop();
               });
@@ -2959,6 +2970,9 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   Future<void> completeTask(String notes) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) {
+        return;
+      }
       LoadingIndicatorDialog().show(context);
       Api().callAPI(context, "Department/Task/UpdateTaskStatus", {
         "mainTaskId": widget.task?.mainTaskId ?? 0,
@@ -2984,6 +2998,9 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   Future<void> addOutlet(StateSetter myState, OutletData model) async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) {
+        return;
+      }
       LoadingIndicatorDialog().show(context);
       Api().callAPI(context, "Mobile/NewOutlet/Create", {
         "newOutletId": 0,
@@ -3028,7 +3045,7 @@ class _EntityDetailsState extends State<EntityDetails> {
         } else {
           Utils().showAlert(
               buildContext: context,
-              message: "No Entity Found",
+              message: noEntityMessage,
               onPressed: () {
                 Navigator.of(context).pop();
               });
@@ -3137,6 +3154,9 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   Future<void> getDownloadReport() async {
     if (await Utils().hasNetwork(context, setState)) {
+      if (!mounted) {
+        return;
+      }
       LoadingIndicatorDialog().show(context);
       // http://4.161.39.155:8096/inspectionApi/api/Department/Report/ViewReport?mainTaskId=4512&inspectionId=0
       Api()
@@ -3218,8 +3238,11 @@ class _EntityDetailsState extends State<EntityDetails> {
       }
     } catch (e) {
       print("Error: $e");
+      if (!mounted) {
+        return;
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to download and open PDF')),
+        const SnackBar(content: Text('Failed to download and open PDF')),
       );
     } finally {
       setState(() {

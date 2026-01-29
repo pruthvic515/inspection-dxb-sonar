@@ -8,8 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:patrol_system/controls/text_field.dart';
-import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:patrol_system/utils/api.dart';
+import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
 
@@ -202,7 +202,8 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                     decoration: BoxDecoration(
                         color: AppTheme.white,
                         border: Border.all(color: AppTheme.grey),
-                        borderRadius: const BorderRadius.all(Radius.circular(10))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10))),
                     child: CTextField(
                       textColor: AppTheme.textColor,
                       hint: "Notes here.....",
@@ -390,7 +391,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
         } else {
           Utils().showAlert(
               buildContext: context,
-              message: "No Entity Found",
+              message: noEntityMessage,
               onPressed: () {
                 Navigator.of(context).pop();
               });
@@ -670,7 +671,8 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
               message: data["message"],
               onPressed: () {
                 Navigator.of(context).pop();
-                Get.offAll(transition: Transition.rightToLeft, const HomeScreen());
+                Get.offAll(
+                    transition: Transition.rightToLeft, const HomeScreen());
               });
         } else {
           Utils().showAlert(
