@@ -10,7 +10,7 @@ import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../controls/LoadingIndicatorDialog.dart';
+import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
 import '../../model/area_model.dart';
 import '../../model/entity_detail_model.dart';
@@ -142,8 +142,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(12))),
                         elevation: 0,
-                        surfaceTintColor: AppTheme.white.withOpacity(0),
-                        color: AppTheme.white.withOpacity(0),
+                        surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                        color: AppTheme.white.withValues(alpha: 0),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: Image.asset(

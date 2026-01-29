@@ -15,8 +15,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:patrol_system/controls/LoadingIndicatorDialog.dart';
-import 'package:patrol_system/controls/formTextField.dart';
+import 'package:patrol_system/controls/loading_indicator_dialog.dart';
+import 'package:patrol_system/controls/form_text_field.dart';
 import 'package:patrol_system/controls/text.dart';
 import 'package:patrol_system/model/known_product_model.dart';
 import 'package:patrol_system/model/outlet_model.dart';
@@ -25,14 +25,14 @@ import 'package:patrol_system/pages/version_two/all_attachments_screen.dart';
 import 'package:patrol_system/pages/version_two/home_screen.dart';
 import 'package:patrol_system/pages/version_two/select_quantity.dart';
 import 'package:patrol_system/pages/version_two/sign_representative.dart';
-import 'package:patrol_system/utils/ApiServiceDio.dart';
+import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:patrol_system/utils/api.dart';
 import 'package:patrol_system/utils/color_const.dart';
 import 'package:patrol_system/utils/log_print.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
-import '../../controls/formMobileTextField.dart';
+import '../../controls/form_mobile_text_field.dart';
 import '../../model/all_user_model.dart';
 import '../../model/area_model.dart';
 import '../../model/entity_detail_model.dart';
@@ -610,8 +610,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(12))),
                               elevation: 0,
-                              surfaceTintColor: AppTheme.white.withOpacity(0),
-                              color: AppTheme.white.withOpacity(0),
+                              surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                              color: AppTheme.white.withValues(alpha: 0),
                               child: Padding(
                                 padding: const EdgeInsets.all(12),
                                 child: Image.asset(
@@ -1329,13 +1329,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   void _scrollToFocusedField(
-      FocusNode focusNode, ScrollController _scrollController) {
+      FocusNode focusNode, ScrollController scrollController) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final RenderBox renderBox =
           focusNode.context!.findRenderObject() as RenderBox;
       final position = renderBox.localToGlobal(Offset.zero);
-      final offset = _scrollController.offset + position.dy - 100;
-      _scrollController.animateTo(
+      final offset = scrollController.offset + position.dy - 100;
+      scrollController.animateTo(
         offset,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,

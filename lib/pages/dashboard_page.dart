@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-import '../controls/formTextField.dart';
+import '../controls/form_text_field.dart';
 import '../controls/text.dart';
 import '../utils/api.dart';
 import '../utils/color_const.dart';
@@ -188,8 +188,8 @@ class _DashboardPageState extends State<DashboardPage> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
                           elevation: 0,
-                          surfaceTintColor: AppTheme.white.withOpacity(0.67),
-                          color: AppTheme.white.withOpacity(0.67),
+                          surfaceTintColor: AppTheme.white.withValues(alpha: 0.67),
+                          color: AppTheme.white.withValues(alpha: 0.67),
                           child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Image.asset(

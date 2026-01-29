@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:patrol_system/utils/api.dart';
 import 'package:patrol_system/utils/color_const.dart';
 
-import '../../controls/LoadingIndicatorDialog.dart';
+import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
 import '../../model/search_entity_model.dart';
 import '../../utils/constants.dart';
@@ -208,8 +208,8 @@ class _SelectEntityState extends State<SelectEntity> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
                           elevation: 0,
-                          surfaceTintColor: AppTheme.white.withOpacity(0),
-                          color: AppTheme.white.withOpacity(0),
+                          surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                          color: AppTheme.white.withValues(alpha: 0),
                           child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Image.asset(

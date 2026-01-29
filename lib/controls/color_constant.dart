@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 Color colorBlack = Colors.black;
 Color colorWhite = Colors.white;
 Color colorGrey = Colors.grey;
-Color colorBlackTransparent = Colors.black.withOpacity(0.5);
+Color colorBlackTransparent = Colors.black.withValues(alpha: 0.5);
 
 const Color colorPrimaryText = Color.fromRGBO(0, 158, 191, 1);
 const Color grey2Text = Color.fromRGBO(100, 100, 100, 1);

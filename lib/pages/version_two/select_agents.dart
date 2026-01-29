@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:patrol_system/controls/LoadingIndicatorDialog.dart';
+import 'package:patrol_system/controls/loading_indicator_dialog.dart';
 import 'package:patrol_system/controls/text.dart';
 
 import '../../model/search_entity_model.dart';
@@ -150,8 +150,8 @@ class _SelectAgentsState extends State<SelectAgents> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
                           elevation: 0,
-                          surfaceTintColor: AppTheme.white.withOpacity(0),
-                          color: AppTheme.white.withOpacity(0),
+                          surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                          color: AppTheme.white.withValues(alpha: 0),
                           child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Image.asset(

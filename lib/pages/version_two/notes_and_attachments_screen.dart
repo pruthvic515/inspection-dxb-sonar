@@ -8,12 +8,12 @@ import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:patrol_system/controls/text_field.dart';
-import 'package:patrol_system/utils/ApiServiceDio.dart';
+import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:patrol_system/utils/api.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
 
-import '../../controls/LoadingIndicatorDialog.dart';
+import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
 import '../../model/entity_detail_model.dart';
 import '../../model/outlet_model.dart';
@@ -94,8 +94,8 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(12))),
                         elevation: 0,
-                        surfaceTintColor: AppTheme.white.withOpacity(0),
-                        color: AppTheme.white.withOpacity(0),
+                        surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                        color: AppTheme.white.withValues(alpha: 0),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: Image.asset(

@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
-
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../encrypteddecrypted/encryption_config.dart';
-import 'constants.dart';
 import 'constants.dart' as constants;
+import 'constants.dart';
 
 class ApiServiceDio {
   static ApiServiceDio? _instance;

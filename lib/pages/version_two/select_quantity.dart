@@ -100,8 +100,8 @@ class _SelectQuantityState extends State<SelectQuantity> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
                           elevation: 0,
-                          surfaceTintColor: AppTheme.white.withOpacity(0),
-                          color: AppTheme.white.withOpacity(0),
+                          surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                          color: AppTheme.white.withValues(alpha: 0),
                           child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Image.asset(

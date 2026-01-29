@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 
-import '../../controls/LoadingIndicatorDialog.dart';
-import '../../controls/formTextField.dart';
+import '../../controls/loading_indicator_dialog.dart';
+import '../../controls/form_text_field.dart';
 import '../../controls/text.dart';
 import '../../model/area_model.dart';
 import '../../model/entity_detail_model.dart';
@@ -139,8 +139,8 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(12))),
                         elevation: 0,
-                        surfaceTintColor: AppTheme.white.withOpacity(0),
-                        color: AppTheme.white.withOpacity(0),
+                        surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                        color: AppTheme.white.withValues(alpha: 0),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: Image.asset(

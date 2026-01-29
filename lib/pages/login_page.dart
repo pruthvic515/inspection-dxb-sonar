@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:patrol_system/model/profile_model.dart';
 import 'package:patrol_system/pages/version_two/home_screen.dart';
-import 'package:patrol_system/utils/ApiServiceDio.dart';
+import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:patrol_system/utils/color_const.dart';
 import 'package:patrol_system/utils/constants.dart';
 import 'package:patrol_system/utils/store_user_data.dart';

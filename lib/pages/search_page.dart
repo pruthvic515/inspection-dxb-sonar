@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:patrol_system/model/place_model.dart';
 import 'package:patrol_system/pages/version_two/entity_details.dart';
 
-import '../controls/LoadingIndicatorDialog.dart';
+import '../controls/loading_indicator_dialog.dart';
 import '../controls/text.dart';
 import '../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../utils/api.dart';
@@ -350,8 +350,8 @@ class _SearchPageState extends State<SearchPage> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
                           elevation: 0,
-                          surfaceTintColor: AppTheme.white.withOpacity(0),
-                          color: AppTheme.white.withOpacity(0),
+                          surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                          color: AppTheme.white.withValues(alpha: 0),
                           child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Image.asset(

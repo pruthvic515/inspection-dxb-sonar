@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:patrol_system/utils/ApiServiceDio.dart';
+import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 
-import '../../controls/LoadingIndicatorDialog.dart';
+import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
 import '../../model/inspection_model.dart';
 import '../../utils/api.dart';
@@ -69,8 +69,8 @@ class _InspectionListScreenState extends State<InspectionListScreen> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
                           elevation: 0,
-                          surfaceTintColor: AppTheme.white.withOpacity(0),
-                          color: AppTheme.white.withOpacity(0),
+                          surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                          color: AppTheme.white.withValues(alpha: 0),
                           child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Image.asset(

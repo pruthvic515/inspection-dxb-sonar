@@ -11,27 +11,25 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:patrol_system/controls/LoadingIndicatorDialog.dart';
+import 'package:patrol_system/controls/loading_indicator_dialog.dart';
 import 'package:patrol_system/model/all_user_model.dart';
 import 'package:patrol_system/model/entity_detail_model.dart';
-import 'package:patrol_system/pages/version_two/inspection_list_screen.dart';
 import 'package:patrol_system/pages/version_two/notes_and_attachments_screen.dart';
 import 'package:patrol_system/pages/version_two/select_agents.dart';
 import 'package:patrol_system/pages/version_two/select_inspector.dart';
-import 'package:patrol_system/utils/ApiServiceDio.dart';
 import 'package:patrol_system/utils/log_print.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../controls/formMobileTextField.dart';
-import '../../controls/formTextField.dart';
+import '../../controls/form_mobile_text_field.dart';
+import '../../controls/form_text_field.dart';
 import '../../controls/text.dart';
+import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../../model/area_model.dart';
 import '../../model/outlet_model.dart';
 import '../../model/patrol_visit_model.dart';
 import '../../model/search_entity_model.dart';
 import '../../model/task_model.dart';
-import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../../utils/api.dart';
 import '../../utils/color_const.dart';
 import '../../utils/constants.dart';
@@ -281,8 +279,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
                           elevation: 0,
-                          surfaceTintColor: AppTheme.white.withOpacity(0),
-                          color: AppTheme.white.withOpacity(0),
+                          surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                          color: AppTheme.white.withValues(alpha: 0),
                           child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Image.asset(

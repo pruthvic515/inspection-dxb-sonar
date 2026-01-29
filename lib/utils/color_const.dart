@@ -17,11 +17,11 @@ class AppTheme {
   static const Color red = Color(0xffFF3939);
   static const Color green = Color(0xff37a000);
   static const Color transBlack = Color(0x88000000);
-  static const Color transparent = Color(0xffffffffff);
+  static const Color transparent = Color(0xffffffff);
   static const Color lightBlack = Color(0xff241606);
   static const Color textColor = Color(0xff465647);
   static const Color darkGray = Color(0xff545F71);
-  static const Color transparentBlack = Color(0xff12000000);
+  static const Color transparentBlack = Color(0x12000000);
   static const Color pink = Color(0xFFFFC0CB);
   static const Color purple = Color(0xFF800080);
   static const Color deepPurple = Color(0xFF673AB7);

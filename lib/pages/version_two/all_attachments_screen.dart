@@ -99,7 +99,7 @@ class _AllAttachmentsScreenState extends State<AllAttachmentsScreen> {
                                                       .image,
                                                   colorFilter: ColorFilter.mode(
                                                       Colors.black
-                                                          .withOpacity(0.2),
+                                                          .withValues(alpha: 0.2),
                                                       BlendMode.srcOver),
                                                 ),
                                               ),
@@ -127,7 +127,7 @@ class _AllAttachmentsScreenState extends State<AllAttachmentsScreen> {
                                                 ),
                                                 colorFilter: ColorFilter.mode(
                                                     Colors.black
-                                                        .withOpacity(0.2),
+                                                        .withValues(alpha: 0.2),
                                                     BlendMode.srcOver),
                                               ),
                                             ),
@@ -191,8 +191,8 @@ class _AllAttachmentsScreenState extends State<AllAttachmentsScreen> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
                           elevation: 0,
-                          surfaceTintColor: AppTheme.white.withOpacity(0.67),
-                          color: AppTheme.white.withOpacity(0.67),
+                          surfaceTintColor: AppTheme.white.withValues(alpha: 0.67),
+                          color: AppTheme.white.withValues(alpha: 0.67),
                           child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Image.asset(

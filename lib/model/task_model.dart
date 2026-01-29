@@ -30,7 +30,7 @@ class Tasks {
   int mainTaskId;
   int inspectionTaskId;
   int inspectionId;
-  int inspection_type;
+  int inspectionType;
   String taskName;
   int? entityID;
   final String entityName;
@@ -59,7 +59,7 @@ class Tasks {
     required this.inspectionTaskId,
     required this.taskName,
     required this.inspectionId,
-    required this.inspection_type,
+    required this.inspectionType,
     this.entityID,
     required this.entityName,
     required this.location,
@@ -89,7 +89,7 @@ class Tasks {
       taskType: json['TaskType'] ?? 0,
       inspectionTaskId: json['InspectionTaskId']??0,
       inspectionId: json['inspectionId'] ?? 0,
-      inspection_type: json['inspection_type'] ?? 0,
+      inspectionType: json['inspection_type'] ?? 0,
       taskName: json['TaskName']?.toString() ?? "",
       entityID: json['EntityId'],
       entityName: json['EntityName']?.toString() ?? "",

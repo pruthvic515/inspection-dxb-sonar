@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:patrol_system/pages/splash.dart';
-import 'package:patrol_system/utils/ApiServiceDio.dart';
+import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:patrol_system/utils/color_const.dart';
 import 'package:patrol_system/utils/firebase_options.dart';
 import 'package:patrol_system/utils/store_user_data.dart';

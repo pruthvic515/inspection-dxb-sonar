@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
-import 'package:patrol_system/controls/LoadingIndicatorDialog.dart';
+import 'package:patrol_system/controls/loading_indicator_dialog.dart';
 import 'package:patrol_system/utils/utils.dart';
 import 'package:signature/signature.dart';
 
@@ -81,8 +81,8 @@ class _SignRepresentativeState extends State<SignRepresentative> {
                             borderRadius:
                             BorderRadius.all(Radius.circular(12))),
                         elevation: 0,
-                        surfaceTintColor: AppTheme.white.withOpacity(0),
-                        color: AppTheme.white.withOpacity(0),
+                        surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                        color: AppTheme.white.withValues(alpha: 0),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: Image.asset(

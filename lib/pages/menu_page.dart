@@ -9,7 +9,7 @@ import 'package:patrol_system/pages/welcome_page.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:patrol_system/utils/utils.dart';
 
-import '../controls/LoadingIndicatorDialog.dart';
+import '../controls/loading_indicator_dialog.dart';
 import '../controls/text.dart';
 import '../model/patrol_visit_model.dart';
 import '../utils/api.dart';
@@ -59,8 +59,8 @@ class _MenuPageState extends State<MenuPage> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(12))),
                         elevation: 0,
-                        surfaceTintColor: AppTheme.white.withOpacity(0),
-                        color: AppTheme.white.withOpacity(0),
+                        surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                        color: AppTheme.white.withValues(alpha: 0),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: Image.asset(
