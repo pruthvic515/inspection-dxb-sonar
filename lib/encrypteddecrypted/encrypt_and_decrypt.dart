@@ -15,7 +15,7 @@ class EncryptAndDecrypt {
 
   /// Creates an AES encrypter with secure mode and padding scheme
   Encrypter _createEncrypter() =>
-      Encrypter(AES(key, mode: _encryptionMode, padding: 'PKCS7'));
+      Encrypter(AES(key, mode: _encryptionMode));
 
   /// Generate a random 16-character IV (UTF-8 string)
   String generateRandomString({int length = 16}) {
@@ -76,8 +76,9 @@ class EncryptAndDecrypt {
       final parts = payload.split('|');
 
       /// Throws error if IV or cipher text is missing or format is invalid.
-      if (parts.length != 2)
+      if (parts.length != 2) {
         throw const FormatException('Invalid encrypted format');
+      }
 
       /// Extracts IV and encrypted data.
       final ivString = parts[0];

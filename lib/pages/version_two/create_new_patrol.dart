@@ -211,151 +211,182 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Future<void> getInspectionDetail() async {
-    if (await Utils().hasNetwork(context, setState)) {
-      setState(() {
-        isAE = false;
-        isMMI = false;
-        selectedKnownProductListData.clear();
-        foreignLabelsList.clear();
-        unknownProductList.clear();
-        managerList.clear();
-        witnessList.clear();
-        selectedAEList.clear();
-        selectedMMIList.clear();
-      });
-      if (!mounted) return;
-      LoadingIndicatorDialog().show(context);
-      Api().callAPI(context, "Mobile/Inspection/GetInspectionDetails", {
-        "mainTaskId": widget.mainTaskId,
-        "inspectionId": inspectionId
-      }).then((value) async {
-        var data = detailFromJson(value);
-        if (data.data != null) {
-          setState(() {
-            detail = data.data!;
-            taskId = detail!.inspectionDetails.taskId;
+    if (!await Utils().hasNetwork(context, setState)) {
+      return;
+    }
 
-            debugPrint("GetInspectionDetails $value");
-            setState(() {
-              try {
-                image.clear();
-                for (var files in data.data!.attachments) {
-                  image.add(files.documentUrl);
-                }
-              } catch (e) {
-                image.clear();
-              }
+    _clearInspectionData();
+    if (!mounted) return;
 
-              LoadingIndicatorDialog().dismiss();
-              for (var i in data.data!.productDetailModels) {
-                if (i.typeId == 1) {
-                  selectedKnownProductListData.add(i);
-                } else if (i.typeId == 2) {
-                  foreignLabelsList.add(i);
-                } else if (i.typeId == 3) {
-                  unknownProductList.add(i);
-                }
-              }
-              for (var i in data.data!.entityRepresentatives) {
-                if (i.typeId == 1) {
-                  managerList.add(i);
-                } else if (i.typeId == 2) {
-                  witnessList.add(i);
-                }
-              }
-              for (var i
-                  in data.data!.inspectorAndAgentEmployee.agentEmployeeModels) {
-                if (i.agentId == 1) {
-                  selectedAEList.add(i);
-                } else if (i.agentId == 2) {
-                  selectedMMIList.add(i);
-                }
-              }
-              isAE = selectedAEList.isNotEmpty;
-              isMMI = selectedMMIList.isNotEmpty;
-              concludeNotes.text = data.data!.notes.finalNotes ?? "";
-            });
-          });
-        } else {
-          LoadingIndicatorDialog().dismiss();
-          if (data.message.isNotEmpty) {
-            Utils().showAlert(
-                buildContext: context,
-                message: data.message,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                });
-          } else {
-            /*    Utils().showAlert(
-                buildContext: context,
-                message: "No Data Found",
-                onPressed: () {
-                  Navigator.of(context).pop();
-                });*/
-          }
-        }
-      });
+    LoadingIndicatorDialog().show(context);
+    await _fetchInspectionDetails();
+  }
+
+  void _clearInspectionData() {
+    setState(() {
+      isAE = false;
+      isMMI = false;
+      selectedKnownProductListData.clear();
+      foreignLabelsList.clear();
+      unknownProductList.clear();
+      managerList.clear();
+      witnessList.clear();
+      selectedAEList.clear();
+      selectedMMIList.clear();
+    });
+  }
+
+  Future<void> _fetchInspectionDetails() async {
+    try {
+      final value = await Api().callAPI(
+        context,
+        "Mobile/Inspection/GetInspectionDetails",
+        {
+          "mainTaskId": widget.mainTaskId,
+          "inspectionId": inspectionId
+        },
+      );
+
+      final data = detailFromJson(value);
+      if (data.data != null) {
+        _processInspectionData(data.data!);
+      } else {
+        _handleInspectionError(data.message);
+      }
+    } catch (e) {
+      LoadingIndicatorDialog().dismiss();
+      debugPrint("Error fetching inspection details: $e");
+    }
+  }
+
+  void _processInspectionData(InspectionData inspectionData) {
+    setState(() {
+      detail = inspectionData;
+      taskId = inspectionData.inspectionDetails.taskId;
+      debugPrint("GetInspectionDetails processed");
+    });
+
+    setState(() {
+      _processAttachments(inspectionData.attachments);
+      _processProductDetails(inspectionData.productDetailModels);
+      _processEntityRepresentatives(inspectionData.entityRepresentatives);
+      _processAgentEmployees(
+        inspectionData.inspectorAndAgentEmployee.agentEmployeeModels,
+      );
+      _updateFlagsAndNotes(inspectionData.notes.finalNotes);
+      LoadingIndicatorDialog().dismiss();
+    });
+  }
+
+  void _processAttachments(List<dynamic> attachments) {
+    try {
+      image.clear();
+      for (var file in attachments) {
+        image.add(file.documentUrl);
+      }
+    } catch (e) {
+      image.clear();
+    }
+  }
+
+  void _processProductDetails(List<ProductDetail> productDetails) {
+    for (var product in productDetails) {
+      if (product.typeId == 1) {
+        selectedKnownProductListData.add(product);
+      } else if (product.typeId == 2) {
+        foreignLabelsList.add(product);
+      } else if (product.typeId == 3) {
+        unknownProductList.add(product);
+      }
+    }
+  }
+
+  void _processEntityRepresentatives(
+      List<RepresentativeData> representatives) {
+    for (var representative in representatives) {
+      if (representative.typeId == 1) {
+        managerList.add(representative);
+      } else if (representative.typeId == 2) {
+        witnessList.add(representative);
+      }
+    }
+  }
+
+  void _processAgentEmployees(List<WitnessData> agentEmployees) {
+    for (var employee in agentEmployees) {
+      if (employee.agentId == 1) {
+        selectedAEList.add(employee);
+      } else if (employee.agentId == 2) {
+        selectedMMIList.add(employee);
+      }
+    }
+  }
+
+  void _updateFlagsAndNotes(String? finalNotes) {
+    isAE = selectedAEList.isNotEmpty;
+    isMMI = selectedMMIList.isNotEmpty;
+    concludeNotes.text = finalNotes ?? "";
+  }
+
+  void _handleInspectionError(String message) {
+    LoadingIndicatorDialog().dismiss();
+    if (message.isNotEmpty) {
+      Utils().showAlert(
+        buildContext: context,
+        message: message,
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
     }
   }
 
   void getAttachedThumbnail() {
+    _getStorageDirectory().then((directory) async {
+      await _generateThumbnail(directory);
+    });
+  }
+
+  Future<Directory> _getStorageDirectory() {
     if (Platform.isAndroid) {
-      getExternalStorageDirectory().then((value1) async {
-        try {
-          var thumbnail = await FlutterVideoThumbnailPlus.thumbnailFile(
-            video: attachedLink,
-            thumbnailPath: value1!.absolute.path,
-            imageFormat: ImageFormat.png,
-            quality: 100,
-          );
-          if (thumbnail != null) {
-            LogPrint().log("thumbnail path: $thumbnail");
-            setState(() {
-              attachedThumbnail = thumbnail;
-            });
-          } else {
-            setState(() {
-              attachedThumbnail = "";
-              LogPrint().log("return thumbnail path: 1");
-            });
-          }
-        } on Exception catch (e) {
-          setState(() {
-            attachedThumbnail = "";
-            LogPrint().log(e);
-            LogPrint().log("return thumbnail path: catch");
-          });
-        }
-      });
+      return getExternalStorageDirectory().then((value) => value!);
     } else {
-      getApplicationDocumentsDirectory().then((value1) async {
-        try {
-          var thumbnail = await FlutterVideoThumbnailPlus.thumbnailFile(
-            video: attachedLink,
-            thumbnailPath: value1.absolute.path,
-            imageFormat: ImageFormat.png,
-            quality: 100,
-          );
-          if (thumbnail != null) {
-            LogPrint().log("thumbnail path: $thumbnail");
-            setState(() {
-              attachedThumbnail = thumbnail;
-            });
-          } else {
-            setState(() {
-              attachedThumbnail = "";
-              LogPrint().log("return thumbnail path: 1");
-            });
-          }
-        } on Exception catch (e) {
-          setState(() {
-            attachedThumbnail = "";
-            LogPrint().log(e);
-            LogPrint().log("return thumbnail path: catch");
-          });
-        }
-      });
+      return getApplicationDocumentsDirectory();
     }
+  }
+
+  Future<void> _generateThumbnail(Directory directory) async {
+    try {
+      final thumbnail = await FlutterVideoThumbnailPlus.thumbnailFile(
+        video: attachedLink,
+        thumbnailPath: directory.absolute.path,
+        imageFormat: ImageFormat.png,
+        quality: 100,
+      );
+      _updateThumbnail(thumbnail);
+    } on Exception catch (e) {
+      _handleThumbnailError(e);
+    }
+  }
+
+  void _updateThumbnail(String? thumbnail) {
+    setState(() {
+      attachedThumbnail = thumbnail ?? "";
+    });
+
+    if (thumbnail != null) {
+      LogPrint().log("thumbnail path: $thumbnail");
+    } else {
+      LogPrint().log("return thumbnail path: 1");
+    }
+  }
+
+  void _handleThumbnailError(Exception error) {
+    setState(() {
+      attachedThumbnail = "";
+    });
+    LogPrint().log(error);
+    LogPrint().log("return thumbnail path: catch");
   }
 
   Future<void> getEntityRole() async {
@@ -491,80 +522,106 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Future getGeoLocationPosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      if (!mounted) return;
-      Utils().showAlert(
-          buildContext: context,
-          message: "Location services are disabled.",
-          onPressed: () {
-            Navigator.of(context).pop();
-            Geolocator.openLocationSettings().whenComplete(() {
-              getGeoLocationPosition();
-            });
-          });
-    } else {
-      permission = await Geolocator.checkPermission();
-      if (permission != LocationPermission.always) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied ||
-            permission == LocationPermission.deniedForever) {
-          if (!mounted) return;
-          Utils().showAlert(
-              buildContext: context,
-              message: "Location permissions are denied.",
-              onPressed: () {
-                Navigator.of(context).pop();
-              });
-        } else {
-          Position position = await Geolocator.getCurrentPosition(
-              desiredAccuracy: LocationAccuracy.high);
-          latitude = position.latitude;
-          longitude = position.longitude;
-          try {
-            List placeMarks = await placemarkFromCoordinates(
-                position.latitude, position.longitude);
-            LogPrint().log(placeMarks);
-            Placemark place = placeMarks[0];
-            if (mounted) {
-              setState(() {
-                googleAddress =
-                    '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
-              });
-            }
-          } on TimeoutException catch (_) {
-            LogPrint().log("The request timed out.");
-          } catch (e) {
-            setState(() {
-              googleAddress = "Bur Dubai";
-            });
-
-            LogPrint().log("An error occurred: $e");
-          }
-
-          LogPrint().log("address$googleAddress");
-        }
-      } else {
-        Position position = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.high);
-        latitude = position.latitude;
-        longitude = position.longitude;
-        List placeMarks = await placemarkFromCoordinates(
-            position.latitude, position.longitude);
-        LogPrint().log(placeMarks);
-        Placemark place = placeMarks[0];
-        if (mounted) {
-          setState(() {
-            googleAddress =
-                '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
-          });
-        }
-        LogPrint().log("address$googleAddress");
-      }
+      _handleLocationServiceDisabled();
+      return;
     }
+
+    final permission = await _checkAndRequestPermission();
+    if (!_hasLocationPermission(permission)) {
+      _handlePermissionDenied();
+      return;
+    }
+
+    await _fetchLocationAndAddress();
+  }
+
+  void _handleLocationServiceDisabled() {
+    if (!mounted) return;
+    Utils().showAlert(
+      buildContext: context,
+      message: "Location services are disabled.",
+      onPressed: () {
+        Navigator.of(context).pop();
+        Geolocator.openLocationSettings().whenComplete(() {
+          getGeoLocationPosition();
+        });
+      },
+    );
+  }
+
+  Future<LocationPermission> _checkAndRequestPermission() async {
+    var permission = await Geolocator.checkPermission();
+    if (permission != LocationPermission.always) {
+      permission = await Geolocator.requestPermission();
+    }
+    return permission;
+  }
+
+  bool _hasLocationPermission(LocationPermission permission) {
+    return permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse;
+  }
+
+  void _handlePermissionDenied() {
+    if (!mounted) return;
+    Utils().showAlert(
+      buildContext: context,
+      message: "Location permissions are denied.",
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  Future<void> _fetchLocationAndAddress() async {
+    try {
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      _updateLocation(position);
+      await _fetchAddressFromCoordinates(position);
+    } catch (e) {
+      LogPrint().log("Error getting location: $e");
+    }
+  }
+
+  void _updateLocation(Position position) {
+    latitude = position.latitude;
+    longitude = position.longitude;
+  }
+
+  Future<void> _fetchAddressFromCoordinates(Position position) async {
+    try {
+      final placeMarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      LogPrint().log(placeMarks);
+      final place = placeMarks[0];
+      _updateAddress(place);
+    } on TimeoutException catch (_) {
+      LogPrint().log("The request timed out.");
+    } catch (e) {
+      _setDefaultAddress();
+      LogPrint().log("An error occurred: $e");
+    }
+    LogPrint().log("address$googleAddress");
+  }
+
+  void _updateAddress(Placemark place) {
+    if (!mounted) return;
+    setState(() {
+      googleAddress =
+          '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+    });
+  }
+
+  void _setDefaultAddress() {
+    setState(() {
+      googleAddress = "Bur Dubai";
+    });
   }
 
   @override

@@ -32,10 +32,10 @@ class InspectionListScreen extends StatefulWidget {
       required this.isDXBTask});
 
   @override
-  _InspectionListScreenState createState() => _InspectionListScreenState();
+  InspectionListScreenState createState() => InspectionListScreenState();
 }
 
-class _InspectionListScreenState extends State<InspectionListScreen> {
+class InspectionListScreenState extends State<InspectionListScreen> {
   List<InspectionModel> inspections = [];
   var storeUserData = StoreUserData();
 

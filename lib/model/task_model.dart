@@ -84,6 +84,9 @@ class Tasks {
   });
 
   factory Tasks.fromJson(Map<String, dynamic> json) {
+    final locationData = json['location'];
+    final location = _parseLocation(locationData);
+
     return Tasks(
       mainTaskId: json['MainTaskId'] ?? 0,
       taskType: json['TaskType'] ?? 0,
@@ -93,11 +96,7 @@ class Tasks {
       taskName: json['TaskName']?.toString() ?? "",
       entityID: json['EntityId'],
       entityName: json['EntityName']?.toString() ?? "",
-      location: json['location'] == null
-          ? null
-          : json['location'] == ""
-              ? null
-              : LocationModel.fromJson(json['location']),
+      location: location,
       startDate: json['StartDate'] == null || json['StartDate'] is! String
           ? DateTime.now()
           : DateTime.parse(json['StartDate'] as String),
@@ -124,6 +123,16 @@ class Tasks {
         categoryName: json['CategoryName']?.toString() ?? "",
       isAgentEmployees: json['IsAgentEmployees'] ?? false,
     );
+  }
+
+  static LocationModel? _parseLocation(dynamic locationData) {
+    if (locationData == null) {
+      return null;
+    }
+    if (locationData == "") {
+      return null;
+    }
+    return LocationModel.fromJson(locationData);
   }
 }
 
