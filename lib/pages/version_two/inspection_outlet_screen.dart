@@ -417,7 +417,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
 
   String _formatExpiryDate() {
     if (entity == null) return "";
-    return DateFormat("dd-MM-yyyy").format(entity!.licenseExpiryDate);
+    return DateFormat(dateFormat).format(entity!.licenseExpiryDate);
   }
 
   String _formatLastVisitedDate() {
@@ -425,7 +425,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
     try {
       final date = DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
           .parse(entity!.lastVisitedDate!);
-      final dateStr = DateFormat("dd-MM-yyyy").format(date);
+      final dateStr = DateFormat(dateFormat).format(date);
       final timeStr = DateFormat("hh:mm:ss aa").format(date);
       return "$dateStr \n$timeStr";
     } catch (e) {

@@ -690,7 +690,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   padding: const EdgeInsets.only(top: 2),
                                   textAlign: TextAlign.center,
                                   text: entity != null
-                                      ? DateFormat("dd-MM-yyyy")
+                                      ? DateFormat(dateFormat)
                                           .format(entity!.licenseExpiryDate)
                                       : "",
                                   textColor: AppTheme.textBlack,
@@ -927,7 +927,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   textAlign: TextAlign.center,
                                   text: entity?.lastVisitedDate == null
                                       ? "-"
-                                      : "${DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))} \n${DateFormat("hh:mm:ss aa").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))}",
+                                      : "${DateFormat(dateFormat).format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))} \n${DateFormat("hh:mm:ss aa").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))}",
                                   textColor: AppTheme.textBlack,
                                   fontFamily: AppTheme.urbanist,
                                   maxLines: 2,
@@ -1137,7 +1137,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 cursorWidth: 2,
                                 decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.all(5),
-                                    hintText: "Search...",
+                                    hintText: searchHint,
                                     border: InputBorder.none,
                                     prefixIcon: Icon(
                                       Icons.search,
@@ -1664,7 +1664,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                         textAlign:
                                                             TextAlign.start,
                                                         text:
-                                                            "${DateFormat("dd-MM-yyyy").format(DateFormat(fullDateFormat).parse(list[index].createdOn))} \n${DateFormat("hh:mm:ss aa").format(DateFormat(fullDateFormat).parse(list[index].createdOn))}",
+                                                            "${DateFormat(dateFormat).format(DateFormat(fullDateTimeFormat).parse(list[index].createdOn))} \n${DateFormat("hh:mm:ss aa").format(DateFormat(fullDateTimeFormat).parse(list[index].createdOn))}",
                                                         maxLines: 2,
                                                         overflow: TextOverflow
                                                             .ellipsis,
@@ -2261,7 +2261,7 @@ class _EntityDetailsState extends State<EntityDetails> {
         "notes": notes,
         "createdBy": storeUserData.getInt(USER_ID),
         "createdOn":
-            DateFormat(fullDateFormat).format(Utils().getCurrentGSTTime()),
+            DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       };
 
       // isHideAgents is true means liquor task else DXB task
@@ -2932,9 +2932,9 @@ class _EntityDetailsState extends State<EntityDetails> {
         "notes": model.notes,
         "createdBy": storeUserData.getInt(USER_ID),
         "createdOn":
-            DateFormat(fullDateFormat).format(Utils().getCurrentGSTTime()),
+            DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
         "modifiedOn":
-            DateFormat(fullDateFormat).format(Utils().getCurrentGSTTime()),
+            DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
         "modifiedBy": storeUserData.getInt(USER_ID)
       }).then((value) async {
         LoadingIndicatorDialog().dismiss();
@@ -3022,9 +3022,9 @@ class _EntityDetailsState extends State<EntityDetails> {
         "notes": model.notes,
         "createdBy": storeUserData.getInt(USER_ID),
         "createdOn":
-            DateFormat(fullDateFormat).format(Utils().getCurrentGSTTime()),
+            DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
         "modifiedOn":
-            DateFormat(fullDateFormat).format(Utils().getCurrentGSTTime()),
+            DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
         "modifiedBy": storeUserData.getInt(USER_ID)
       }).then((value) async {
         LoadingIndicatorDialog().dismiss();
@@ -3288,7 +3288,7 @@ class _EntityDetailsState extends State<EntityDetails> {
       "agentEmployeeIds": agentMap,
       "departmentEmployeeId": inspectorMap,
       "createdOn":
-          DateFormat(fullDateFormat).format(Utils().getCurrentGSTTime()),
+          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "comments": "",
       "finalNotes": "",
       "createdByName": "",

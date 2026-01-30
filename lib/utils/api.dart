@@ -13,6 +13,8 @@ import '../utils/store_user_data.dart';
 class Api {
   var version = 'api';
   var storeUserData = StoreUserData();
+  var contentTypeKey = "Content-Type";
+  var acceptKey = "Accept";
 
   Future<Map<String, String>> getHeaders() async {
     Map<String, String> headers;
@@ -20,13 +22,13 @@ class Api {
       headers = {
         'Accept-Language': "EN",
         'Authorization': storeUserData.getString(constants.USER_TOKEN),
-        'Accept': "text/plain",
-        "Content-Type": "application/json"
+        acceptKey: "text/plain",
+        contentTypeKey: "application/json"
       };
     } else {
       headers = {
-        'accept': "text/plain",
-        'Content-Type': "application/json",
+        acceptKey: "text/plain",
+        contentTypeKey: "application/json",
       };
     }
     print("headers : $headers");
@@ -119,7 +121,7 @@ class Api {
         "POST", Uri.parse('${constants.baseUrl}$version/$function'));
     request.fields.addAll(fields);
     final headers = await getHeaders();
-    headers.remove('Content-Type');
+    headers.remove(contentTypeKey);
     request.headers.addAll(headers);
     request.files.addAll(files);
 
@@ -140,7 +142,7 @@ class Api {
         "POST", Uri.parse('${constants.baseUrl}$version/$function'));
     request.fields.addAll(fields);
     final headers = await getHeaders();
-    headers.remove('Content-Type');
+    headers.remove(contentTypeKey);
     request.headers.addAll(headers);
     request.files.add(files);
 

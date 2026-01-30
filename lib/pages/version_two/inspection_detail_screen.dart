@@ -597,7 +597,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
                     padding: const EdgeInsets.only(right: 20, left: 10),
                     textAlign: TextAlign.start,
                     text:
-                        "${DateFormat("dd-MM-yyyy").format(widget.task.startDate)} \n${DateFormat("hh:mm:ss aa").format(widget.task.startDate)}",
+                        "${DateFormat(dateFormat).format(widget.task.startDate)} \n${DateFormat("hh:mm:ss aa").format(widget.task.startDate)}",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     fontFamily: AppTheme.urbanist,
@@ -630,7 +630,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
                     padding: const EdgeInsets.only(right: 20, left: 10),
                     textAlign: TextAlign.start,
                     text:
-                        "${DateFormat("dd-MM-yyyy").format(widget.task.endDate)} \n${DateFormat("hh:mm:ss aa").format(widget.task.endDate)}",
+                        "${DateFormat(dateFormat).format(widget.task.endDate)} \n${DateFormat("hh:mm:ss aa").format(widget.task.endDate)}",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     fontFamily: AppTheme.urbanist,

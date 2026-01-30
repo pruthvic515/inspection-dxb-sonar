@@ -1409,51 +1409,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   void showAddProductSheet(ProductDetail? model) {
-    ScrollController scrollController = ScrollController();
-    List<TextEditingController> serial = [];
-    List<AreaData?> sizeList = [];
-    List<FocusNode> focusNodeList = [];
-    FocusNode node = FocusNode();
-    if (model != null) {
-      setState(() {
-        if (model.qty > 0) {
-          productName.text = model.productName.toString();
-          quantity = model.qty;
-          notes.text = model.notes.toString();
-          if (model.products.isNotEmpty) {
-            for (var element in model.products) {
-              serial.add(TextEditingController(text: element.serialNumber));
-              focusNodeList.add(FocusNode());
-              sizeList.add(AreaData(
-                  id: searchSizeList
-                      .firstWhere((test) => test.id == element.size)
-                      .id,
-                  text: searchSizeList
-                      .firstWhere((test) => test.id == element.size)
-                      .text));
-            }
-          }
-        } else {
-          model.qty = 1;
-          model.products = [];
-          serial.add(TextEditingController(text: ""));
-          focusNodeList.add(FocusNode());
-          sizeList.add(null);
-        }
-      });
-    } else {
-      quantity = 1;
-      serial.add(TextEditingController(text: ""));
-      focusNodeList.add(FocusNode());
-      sizeList.add(null);
-    }
-    for (var node in focusNodeList) {
-      node.addListener(() {
-        if (node.hasFocus) {
-          _scrollToFocusedField(node, scrollController);
-        }
-      });
-    }
+    final scrollController = ScrollController();
+    final serial = <TextEditingController>[];
+    final sizeList = <AreaData?>[];
+    final focusNodeList = <FocusNode>[];
+    final node = FocusNode();
+
+    _initializeProductSheet(model, serial, sizeList, focusNodeList);
+    _setupFocusListeners(focusNodeList, scrollController);
     showModalBottomSheet(
         enableDrag: false,
         isDismissible: false,
@@ -1592,23 +1555,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         onTap: () {
                           Get.to(const SelectQuantity())?.then((value) {
                             if (value != null) {
-                              setState(() {
-                                quantity = value;
-                                if (quantity > serial.length) {
-                                  for (int i = serial.length;
-                                      i < quantity;
-                                      i++) {
-                                    serial.add(TextEditingController());
-                                    focusNodeList.add(FocusNode());
-                                    sizeList.add(sizeList[0]);
-                                  }
-                                } else if (quantity < serial.length) {
-                                  serial = serial.sublist(0, quantity);
-                                  focusNodeList =
-                                      focusNodeList.sublist(0, quantity);
-                                  sizeList = sizeList.sublist(0, quantity);
-                                }
-                              });
+                              _handleQuantityChange(
+                                value,
+                                serial,
+                                sizeList,
+                                focusNodeList,
+                                setState,
+                              );
                             }
                           });
                         },
@@ -1717,15 +1670,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         height: 5,
                       ),
                       Visibility(
-                          visible: productName.text.isNotEmpty &&
-                              quantity != 0 &&
-                              serial
-                                  .where((element) => (((element.text.isEmpty ||
-                                      element.text.length < 5))))
-                                  .isEmpty &&
-                              sizeList
-                                  .where((element) => element == null)
-                                  .isEmpty,
+                          visible: _isFormValid(serial, sizeList),
                           child: FormTextField(
                             onChange: (value) {
                               setState(() {});
@@ -1748,99 +1693,34 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           child: ElevatedButton(
                             focusNode: node,
                             onPressed: () {
-                              if (productName.text.isEmpty) {
+                              final errorMessage = _validateProductForm(
+                                serial,
+                                sizeList,
+                                buildContext,
+                              );
+                              if (errorMessage != null) {
                                 Utils().showAlert(
-                                    buildContext: buildContext,
-                                    message: "Please enter product name",
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
-                              } else if (quantity == 0) {
-                                Utils().showAlert(
-                                    buildContext: buildContext,
-                                    message: "Please select quantity",
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
-                              } else if (serial
-                                  .where((element) => ((element.text.isEmpty ||
-                                      element.text.length < 5)))
-                                  .isNotEmpty) {
-                                Utils().showAlert(
-                                    buildContext: buildContext,
-                                    message: "Please enter valid serial number",
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
-                              } else if (sizeList
-                                  .where((element) => element == null)
-                                  .isNotEmpty) {
-                                Utils().showAlert(
-                                    buildContext: buildContext,
-                                    message: "Please select size",
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
+                                  buildContext: buildContext,
+                                  message: errorMessage,
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                );
                               } else {
-                                List<Product> products = [];
-                                for (var i = 0; i < sizeList.length; i++) {
-                                  products.add(Product(
-                                      productSerialNumberId: 0,
-                                      productDetailsId: 0,
-                                      serialNumber: serial[i].text,
-                                      size: sizeList[i]!.id));
-                                }
-                                setState(() {
-                                  if (model == null) {
-                                    addProduct(ProductDetail(
-                                            productDetailsId: 0,
-                                            productName: productName.text,
-                                            qty: quantity,
-                                            inspectionId: inspectionId,
-                                            typeId: productTab,
-                                            products: products,
-                                            productId: 0,
-                                            createdOn: DateFormat(fullDateFormat)
-                                                .format(Utils()
-                                                    .getCurrentGSTTime()),
-                                            categoryId: 0,
-                                            notes: notes.text)
-                                        .toJson());
-                                  } else {
-                                    updateProduct(ProductDetail(
-                                            productDetailsId:
-                                                model.productDetailsId,
-                                            productName: productName.text,
-                                            qty: quantity,
-                                            inspectionId: inspectionId,
-                                            typeId: productTab,
-                                            products: products,
-                                            productId: model.productId,
-                                            createdOn: DateFormat(fullDateFormat)
-                                                .format(Utils()
-                                                    .getCurrentGSTTime()),
-                                            categoryId: 0,
-                                            notes: notes.text)
-                                        .toJson());
-                                  }
-                                  Navigator.of(context).pop();
-                                });
+                                _saveProduct(
+                                  model,
+                                  serial,
+                                  sizeList,
+                                  setState,
+                                  context,
+                                );
                               }
                             },
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              backgroundColor: productName.text.isNotEmpty &&
-                                      serial
-                                          .where((element) =>
-                                              ((element.text.isEmpty ||
-                                                  element.text.length < 5)))
-                                          .isEmpty &&
-                                      quantity != 0 &&
-                                      sizeList
-                                          .where((element) => element == null)
-                                          .isEmpty
+                              backgroundColor: _isFormValid(serial, sizeList)
                                   ? AppTheme.colorPrimary
                                   : AppTheme.paleGray,
                               minimumSize: const Size.fromHeight(50),
@@ -1869,35 +1749,240 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
+  void _initializeProductSheet(
+    ProductDetail? model,
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    List<FocusNode> focusNodeList,
+  ) {
+    if (model != null) {
+      setState(() {
+        if (model.qty > 0) {
+          _initializeFromModel(model, serial, sizeList, focusNodeList);
+        } else {
+          _initializeEmptyModel(model, serial, sizeList, focusNodeList);
+        }
+      });
+    } else {
+      _initializeNewProduct(serial, sizeList, focusNodeList);
+    }
+  }
+
+  void _initializeFromModel(
+    ProductDetail model,
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    List<FocusNode> focusNodeList,
+  ) {
+    productName.text = model.productName.toString();
+    quantity = model.qty;
+    notes.text = model.notes.toString();
+    if (model.products.isNotEmpty) {
+      for (var element in model.products) {
+        serial.add(TextEditingController(text: element.serialNumber));
+        focusNodeList.add(FocusNode());
+        sizeList.add(_findSizeData(element.size!));
+      }
+    }
+  }
+
+  AreaData _findSizeData(int sizeId) {
+    return searchSizeList.firstWhere((test) => test.id == sizeId);
+  }
+
+  void _initializeEmptyModel(
+    ProductDetail model,
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    List<FocusNode> focusNodeList,
+  ) {
+    model.qty = 1;
+    model.products = [];
+    serial.add(TextEditingController(text: ""));
+    focusNodeList.add(FocusNode());
+    sizeList.add(null);
+  }
+
+  void _initializeNewProduct(
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    List<FocusNode> focusNodeList,
+  ) {
+    quantity = 1;
+    serial.add(TextEditingController(text: ""));
+    focusNodeList.add(FocusNode());
+    sizeList.add(null);
+  }
+
+  void _setupFocusListeners(
+    List<FocusNode> focusNodeList,
+    ScrollController scrollController,
+  ) {
+    for (var node in focusNodeList) {
+      node.addListener(() {
+        if (node.hasFocus) {
+          _scrollToFocusedField(node, scrollController);
+        }
+      });
+    }
+  }
+
+  void _handleQuantityChange(
+    int newQuantity,
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    List<FocusNode> focusNodeList,
+    StateSetter setState,
+  ) {
+    setState(() {
+      quantity = newQuantity;
+      if (quantity > serial.length) {
+        _addSerialItems(serial, sizeList, focusNodeList);
+      } else if (quantity < serial.length) {
+        _removeSerialItems(serial, sizeList, focusNodeList);
+      }
+    });
+  }
+
+  void _addSerialItems(
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    List<FocusNode> focusNodeList,
+  ) {
+    for (int i = serial.length; i < quantity; i++) {
+      serial.add(TextEditingController());
+      focusNodeList.add(FocusNode());
+      sizeList.add(sizeList.isNotEmpty ? sizeList[0] : null);
+    }
+  }
+
+  void _removeSerialItems(
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    List<FocusNode> focusNodeList,
+  ) {
+    serial.removeRange(quantity, serial.length);
+    focusNodeList.removeRange(quantity, focusNodeList.length);
+    sizeList.removeRange(quantity, sizeList.length);
+  }
+
+  String? _validateProductForm(
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    BuildContext buildContext,
+  ) {
+    if (productName.text.isEmpty) {
+      return "Please enter product name";
+    }
+    if (quantity == 0) {
+      return "Please select quantity";
+    }
+    if (_hasInvalidSerialNumbers(serial)) {
+      return "Please enter valid serial number";
+    }
+    if (_hasMissingSizes(sizeList)) {
+      return "Please select size";
+    }
+    return null;
+  }
+
+  bool _hasInvalidSerialNumbers(List<TextEditingController> serial) {
+    return serial.any((element) =>
+        element.text.isEmpty || element.text.length < 5);
+  }
+
+  bool _hasMissingSizes(List<AreaData?> sizeList) {
+    return sizeList.any((element) => element == null);
+  }
+
+  void _saveProduct(
+    ProductDetail? model,
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    StateSetter setState,
+    BuildContext context,
+  ) {
+    final products = _buildProductsList(serial, sizeList);
+    setState(() {
+      if (model == null) {
+        _addNewProduct(products);
+      } else {
+        _updateExistingProduct(model, products);
+      }
+      Navigator.of(context).pop();
+    });
+  }
+
+  List<Product> _buildProductsList(
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+  ) {
+    final products = <Product>[];
+    for (var i = 0; i < sizeList.length; i++) {
+      products.add(Product(
+        productSerialNumberId: 0,
+        productDetailsId: 0,
+        serialNumber: serial[i].text,
+        size: sizeList[i]!.id,
+      ));
+    }
+    return products;
+  }
+
+  void _addNewProduct(List<Product> products) {
+    addProduct(ProductDetail(
+      productDetailsId: 0,
+      productName: productName.text,
+      qty: quantity,
+      inspectionId: inspectionId,
+      typeId: productTab,
+      products: products,
+      productId: 0,
+      createdOn: DateFormat(fullDateTimeFormat)
+          .format(Utils().getCurrentGSTTime()),
+      categoryId: 0,
+      notes: notes.text,
+    ).toJson());
+  }
+
+  void _updateExistingProduct(ProductDetail model, List<Product> products) {
+    updateProduct(ProductDetail(
+      productDetailsId: model.productDetailsId,
+      productName: productName.text,
+      qty: quantity,
+      inspectionId: inspectionId,
+      typeId: productTab,
+      products: products,
+      productId: model.productId,
+      createdOn: DateFormat(fullDateTimeFormat)
+          .format(Utils().getCurrentGSTTime()),
+      categoryId: 0,
+      notes: notes.text,
+    ).toJson());
+  }
+
+  bool _isFormValid(
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+  ) {
+    return productName.text.isNotEmpty &&
+        quantity != 0 &&
+        !_hasInvalidSerialNumbers(serial) &&
+        !_hasMissingSizes(sizeList);
+  }
+
   void showQuantitySheet(
       ProductDetail knownProductModel, bool isEdit, int? position) {
     LogPrint().log("edit : $isEdit $position");
-    ProductDetail model = knownProductModel;
+    final model = knownProductModel;
     var quantity = 0;
     final notes = TextEditingController();
-    List<TextEditingController> controllers = [];
-    List<FocusNode> focusNodes = [];
-    ScrollController scrollController =
-        ScrollController(); // Add scroll controller
+    final controllers = <TextEditingController>[];
+    final focusNodes = <FocusNode>[];
+    final scrollController = ScrollController();
 
-    setState(() {
-      if (model.qty > 0 && isEdit) {
-        quantity = model.qty;
-        notes.text = model.notes.toString();
-        if (model.products.isNotEmpty) {
-          for (var element in model.products) {
-            controllers.add(TextEditingController(text: element.serialNumber));
-            focusNodes.add(FocusNode());
-          }
-        }
-      } else {
-        model.qty = 1;
-        quantity = model.qty;
-        model.products = [];
-        controllers.add(TextEditingController(text: ""));
-        focusNodes.add(FocusNode());
-      }
-    });
+    _initializeQuantitySheet(model, isEdit, notes, controllers, focusNodes);
+    quantity = _getInitialQuantity(model, isEdit);
     LogPrint().log("quantity : ${model.categoryId} ${model.qty}");
 
     showModalBottomSheet<void>(
@@ -1942,17 +2027,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         if (value != null) {
                           myState(() {
                             quantity = value;
-                            if (quantity > controllers.length) {
-                              for (int i = controllers.length;
-                                  i < quantity;
-                                  i++) {
-                                controllers.add(TextEditingController());
-                                focusNodes.add(FocusNode());
-                              }
-                            } else if (quantity < controllers.length) {
-                              controllers = controllers.sublist(0, quantity);
-                              focusNodes = focusNodes.sublist(0, quantity);
-                            }
+                            _handleQuantityChangeForSheet(
+                              quantity,
+                              controllers,
+                              focusNodes,
+                            );
                           });
                         }
                       });
@@ -2014,10 +2093,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           })
                       : Container(),
                   Visibility(
-                      visible: quantity != 0 &&
-                          controllers
-                              .where((element) => ((element.text.isEmpty)))
-                              .isEmpty,
+                      visible: _isQuantityFormValid(quantity, controllers),
                       child: FormTextField(
                         onChange: (value) {
                           setState(() {});
@@ -2036,89 +2112,36 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                       margin: const EdgeInsets.symmetric(vertical: 20),
                       child: ElevatedButton(
                         onPressed: () {
-                          if (quantity == 0) {
+                          final errorMessage = _validateQuantityForm(
+                            quantity,
+                            controllers,
+                            buildContext,
+                          );
+                          if (errorMessage != null) {
                             Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please select quantity",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (controllers
-                              .where((element) => ((element.text.isEmpty ||
-                                  element.text.length < 5)))
-                              .isNotEmpty) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter valid serial number",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
+                              buildContext: buildContext,
+                              message: errorMessage,
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            );
                           } else {
-                            setState(() {
-                              if (isEdit) {
-                                List<Map<String, dynamic>> products = [];
-                                for (var element in controllers) {
-                                  products.add(Product(
-                                          productSerialNumberId: 0,
-                                          productDetailsId: model.productId,
-                                          serialNumber: element.text)
-                                      .toJson());
-                                }
-                                Navigator.of(context).pop();
-                                updateProduct({
-                                  "productDetailsId": model.productDetailsId,
-                                  "inspectionId": inspectionId,
-                                  "typeId": productTab,
-                                  "products": products,
-                                  "productId": model.productId,
-                                  "productName": model.productName,
-                                  "qty": quantity,
-                                  "createdOn":
-                                      DateFormat(fullDateFormat)
-                                          .format(Utils().getCurrentGSTTime()),
-                                  "categoryId": model.categoryId,
-                                  "notes": notes.text
-                                });
-                                LogPrint().log("$isEdit $model");
-                              } else {
-                                LogPrint().log("$isEdit $model");
-                                List<Map<String, dynamic>> products = [];
-                                for (var element in controllers) {
-                                  products.add(Product(
-                                          productSerialNumberId: 0,
-                                          productDetailsId: 0,
-                                          serialNumber: element.text)
-                                      .toJson());
-                                }
-                                Navigator.of(context).pop();
-                                addProduct({
-                                  "productDetailsId": 0,
-                                  "inspectionId": inspectionId,
-                                  "typeId": productTab,
-                                  "products": products,
-                                  "productId": model.productId,
-                                  "productName": model.productName,
-                                  "qty": quantity,
-                                  "createdOn":
-                                      DateFormat(fullDateFormat)
-                                          .format(Utils().getCurrentGSTTime()),
-                                  "categoryId": model.categoryId,
-                                  "notes": notes.text
-                                });
-                              }
-                            });
+                            _saveQuantitySheet(
+                              model,
+                              isEdit,
+                              quantity,
+                              controllers,
+                              notes,
+                              setState,
+                              context,
+                            );
                           }
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          backgroundColor: quantity != 0 &&
-                                  controllers
-                                      .where((element) =>
-                                          ((element.text.isEmpty ||
-                                              element.text.length < 5)))
-                                      .isEmpty
+                          backgroundColor: _isQuantityFormValid(quantity, controllers)
                               ? AppTheme.colorPrimary
                               : AppTheme.paleGray,
                           minimumSize: const Size.fromHeight(50),
@@ -2144,6 +2167,205 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       setState(() {
         // productTab = 3;
       });
+    });
+  }
+
+  void _initializeQuantitySheet(
+    ProductDetail model,
+    bool isEdit,
+    TextEditingController notes,
+    List<TextEditingController> controllers,
+    List<FocusNode> focusNodes,
+  ) {
+    setState(() {
+      if (model.qty > 0 && isEdit) {
+        _initializeFromModelForQuantity(
+          model,
+          notes,
+          controllers,
+          focusNodes,
+        );
+      } else {
+        _initializeEmptyQuantitySheet(
+          model,
+          controllers,
+          focusNodes,
+        );
+      }
+    });
+  }
+
+  int _getInitialQuantity(ProductDetail model, bool isEdit) {
+    if (model.qty > 0 && isEdit) {
+      return model.qty;
+    }
+    model.qty = 1;
+    return model.qty;
+  }
+
+  void _initializeFromModelForQuantity(
+    ProductDetail model,
+    TextEditingController notes,
+    List<TextEditingController> controllers,
+    List<FocusNode> focusNodes,
+  ) {
+    notes.text = model.notes.toString();
+    if (model.products.isNotEmpty) {
+      for (var element in model.products) {
+        controllers.add(TextEditingController(text: element.serialNumber));
+        focusNodes.add(FocusNode());
+      }
+    }
+  }
+
+  void _initializeEmptyQuantitySheet(
+    ProductDetail model,
+    List<TextEditingController> controllers,
+    List<FocusNode> focusNodes,
+  ) {
+    model.qty = 1;
+    model.products = [];
+    controllers.add(TextEditingController(text: ""));
+    focusNodes.add(FocusNode());
+  }
+
+  void _handleQuantityChangeForSheet(
+    int newQuantity,
+    List<TextEditingController> controllers,
+    List<FocusNode> focusNodes,
+  ) {
+    if (newQuantity > controllers.length) {
+      _addControllersForQuantity(newQuantity, controllers, focusNodes);
+    } else if (newQuantity < controllers.length) {
+      _removeControllersForQuantity(newQuantity, controllers, focusNodes);
+    }
+  }
+
+  void _addControllersForQuantity(
+    int quantity,
+    List<TextEditingController> controllers,
+    List<FocusNode> focusNodes,
+  ) {
+    for (int i = controllers.length; i < quantity; i++) {
+      controllers.add(TextEditingController());
+      focusNodes.add(FocusNode());
+    }
+  }
+
+  void _removeControllersForQuantity(
+    int quantity,
+    List<TextEditingController> controllers,
+    List<FocusNode> focusNodes,
+  ) {
+    controllers.removeRange(quantity, controllers.length);
+    focusNodes.removeRange(quantity, focusNodes.length);
+  }
+
+  String? _validateQuantityForm(
+    int quantity,
+    List<TextEditingController> controllers,
+    BuildContext buildContext,
+  ) {
+    if (quantity == 0) {
+      return "Please select quantity";
+    }
+    if (_hasInvalidSerialNumbersForQuantity(controllers)) {
+      return "Please enter valid serial number";
+    }
+    return null;
+  }
+
+  bool _hasInvalidSerialNumbersForQuantity(
+    List<TextEditingController> controllers,
+  ) {
+    return controllers.any((element) =>
+        element.text.isEmpty || element.text.length < 5);
+  }
+
+  bool _isQuantityFormValid(
+    int quantity,
+    List<TextEditingController> controllers,
+  ) {
+    return quantity != 0 && !_hasInvalidSerialNumbersForQuantity(controllers);
+  }
+
+  void _saveQuantitySheet(
+    ProductDetail model,
+    bool isEdit,
+    int quantity,
+    List<TextEditingController> controllers,
+    TextEditingController notes,
+    StateSetter setState,
+    BuildContext context,
+  ) {
+    final products = _buildProductsListForQuantity(controllers, model, isEdit);
+    setState(() {
+      if (isEdit) {
+        _updateProductForQuantity(model, quantity, products, notes);
+      } else {
+        _addProductForQuantity(model, quantity, products, notes);
+      }
+      Navigator.of(context).pop();
+    });
+  }
+
+  List<Map<String, dynamic>> _buildProductsListForQuantity(
+    List<TextEditingController> controllers,
+    ProductDetail model,
+    bool isEdit,
+  ) {
+    final products = <Map<String, dynamic>>[];
+    for (var element in controllers) {
+      products.add(Product(
+        productSerialNumberId: 0,
+        productDetailsId: isEdit ? model.productId : 0,
+        serialNumber: element.text,
+      ).toJson());
+    }
+    return products;
+  }
+
+  void _updateProductForQuantity(
+    ProductDetail model,
+    int quantity,
+    List<Map<String, dynamic>> products,
+    TextEditingController notes,
+  ) {
+    updateProduct({
+      "productDetailsId": model.productDetailsId,
+      "inspectionId": inspectionId,
+      "typeId": productTab,
+      "products": products,
+      "productId": model.productId,
+      "productName": model.productName,
+      "qty": quantity,
+      "createdOn": DateFormat(fullDateTimeFormat)
+          .format(Utils().getCurrentGSTTime()),
+      "categoryId": model.categoryId,
+      "notes": notes.text,
+    });
+    LogPrint().log("true $model");
+  }
+
+  void _addProductForQuantity(
+    ProductDetail model,
+    int quantity,
+    List<Map<String, dynamic>> products,
+    TextEditingController notes,
+  ) {
+    LogPrint().log("false $model");
+    addProduct({
+      "productDetailsId": 0,
+      "inspectionId": inspectionId,
+      "typeId": productTab,
+      "products": products,
+      "productId": model.productId,
+      "productName": model.productName,
+      "qty": quantity,
+      "createdOn": DateFormat(fullDateTimeFormat)
+          .format(Utils().getCurrentGSTTime()),
+      "categoryId": model.categoryId,
+      "notes": notes.text,
     });
   }
 
@@ -2216,7 +2438,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     cursorWidth: 2,
                     decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(5),
-                        hintText: "Search...",
+                        hintText:searchHint,
                         border: InputBorder.none,
                         prefixIcon: Icon(
                           Icons.search,
@@ -2346,7 +2568,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                       cursorWidth: 2,
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.all(5),
-                          hintText: "Search...",
+                          hintText: searchHint,
                           border: InputBorder.none,
                           prefixIcon: Icon(
                             Icons.search,
@@ -2507,15 +2729,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           const SizedBox(
             height: 10,
           ),
-          /*   FormTextField(
-            hint: DateFormat("dd-MM-yyyy  hh:mm:ss aa")
-                .format(Utils().getCurrentGSTTime()),
-            textColor: AppTheme.gray_Asparagus,
-            title: 'Current Date & Time',
-            value: DateFormat("dd-MM-yyyy  hh:mm:ss aa")
-                .format(Utils().getCurrentGSTTime()),
-            onTap: () {},
-          ),*/
           FormTextField(
             hint: "",
             value: inspectorNameList.join(","),
@@ -2799,7 +3012,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       "location": googleAddress,
       "agentEmployeeIds": agentMap,
       "departmentEmployeeId": inspectorMap,
-      "createdOn": DateFormat(fullDateFormat)
+      "createdOn": DateFormat(fullDateTimeFormat)
           .format(Utils().getCurrentGSTTime()),
       "comments": initialNotes.text.toString(),
       "finalNotes": "",

@@ -138,7 +138,7 @@ class _SelectInspectorState extends State<SelectInspector> {
                       cursorWidth: 2,
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.all(5),
-                          hintText: "Search...",
+                          hintText: searchHint,
                           border: InputBorder.none,
                           prefixIcon: Icon(
                             Icons.search,

@@ -62,7 +62,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _buildStartDateField() {
     final startDateValue = startDate != null
-        ? DateFormat("dd-MM-yyyy").format(startDate!)
+        ? DateFormat(dateFormat).format(startDate!)
         : "";
 
     return FormTextField(
@@ -75,7 +75,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _buildEndDateField() {
     final endDateValue = endDate != null
-        ? DateFormat("dd-MM-yyyy").format(endDate!)
+        ? DateFormat(dateFormat).format(endDate!)
         : "";
 
     return FormTextField(
@@ -282,8 +282,8 @@ class _DashboardPageState extends State<DashboardPage> {
   Future<void> getCount() async {
     var fields = {
       "dateFilter": {
-        "startDate": DateFormat(fullDateFormat).format(startDate!),
-        "enddate": DateFormat(fullDateFormat).format(endDate!)
+        "startDate": DateFormat(fullDateTimeFormat).format(startDate!),
+        "enddate": DateFormat(fullDateTimeFormat).format(endDate!)
       },
       "userId": StoreUserData().getInt(USER_ID)
     };

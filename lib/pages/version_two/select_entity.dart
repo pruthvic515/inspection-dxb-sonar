@@ -106,7 +106,7 @@ class _SelectEntityState extends State<SelectEntity> {
                       cursorWidth: 2,
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.all(5),
-                          hintText: "Search...",
+                          hintText: searchHint,
                           border: InputBorder.none,
                           prefixIcon: Icon(
                             Icons.search,

@@ -168,7 +168,7 @@ class _PatrolVisitsAllState extends State<PatrolVisitsAll> {
                                                   right: 20, left: 10),
                                               textAlign: TextAlign.start,
                                               text:
-                                                  "${DateFormat("dd-MM-yyyy").format(DateFormat(fullDateFormat).parse(list[index].createdOn))} \n${DateFormat("hh:mm:ss aa").format(DateFormat(fullDateFormat).parse(list[index].createdOn))}",
+                                                  "${DateFormat(dateFormat).format(DateFormat(fullDateTimeFormat).parse(list[index].createdOn))} \n${DateFormat("hh:mm:ss aa").format(DateFormat(fullDateTimeFormat).parse(list[index].createdOn))}",
                                               maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
                                               fontFamily: AppTheme.urbanist,

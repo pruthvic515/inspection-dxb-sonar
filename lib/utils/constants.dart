@@ -77,5 +77,8 @@ const double SIZE_500 = 500;
 const double SIZE_600 = 600;
 
 const noEntityMessage = "No Entity Found";
-const fullDateFormat="yyyy-MM-ddTHH:mm:ss.SSSZ";
-const notesTitle="Notes :";
+const fullDateTimeFormat = "yyyy-MM-ddTHH:mm:ss.SSSZ";
+const dateFormat = "dd-MM-yyyy";
+const notesTitle = "Notes :";
+const searchEntityTitle = "Search Entity";
+const searchHint = "Search...";

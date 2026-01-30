@@ -6,8 +6,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:patrol_system/controls/loading_indicator_dialog.dart';
 import 'package:patrol_system/controls/form_text_field.dart';
+import 'package:patrol_system/controls/loading_indicator_dialog.dart';
 import 'package:patrol_system/controls/text.dart';
 import 'package:patrol_system/model/area_model.dart';
 import 'package:patrol_system/pages/menu_page.dart';
@@ -375,7 +375,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     showSelectionSheet();
                   },
                   child: CText(
-                    text: "Search Entity",
+                    text: searchEntityTitle,
                     textColor: AppTheme.textPrimary,
                     fontWeight: FontWeight.w700,
                   ),
@@ -503,7 +503,7 @@ class _HomeScreenState extends State<HomeScreen> {
               cursorWidth: 2,
               decoration: const InputDecoration(
                   contentPadding: EdgeInsets.all(5),
-                  hintText: "Search...",
+                  hintText: searchHint,
                   border: InputBorder.none,
                   prefixIcon: Icon(
                     Icons.search,
@@ -732,8 +732,8 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           Position position = await Geolocator.getCurrentPosition(
               locationSettings: const LocationSettings(
-                accuracy: LocationAccuracy.high,
-              ));
+            accuracy: LocationAccuracy.high,
+          ));
           latitude = position.latitude;
           longitude = position.longitude;
           List placeMarks = await placemarkFromCoordinates(
@@ -752,8 +752,8 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         Position position = await Geolocator.getCurrentPosition(
             locationSettings: const LocationSettings(
-              accuracy: LocationAccuracy.high,
-            ));
+          accuracy: LocationAccuracy.high,
+        ));
         latitude = position.latitude;
         longitude = position.longitude;
         List placeMarks = await placemarkFromCoordinates(
@@ -875,7 +875,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             showSelectionSheet();
                                           },
                                           child: CText(
-                                            text: "Search Entity",
+                                            text: searchEntityTitle,
                                             textColor: AppTheme.textPrimary,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -1007,7 +1007,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     cursorWidth: 2,
                                     decoration: const InputDecoration(
                                         contentPadding: EdgeInsets.all(5),
-                                        hintText: "Search...",
+                                        hintText: searchHint,
                                         border: InputBorder.none,
                                         prefixIcon: Column(
                                           children: [
@@ -1696,7 +1696,7 @@ class _HomeScreenState extends State<HomeScreen> {
               refreshTask();
             });
           }
-                });
+        });
       });
     }
   }
@@ -1731,7 +1731,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Center(
                           child: CText(
-                        text: "Search Entity",
+                        text: searchEntityTitle,
                         padding: const EdgeInsets.only(top: 20, bottom: 10),
                         textColor: AppTheme.black,
                         fontSize: AppTheme.big_20,
@@ -1895,7 +1895,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     cursorWidth: 2,
                     decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(5),
-                        hintText: "Search...",
+                        hintText: searchHint,
                         border: InputBorder.none,
                         prefixIcon: Icon(
                           Icons.search,
