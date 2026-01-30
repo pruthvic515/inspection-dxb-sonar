@@ -640,7 +640,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   Future<void> _fetchLocationAndAddress() async {
     try {
       final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
       _updateLocation(position);
       await _fetchAddressFromCoordinates(position);
@@ -690,8 +692,18 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   Widget build(BuildContext context) {
     currentWidth = MediaQuery.of(context).size.width;
     currentHeight = MediaQuery.of(context).size.height;
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          Get.back(result: {
+            "statusId": statusId,
+            "inspectionId": inspectionId,
+            "taskId": taskId,
+            "inspectorId": inspectorId
+          });
+        }
+      },
       child: Scaffold(
         backgroundColor: AppTheme.mainBackground,
         resizeToAvoidBottomInset: true,
@@ -706,16 +718,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         ),
       ),
     );
-  }
-
-  Future<bool> _onWillPop() async {
-    Get.back(result: {
-      "statusId": statusId,
-      "inspectionId": inspectionId,
-      "taskId": taskId,
-      "inspectorId": inspectorId
-    });
-    return false;
   }
 
   Widget _buildHeader() {
@@ -4382,22 +4384,25 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           separatorBuilder: (_, __) => const Divider(height: 1),
                           itemBuilder: (context, index) {
                             final reason = reasonList[index];
-                            return RadioListTile<int>(
-                              contentPadding: EdgeInsets.zero,
-                              value: index,
+                            return RadioGroup<int>(
                               groupValue: selectedIndex,
-                              title: CText(
-                                text: reason["name"],
-                                textColor: AppTheme.black,
-                                fontFamily: AppTheme.urbanist,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                              ),
                               onChanged: (value) {
                                 setState(() {
                                   selectedIndex = value ?? -1;
                                 });
                               },
+                              child: RadioListTile<int>(
+                                contentPadding: EdgeInsets.zero,
+                                value: index,
+                                title: CText(
+                                  text: reason["name"],
+                                  textColor: AppTheme.black,
+                                  fontFamily: AppTheme.urbanist,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                onChanged: (_) {},
+                              ),
                             );
                           },
                         ),

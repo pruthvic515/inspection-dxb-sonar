@@ -731,7 +731,9 @@ class _HomeScreenState extends State<HomeScreen> {
               });
         } else {
           Position position = await Geolocator.getCurrentPosition(
-              desiredAccuracy: LocationAccuracy.high);
+              locationSettings: const LocationSettings(
+                accuracy: LocationAccuracy.high,
+              ));
           latitude = position.latitude;
           longitude = position.longitude;
           List placeMarks = await placemarkFromCoordinates(
@@ -749,7 +751,9 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       } else {
         Position position = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.high);
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+            ));
         latitude = position.latitude;
         longitude = position.longitude;
         List placeMarks = await placemarkFromCoordinates(
@@ -1518,7 +1522,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void showRejectRemarkSheet(Tasks task) {
     var remark = TextEditingController();
-    var loading = false;
     FocusNode focusNode = FocusNode();
 
     showModalBottomSheet(

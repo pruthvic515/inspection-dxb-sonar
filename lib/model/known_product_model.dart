@@ -66,12 +66,12 @@ Future<KnownProductModel> parseKnownProducts(dynamic apiResponse) async {
 
 
   List<KnownProductData> list = [];
-  final EncryptAndDecrypt _encryptAndDecrypt = EncryptAndDecrypt();
+  final EncryptAndDecrypt encryptAndDecrypt = EncryptAndDecrypt();
   final result = decoded['data']['result'] as List;
 
   for (final item in result) {
     if (item is String) {
-      final decrypted = await _encryptAndDecrypt.decryption(payload: item);
+      final decrypted = await encryptAndDecrypt.decryption(payload: item);
       final map = json.decode(decrypted) as Map<String, dynamic>;
       list.add(KnownProductData.fromJson(map));
     } else if (item is Map<String, dynamic>) {

@@ -820,7 +820,6 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
                                 ),
-                                onChanged: (_) {}, // required but ignored
                               ),
                             );
                           },
