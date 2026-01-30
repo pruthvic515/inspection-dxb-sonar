@@ -95,6 +95,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
   Future<void> getEntityDetail() async {
     if (await Utils().hasNetwork(context, setState)) {
       if (!mounted) return;
+
       Api().callAPI(
           context,
           "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${widget.task.mainTaskId}&entityId=${widget.task.entityID}",

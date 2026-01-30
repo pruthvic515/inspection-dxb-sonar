@@ -29,7 +29,7 @@ class EncryptionConfig {
   static final Map<String, List<String>> encryptedEndpointsByMethod = {
     'GET': [
       // GET methods that require encryption
-      'api/Department/Task/GetTaskStatus',
+
       'api/Department/User/GetInspectionList',
       'api/Department/User/GetAllUser',
       'api/Mobile/Entity/GetAllEntityBasicDetail',
@@ -37,6 +37,9 @@ class EncryptionConfig {
       'api/Agent/Agent/GetAssignedTaskEmployees',
       'api/Department/Task/GetAssignedTaskInspectors',
       'api/Mobile/InspectionDocument/GetAllByInspectionId',
+      'api/Mobile/EntityRepresentative/Delete',
+      "Mobile/EntityRepresentative/GetInspectionDetail",
+      'api/Mobile/ProduectDetail/Delete',
     ],
     'POST': [
       // POST methods that require encryption
@@ -53,17 +56,27 @@ class EncryptionConfig {
       'api/Mobile/ProduectDetail/GetAllProduct',
       'api/Mobile/ProduectDetail/Create',
       'api/Mobile/ProduectDetail/Update',
-      'api/Mobile/ProduectDetail/Delete',
+
       'api/Department/Task/CreateTask',
       'api/Mobile/EntityRepresentative/Create',
-      'api/Mobile/EntityRepresentative/Delete',
       'api/Mobile/InspectionDocument/Create',
+      'api/Mobile/EntityRepresentative/Update',
     ],
   };
 
   // List of API endpoint patterns that should NOT use encryption (for all methods)
   // These take priority over encryptedEndpoints
-  static final List<String> excludedEndpoints = [];
+  static final List<String> excludedEndpoints = [
+    "api/Mobile/Entity/GetEntityRole",
+    "Mobile/Entity/GetOutletService",
+    "Mobile/Entity/GetOwnershipDetails",
+    "api/Department/InspectionReasonMaster/InspectionReasonDropDown",
+    'api/Department/Task/GetTaskStatus',
+    'api/Department/Task/AppVersion',
+    'api/Mobile/Entity/GetArea',
+    'api/Mobile/Entity/GetCategory',
+
+  ];
 
   /// Check if an endpoint requires encryption
   ///

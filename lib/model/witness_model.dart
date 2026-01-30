@@ -33,7 +33,6 @@ class WitnessData {
   String emiratesId;
   String phoneNo;
   String emailId;
-  bool isActive;
 
   WitnessData(
       {required this.agentEmployeeId,
@@ -43,20 +42,18 @@ class WitnessData {
       required this.agentName,
       required this.emiratesId,
       required this.phoneNo,
-      required this.emailId,
-      required this.isActive});
+      required this.emailId});
 
   factory WitnessData.fromJson(Map<String, dynamic> json) {
     return WitnessData(
-      agentEmployeeId: json['agentEmployeeId'],
-      agentId: json['agentId'],
+      agentEmployeeId: json['AgentEmployeeId'],
+      agentId: json['AgentId'],
       roldId: json['roldId']??0,
-      roleName: json['roleName'],
-      agentName: json['agentName'],
-      emiratesId: json['emiratesId'],
-      phoneNo: json['phoneNo'],
-      emailId: json['emailId'],
-      isActive: json['isActive'],
+      roleName: json['RoleName'],
+      agentName: json['AgentName'],
+      emiratesId: json['EmiratesId'],
+      phoneNo: json['PhoneNo'],
+      emailId: json['EmailId'],
     );
   }
 
@@ -69,7 +66,6 @@ class WitnessData {
       'emiratesId': emiratesId,
       'phoneNo': phoneNo,
       'emailId': emailId,
-      'isActive': isActive,
     };
   }
 }

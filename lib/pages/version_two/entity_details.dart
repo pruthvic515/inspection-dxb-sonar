@@ -2529,7 +2529,7 @@ class _EntityDetailsState extends State<EntityDetails> {
         "inspectionTaskId": id,
         "mainTaskId": widget.task!.mainTaskId,
         "inspectionId": widget.inspectionId,
-        "inspectorId": storeUserData.getInt(USER_ID),
+        // "inspectorId": storeUserData.getInt(USER_ID),
         "statusId": 10,
         "notes": notes,
       }).then((value) async {
@@ -3029,7 +3029,7 @@ class _EntityDetailsState extends State<EntityDetails> {
       LoadingIndicatorDialog().show(context);
       Api().callAPI(context, "Department/Task/UpdateTaskStatus", {
         "mainTaskId": widget.task?.mainTaskId ?? 0,
-        "inspectorId": storeUserData.getInt(USER_ID),
+        // "inspectorId": storeUserData.getInt(USER_ID),
         "finalNotes": notes,
         "statusId": 7,
       }).then((value) async {

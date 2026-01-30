@@ -84,7 +84,7 @@ class Tasks {
   });
 
   factory Tasks.fromJson(Map<String, dynamic> json) {
-    final locationData = json['location'];
+    final locationData = json['Location'];
     final location = _parseLocation(locationData);
 
     return Tasks(

@@ -713,7 +713,7 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
         "inspectionTaskId": id,
         "mainTaskId": widget.mainTaskId,
         "inspectionId": widget.inspectionId,
-        "inspectorId": storeUserData.getInt(USER_ID),
+        // "inspectorId": storeUserData.getInt(USER_ID),
         "statusId": 10,
         "notes": notes,
       }).then((value) async {

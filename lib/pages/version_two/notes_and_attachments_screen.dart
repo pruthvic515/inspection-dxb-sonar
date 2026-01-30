@@ -659,7 +659,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
       LoadingIndicatorDialog().show(context);
       Api().callAPI(context, "Department/Task/UpdateTaskStatus", {
         "mainTaskId": widget.mainTaskId,
-        "inspectorId": storeUserData.getInt(USER_ID),
+        // "inspectorId": storeUserData.getInt(USER_ID),
         "finalNotes": notes,
         "statusId": 7,
       }).then((value) async {

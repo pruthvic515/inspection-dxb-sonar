@@ -34,15 +34,15 @@ API Method : Mobile/Entity/GetEntityInspectionDetails
 HTTP Method : POST
 Description : Retrieves detailed information about an entity and its related inspection data.
 
-API Method : Mobile/Entity/GetEntityRole
+API Method : Mobile/Entity/GetEntityRole (No Encryption (Master data)
 HTTP Method : GET
 Description : Fetches available roles associated with entities.
 
-API Method : Mobile/Entity/GetOutletService
+API Method : Mobile/Entity/GetOutletService (No Encryption (Master data)
 HTTP Method : GET
 Description : Fetches the list of available outlet services.
 
-API Method : Mobile/Entity/GetOwnershipDetails
+API Method : Mobile/Entity/GetOwnershipDetails (No Encryption (Master data)
 HTTP Method : GET
 Description : Fetches the list of ownership types.
 
@@ -164,9 +164,7 @@ Test@123
 // HTTP Method : GET
 // Description : Fetches inspection details for entity representative.
 
-// API Method : Mobile/Patrol/GetAll
-// HTTP Method : POST
-// Description : Fetches all patrol records with filters.
+
 
 
 

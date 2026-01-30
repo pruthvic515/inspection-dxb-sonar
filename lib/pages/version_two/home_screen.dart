@@ -1643,7 +1643,7 @@ class _HomeScreenState extends State<HomeScreen> {
         "inspectionTaskId": task.inspectionTaskId,
         "mainTaskId": task.mainTaskId,
         "statusId": statusId,
-        "inspectorId": storeUserData.getInt(USER_ID),
+        // "inspectorId": storeUserData.getInt(USER_ID),
         "notes": notes
       }).then((value) async {
         LoadingIndicatorDialog().dismiss();
@@ -1656,15 +1656,26 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getEntityDetail(Tasks task) async {
-    LogPrint().log(jsonEncode(task));
+    // LogPrint().log(jsonEncode(task));
     if (await Utils().hasNetwork(context, setState)) {
-      // LoadingIndicatorDialog().show(context);
+      if (!mounted) return;
+      LoadingIndicatorDialog().show(context);
+      final encryptAndDecrypt = EncryptAndDecrypt();
+
+      final encryptedMainTaskId = await encryptAndDecrypt.encryption(
+        payload: task.mainTaskId.toString(),
+        urlEncode: false,
+      );
+      final encryptedEntityId = await encryptAndDecrypt.encryption(
+        payload: task.entityID.toString(),
+        urlEncode: false,
+      );
       if (!mounted) return;
       Api().callAPI(
           context,
-          "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${task.mainTaskId}&entityId=${task.entityID}",
+          "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}",
           {}).then((value) async {
-        // LoadingIndicatorDialog().dismiss();
+        LoadingIndicatorDialog().dismiss();
         setState(() {
           var entity = entityFromJson(value);
           if (task.statusId == 7 ||

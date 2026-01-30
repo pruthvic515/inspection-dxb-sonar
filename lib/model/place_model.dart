@@ -59,9 +59,9 @@ class Places {
       lastVisitedDate: json['LastVisitedDate'],
       status: json['status'] ?? "",
       entityName: json['EntityName'],
-      location: json['location'] == null
+      location: json['Location'] == null
           ? null
-          : LocationModel.fromJson(json['location']),
+          : LocationModel.fromJson(json['Location']),
       categoryName: json['CategoryName'] ?? "",
       classificationName: json['ClassificationName'] ?? "",
       monthlyLimit: json['MonthlyLimit'] ?? 0,

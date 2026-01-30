@@ -48,15 +48,15 @@ class RepresentativeData {
 
   factory RepresentativeData.fromJson(Map<String, dynamic> json) {
     return RepresentativeData(
-      entityRepresentativeId: json['entityRepresentativeId'],
-      inspectionId: json['inspectionId'],
-      typeId: json['typeId'],
-      name: json['name'],
-      emiratesId: json['emiratesId'],
-      phoneNo: json['phoneNo'],
-      roleId: json['roleId'],
-      roleName: json['roleName'] ?? "-",
-      notes: json['notes'] ?? "-",
+      entityRepresentativeId: json['EntityRepresentativeId'],
+      inspectionId: json['InspectionId'],
+      typeId: json['TypeId'],
+      name: json['Name'],
+      emiratesId: json['EmiratesId'],
+      phoneNo: json['PhoneNo'],
+      roleId: json['RoleId'],
+      roleName: json['RoleName'] ?? "-",
+      notes: json['Notes'] ?? "-",
     );
   }
 
