@@ -77,3 +77,5 @@ const double SIZE_500 = 500;
 const double SIZE_600 = 600;
 
 const noEntityMessage = "No Entity Found";
+const fullDateFormat="yyyy-MM-ddTHH:mm:ss.SSSZ";
+const notesTitle="Notes :";

@@ -1193,7 +1193,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
             CText(
               textAlign: TextAlign.start,
               padding: const EdgeInsets.only(right: 10),
-              text: "Notes : ${list[index].notes}",
+              text: "$notesTitle ${list[index].notes}",
               textColor: AppTheme.grayAsparagus,
               fontFamily: AppTheme.urbanist,
               fontSize: AppTheme.large,

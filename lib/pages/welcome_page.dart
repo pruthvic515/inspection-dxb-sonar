@@ -161,40 +161,53 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Future<void> locationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      if (!mounted) return;
-      Utils().showAlert(
-          buildContext: context,
-          message: "Location services are disabled.",
-          onPressed: () {
-            Navigator.of(context).pop();
-            Geolocator.openLocationSettings().whenComplete(() {
-              locationPermission();
-            });
-          });
-    } else {
-      permission = await Geolocator.checkPermission();
-      if (permission != LocationPermission.always) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied ||
-            permission == LocationPermission.deniedForever) {
-          if (!mounted) return;
-          Utils().showAlert(
-              buildContext: context,
-              message: "Location permissions are denied.",
-              onPressed: () {
-                Navigator.of(context).pop();
-              });
-        } else {
-          Get.to(transition: Transition.rightToLeft, const LoginPage());
-        }
-      } else {
-        Get.to(transition: Transition.rightToLeft, const LoginPage());
+      _handleLocationServiceDisabled();
+      return;
+    }
+    await _handleLocationPermission();
+  }
+
+  void _handleLocationServiceDisabled() {
+    if (!mounted) return;
+    Utils().showAlert(
+      buildContext: context,
+      message: "Location services are disabled.",
+      onPressed: () {
+        Navigator.of(context).pop();
+        Geolocator.openLocationSettings().whenComplete(() {
+          locationPermission();
+        });
+      },
+    );
+  }
+
+  Future<void> _handleLocationPermission() async {
+    var permission = await Geolocator.checkPermission();
+    if (permission != LocationPermission.always) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        _handlePermissionDenied();
+        return;
       }
     }
+    _navigateToLogin();
+  }
+
+  void _handlePermissionDenied() {
+    if (!mounted) return;
+    Utils().showAlert(
+      buildContext: context,
+      message: "Location permissions are denied.",
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  void _navigateToLogin() {
+    Get.to(transition: Transition.rightToLeft, const LoginPage());
   }
 }

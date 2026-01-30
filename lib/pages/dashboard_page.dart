@@ -282,8 +282,8 @@ class _DashboardPageState extends State<DashboardPage> {
   Future<void> getCount() async {
     var fields = {
       "dateFilter": {
-        "startDate": DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").format(startDate!),
-        "enddate": DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").format(endDate!)
+        "startDate": DateFormat(fullDateFormat).format(startDate!),
+        "enddate": DateFormat(fullDateFormat).format(endDate!)
       },
       "userId": StoreUserData().getInt(USER_ID)
     };

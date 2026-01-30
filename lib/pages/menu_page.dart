@@ -256,9 +256,9 @@ class _MenuPageState extends State<MenuPage> {
     LoadingIndicatorDialog().show(context);
     var fields = {
       "dateFilter": {
-        "startDate": DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
+        "startDate": DateFormat(fullDateFormat)
             .format(DateTime(2024, 03, 01)),
-        "enddate": DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
+        "enddate": DateFormat(fullDateFormat)
             .format(Utils().getCurrentGSTTime())
       },
       "userId": StoreUserData().getInt(USER_ID)

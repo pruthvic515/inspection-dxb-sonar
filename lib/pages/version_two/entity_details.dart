@@ -1664,7 +1664,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                         textAlign:
                                                             TextAlign.start,
                                                         text:
-                                                            "${DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").parse(list[index].createdOn))} \n${DateFormat("hh:mm:ss aa").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").parse(list[index].createdOn))}",
+                                                            "${DateFormat("dd-MM-yyyy").format(DateFormat(fullDateFormat).parse(list[index].createdOn))} \n${DateFormat("hh:mm:ss aa").format(DateFormat(fullDateFormat).parse(list[index].createdOn))}",
                                                         maxLines: 2,
                                                         overflow: TextOverflow
                                                             .ellipsis,
@@ -2156,7 +2156,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     hint: "",
                     focusNode: notesNode,
                     value: notes.text,
-                    title: 'Notes :',
+                    title: notesTitle,
                     minLines: 2,
                     maxLines: 3,
                     inputBorder: InputBorder.none,
@@ -2260,8 +2260,8 @@ class _EntityDetailsState extends State<EntityDetails> {
         "agentUserId": agentUserId.isEmpty ? [] : agentUserId,
         "notes": notes,
         "createdBy": storeUserData.getInt(USER_ID),
-        "createdOn": DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
-            .format(Utils().getCurrentGSTTime()),
+        "createdOn":
+            DateFormat(fullDateFormat).format(Utils().getCurrentGSTTime()),
       };
 
       // isHideAgents is true means liquor task else DXB task
@@ -2333,7 +2333,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                   controller: remark,
                   textColor: AppTheme.grayAsparagus,
                   fontFamily: AppTheme.urbanist,
-                  title: 'Notes :',
+                  title: notesTitle,
                   maxLines: 10,
                   minLines: 5,
                 ),
@@ -2421,7 +2421,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                   controller: remark,
                   textColor: AppTheme.grayAsparagus,
                   fontFamily: AppTheme.urbanist,
-                  title: 'Notes :',
+                  title: notesTitle,
                   maxLines: 10,
                   minLines: 5,
                 ),
@@ -2747,7 +2747,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                     controller: notes,
                     hint: "",
                     value: notes.text,
-                    title: 'Notes :',
+                    title: notesTitle,
                     minLines: 2,
                     maxLines: 2,
                     inputBorder: InputBorder.none,
@@ -2931,10 +2931,10 @@ class _EntityDetailsState extends State<EntityDetails> {
         "emiratesId": model.emiratesId,
         "notes": model.notes,
         "createdBy": storeUserData.getInt(USER_ID),
-        "createdOn": DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
-            .format(Utils().getCurrentGSTTime()),
-        "modifiedOn": DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
-            .format(Utils().getCurrentGSTTime()),
+        "createdOn":
+            DateFormat(fullDateFormat).format(Utils().getCurrentGSTTime()),
+        "modifiedOn":
+            DateFormat(fullDateFormat).format(Utils().getCurrentGSTTime()),
         "modifiedBy": storeUserData.getInt(USER_ID)
       }).then((value) async {
         LoadingIndicatorDialog().dismiss();
@@ -3021,10 +3021,10 @@ class _EntityDetailsState extends State<EntityDetails> {
         "emiratesId": model.emiratesId,
         "notes": model.notes,
         "createdBy": storeUserData.getInt(USER_ID),
-        "createdOn": DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
-            .format(Utils().getCurrentGSTTime()),
-        "modifiedOn": DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
-            .format(Utils().getCurrentGSTTime()),
+        "createdOn":
+            DateFormat(fullDateFormat).format(Utils().getCurrentGSTTime()),
+        "modifiedOn":
+            DateFormat(fullDateFormat).format(Utils().getCurrentGSTTime()),
         "modifiedBy": storeUserData.getInt(USER_ID)
       }).then((value) async {
         LoadingIndicatorDialog().dismiss();
@@ -3287,8 +3287,8 @@ class _EntityDetailsState extends State<EntityDetails> {
       "location": googleAddress,
       "agentEmployeeIds": agentMap,
       "departmentEmployeeId": inspectorMap,
-      "createdOn": DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
-          .format(Utils().getCurrentGSTTime()),
+      "createdOn":
+          DateFormat(fullDateFormat).format(Utils().getCurrentGSTTime()),
       "comments": "",
       "finalNotes": "",
       "createdByName": "",
@@ -3369,8 +3369,8 @@ class _EntityDetailsState extends State<EntityDetails> {
         } else {
           Position position = await Geolocator.getCurrentPosition(
               locationSettings: const LocationSettings(
-                accuracy: LocationAccuracy.high,
-              ));
+            accuracy: LocationAccuracy.high,
+          ));
           // latitude = position.latitude;
           // longitude = position.longitude;
           try {
@@ -3399,8 +3399,8 @@ class _EntityDetailsState extends State<EntityDetails> {
       } else {
         Position position = await Geolocator.getCurrentPosition(
             locationSettings: const LocationSettings(
-              accuracy: LocationAccuracy.high,
-            ));
+          accuracy: LocationAccuracy.high,
+        ));
         // latitude = position.latitude;
         // longitude = position.longitude;
         List placeMarks = await placemarkFromCoordinates(

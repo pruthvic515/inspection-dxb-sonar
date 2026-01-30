@@ -46,48 +46,70 @@ class _SelectInspectorState extends State<SelectInspector> {
   }
 
   Future<void> getAllUsers() async {
-    if (await Utils().hasNetwork(context, setState)) {
-      if (!mounted) return;
-      LoadingIndicatorDialog().show(context);
-      Api().getAPI(context, "Department/User/GetAllUser").then((value) async {
-        debugPrint(value);
-        setState(() {
-          searchList.clear();
-          list.clear();
-          var data = allUsersFromJson(value);
-          if (data.data.isNotEmpty) {
-            if (widget.isPrimary == false) {
-              final primaryIds = widget.primaryInspector
-                      ?.map((e) => e.departmentUserId)
-                      .toSet() ??
-                  {};
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
 
-              final searchList = data.data
-                  .where((element) =>
-                      !primaryIds.contains(element.departmentUserId))
-                  .toList();
-              list.addAll(searchList);
-            } else {
-              debugPrint("primaryInspector ${widget.primaryInspector?.length}");
-              debugPrint("selectedUsers ${selectedUsers.length}");
-              searchList.addAll(data.data);
-              list.addAll(data.data);
-            }
-            LoadingIndicatorDialog().dismiss();
-          } else {
-            LoadingIndicatorDialog().dismiss();
-            Utils().showAlert(
-                buildContext: context,
-                message: data.data.isEmpty
-                    ? "No Data Found"
-                    : "Something Went Wrong",
-                onPressed: () {
-                  Navigator.of(context).pop();
-                });
-          }
-        });
-      });
+    LoadingIndicatorDialog().show(context);
+    try {
+      final value = await Api().getAPI(context, "Department/User/GetAllUser");
+      debugPrint(value);
+      await _processUsersResponse(value);
+    } finally {
+      if (mounted) {
+        LoadingIndicatorDialog().dismiss();
+      }
     }
+  }
+
+  Future<void> _processUsersResponse(String value) async {
+    if (!mounted) return;
+
+    setState(() {
+      searchList.clear();
+      list.clear();
+      final data = allUsersFromJson(value);
+
+      if (data.data.isEmpty) {
+        _showEmptyDataAlert(data.data.isEmpty);
+        return;
+      }
+
+      _populateUserLists(data.data);
+    });
+  }
+
+  void _populateUserLists(List<AllUserData> users) {
+    if (widget.isPrimary == false) {
+      _addFilteredUsers(users);
+    } else {
+      _addAllUsers(users);
+    }
+  }
+
+  void _addFilteredUsers(List<AllUserData> users) {
+    final primaryIds =
+        widget.primaryInspector?.map((e) => e.departmentUserId).toSet() ?? {};
+    final filteredUsers = users
+        .where((element) => !primaryIds.contains(element.departmentUserId))
+        .toList();
+    list.addAll(filteredUsers);
+  }
+
+  void _addAllUsers(List<AllUserData> users) {
+    debugPrint("primaryInspector ${widget.primaryInspector?.length}");
+    debugPrint("selectedUsers ${selectedUsers.length}");
+    searchList.addAll(users);
+    list.addAll(users);
+  }
+
+  void _showEmptyDataAlert(bool isEmpty) {
+    Utils().showAlert(
+      buildContext: context,
+      message: isEmpty ? "No Data Found" : "Something Went Wrong",
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
   }
 
   @override

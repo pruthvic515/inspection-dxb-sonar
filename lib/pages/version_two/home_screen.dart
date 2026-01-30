@@ -657,7 +657,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           CText(
                             textAlign: TextAlign.end,
                             padding: const EdgeInsets.only(right: 5, top: 10),
-                            text: "Notes :",
+                            text: notesTitle,
                             textColor: AppTheme.colorPrimary,
                             fontFamily: AppTheme.urbanist,
                             fontSize: AppTheme.medium,
@@ -1258,7 +1258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                       .only(
                                                                       right: 5,
                                                                       top: 10),
-                                                              text: "Notes :",
+                                                              text: notesTitle,
                                                               textColor: AppTheme
                                                                   .colorPrimary,
                                                               fontFamily:
@@ -1553,7 +1553,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   controller: remark,
                   textColor: AppTheme.grayAsparagus,
                   fontFamily: AppTheme.urbanist,
-                  title: 'Notes :',
+                  title: notesTitle,
                   maxLines: 10,
                   minLines: 5,
                 ),

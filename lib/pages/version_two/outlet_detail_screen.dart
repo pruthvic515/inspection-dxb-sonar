@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 
-import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/form_text_field.dart';
+import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
 import '../../model/area_model.dart';
 import '../../model/entity_detail_model.dart';
@@ -436,7 +436,7 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                                   children: [
                                     CText(
                                       textAlign: TextAlign.center,
-                                      text: "Notes : ",
+                                      text: notesTitle,
                                       textColor: AppTheme.titleGray,
                                       fontFamily: AppTheme.urbanist,
                                       fontSize: AppTheme.medium,
@@ -653,7 +653,7 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                   controller: remark,
                   textColor: AppTheme.grayAsparagus,
                   fontFamily: AppTheme.urbanist,
-                  title: 'Notes :',
+                  title: notesTitle,
                   maxLines: 10,
                   minLines: 5,
                 ),

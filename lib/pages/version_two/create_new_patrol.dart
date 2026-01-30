@@ -694,7 +694,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     currentHeight = MediaQuery.of(context).size.height;
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           Get.back(result: {
             "statusId": statusId,
@@ -1800,8 +1800,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                             typeId: productTab,
                                             products: products,
                                             productId: 0,
-                                            createdOn: DateFormat(
-                                                    "yyyy-MM-ddTHH:mm:ss.SSSZ")
+                                            createdOn: DateFormat(fullDateFormat)
                                                 .format(Utils()
                                                     .getCurrentGSTTime()),
                                             categoryId: 0,
@@ -1817,8 +1816,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                             typeId: productTab,
                                             products: products,
                                             productId: model.productId,
-                                            createdOn: DateFormat(
-                                                    "yyyy-MM-ddTHH:mm:ss.SSSZ")
+                                            createdOn: DateFormat(fullDateFormat)
                                                 .format(Utils()
                                                     .getCurrentGSTTime()),
                                             categoryId: 0,
@@ -2076,7 +2074,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   "productName": model.productName,
                                   "qty": quantity,
                                   "createdOn":
-                                      DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
+                                      DateFormat(fullDateFormat)
                                           .format(Utils().getCurrentGSTTime()),
                                   "categoryId": model.categoryId,
                                   "notes": notes.text
@@ -2102,7 +2100,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   "productName": model.productName,
                                   "qty": quantity,
                                   "createdOn":
-                                      DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
+                                      DateFormat(fullDateFormat)
                                           .format(Utils().getCurrentGSTTime()),
                                   "categoryId": model.categoryId,
                                   "notes": notes.text
@@ -2801,7 +2799,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       "location": googleAddress,
       "agentEmployeeIds": agentMap,
       "departmentEmployeeId": inspectorMap,
-      "createdOn": DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
+      "createdOn": DateFormat(fullDateFormat)
           .format(Utils().getCurrentGSTTime()),
       "comments": initialNotes.text.toString(),
       "finalNotes": "",
@@ -3479,7 +3477,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         hint: "",
                         focusNode: node5,
                         value: notes.text,
-                        title: 'Notes :',
+                        title: notesTitle,
                         minLines: 2,
                         maxLines: 5,
                         inputBorder: InputBorder.none,
@@ -3831,7 +3829,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   child: CText(
                     textAlign: TextAlign.start,
                     padding: const EdgeInsets.only(right: 10, top: 5),
-                    text: "Notes : ${list[index].notes}",
+                    text: "$notesTitle ${list[index].notes}",
                     textColor: AppTheme.grayAsparagus,
                     fontFamily: AppTheme.urbanist,
                     fontSize: AppTheme.large,
@@ -4401,7 +4399,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
                                 ),
-                                onChanged: (_) {},
                               ),
                             );
                           },
