@@ -769,7 +769,7 @@ packages:
     source: hosted
     version: "3.2.1"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "75cca69d1490965be98c73ceaea117e8a04dd21217b37b292c9ddbec0d955bc5"
@@ -929,7 +929,7 @@ packages:
     source: hosted
     version: "6.0.3"
   pretty_dio_logger:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: pretty_dio_logger
       sha256: "36f2101299786d567869493e2f5731de61ce130faa14679473b26905a92b6407"

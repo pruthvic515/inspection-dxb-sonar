@@ -1664,45 +1664,36 @@ class _HomeScreenState extends State<HomeScreen> {
         // LoadingIndicatorDialog().dismiss();
         setState(() {
           var entity = entityFromJson(value);
-          if (entity != null) {
-            if (task.statusId == 7 ||
-                (tabType == "completed" /*&& task.statusId == 6*/)) {
-              Get.to(
-                      transition: Transition.rightToLeft,
-                      InspectionDetailScreen(
-                          task: task,
-                          inspectionId: entity.inspectionId!,
-                          completeStatus: tabType == "completed"))
-                  ?.whenComplete(() {
-                refreshTask();
-              });
-            } else {
-              print("EntityDetails 4");
-              Get.to(
-                      transition: Transition.rightToLeft,
-                      EntityDetails(
-                          fromActive: tabType == "pending",
-                          task: task,
-                          entityId: task.entityID!,
-                          taskId: task.inspectionTaskId,
-                          statusId: task.statusId,
-                          inspectionId: task.inspectionId,
-                          category: 0,
-                          isAgentEmployees: task.isAgentEmployees,
-                          completeStatus: tabType == "completed"))
-                  ?.whenComplete(() {
-                refreshTask();
-              });
-            }
+          if (task.statusId == 7 ||
+              (tabType == "completed" /*&& task.statusId == 6*/)) {
+            Get.to(
+                    transition: Transition.rightToLeft,
+                    InspectionDetailScreen(
+                        task: task,
+                        inspectionId: entity.inspectionId!,
+                        completeStatus: tabType == "completed"))
+                ?.whenComplete(() {
+              refreshTask();
+            });
           } else {
-            Utils().showAlert(
-                buildContext: context,
-                message: noEntityMessage,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                });
+            print("EntityDetails 4");
+            Get.to(
+                    transition: Transition.rightToLeft,
+                    EntityDetails(
+                        fromActive: tabType == "pending",
+                        task: task,
+                        entityId: task.entityID!,
+                        taskId: task.inspectionTaskId,
+                        statusId: task.statusId,
+                        inspectionId: task.inspectionId,
+                        category: 0,
+                        isAgentEmployees: task.isAgentEmployees,
+                        completeStatus: tabType == "completed"))
+                ?.whenComplete(() {
+              refreshTask();
+            });
           }
-        });
+                });
       });
     }
   }

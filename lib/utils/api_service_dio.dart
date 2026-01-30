@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
 import '../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../encrypteddecrypted/encryption_config.dart';
 import 'constants.dart' as constants;
@@ -16,6 +15,8 @@ import 'constants.dart';
 class ApiServiceDio {
   static ApiServiceDio? _instance;
   var storeUserData = StoreUserData();
+
+  static const String _keepAlive = 'keep-alive';
 
   static ApiServiceDio get instance => _instance ??= ApiServiceDio._();
   late final Dio _dio;
@@ -28,17 +29,17 @@ class ApiServiceDio {
         'Accept-Language': "EN",
         'Authorization': storeUserData.getString(constants.USER_TOKEN),
         'accept': "text/plain",
-        'Connection': 'keep-alive',
+        'Connection': _keepAlive,
         'Accept-Encoding': 'gzip, deflate, br',
-        'Cache-Control': 'keep-alive',
+        'Cache-Control': _keepAlive,
       };
     } else {
       headers = {
         'accept': "text/plain",
         'Content-Type': "application/json-patch+json",
         'Accept-Encoding': 'gzip, deflate, br',
-        'Cache-Control': 'keep-alive',
-        'Connection': 'keep-alive',
+        'Cache-Control': _keepAlive,
+        'Connection': _keepAlive,
       };
     }
     print("headers : $headers");
@@ -125,7 +126,6 @@ class ApiServiceDio {
         client.connectionTimeout = const Duration(seconds: 120);
         client.idleTimeout = const Duration(minutes: 5);
         client.maxConnectionsPerHost = 15;
-        client.badCertificateCallback = (cert, host, port) => true;
         return client;
       };
     }

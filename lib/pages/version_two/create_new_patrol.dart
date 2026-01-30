@@ -482,34 +482,95 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       "categoryId": 0
     }).then((value) async {
       if (value == null) return;
-      debugPrint("ProduectDetail $value");
-      final parsed = value is String ? jsonDecode(value) : value;
-      if (parsed != null &&
-          parsed["data"] != null &&
-          parsed["data"]["result"] != null) {
-        final KnownProductModel data = await parseKnownProducts(value);
-        if (data.data.isNotEmpty) {
-          myState(() {
-            knownProductList.clear();
-            knownProductList.addAll(data.data);
-          });
-        } else {
-          if (data.message != null && data.message!.isNotEmpty) {
-            Utils().showAlert(
-                buildContext: context,
-                message: data.message.toString(),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                });
-          }
-        }
-      }
+      await _processKnownProductsResponse(value, myState);
     });
+  }
+
+  Future<void> _processKnownProductsResponse(
+      dynamic value, StateSetter myState) async {
+    debugPrint("ProduectDetail $value");
+    final parsed = value is String ? jsonDecode(value) : value;
+
+    if (!_hasValidProductData(parsed)) {
+      return;
+    }
+
+    final KnownProductModel data = await parseKnownProducts(value);
+    if (data.data.isNotEmpty) {
+      _updateKnownProductList(data.data, myState);
+    } else {
+      _handleEmptyProductData(data);
+    }
+  }
+
+  bool _hasValidProductData(dynamic parsed) {
+    return parsed != null &&
+        parsed["data"] != null &&
+        parsed["data"]["result"] != null;
+  }
+
+  void _updateKnownProductList(
+      List<KnownProductData> products, StateSetter myState) {
+    myState(() {
+      knownProductList.clear();
+      knownProductList.addAll(products);
+    });
+  }
+
+  void _handleEmptyProductData(KnownProductModel data) {
+    if (data.message != null && data.message!.isNotEmpty) {
+      if (!mounted) return;
+      Utils().showAlert(
+        buildContext: context,
+        message: data.message.toString(),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+    }
+  }
+
+  Future<void> _processSearchProductsResponse(
+      dynamic value, StateSetter myState) async {
+    final result = value is String ? jsonDecode(value) : value;
+    if (result == null ||
+        result["data"] == null ||
+        result["data"]["result"] == null) {
+      return;
+    }
+
+    final KnownProductModel data = await parseKnownProducts(value);
+    if (!mounted) return;
+
+    if (data.data.isNotEmpty) {
+      _updateKnownProductList(data.data, myState);
+    } else {
+      _handleSearchEmptyProductData(data, myState);
+    }
+  }
+
+  void _handleSearchEmptyProductData(
+      KnownProductModel data, StateSetter myState) {
+    if (data.data.isEmpty && data.message == null) {
+      myState(() {
+        knownProductList.clear();
+      });
+    } else if (data.message != null && data.message!.isNotEmpty) {
+      if (!mounted) return;
+      Utils().showAlert(
+        buildContext: context,
+        message: data.message.toString(),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+    }
   }
 
   void getSearchAllKnownProducts(StateSetter myState) {
     knownProductList.clear();
     if (_searchKnownProduct.text.isEmpty) {
+      if (!mounted) return;
       Navigator.pop(context);
     } else {
       Api().callAPI(context, "Mobile/ProduectDetail/GetAllProduct", {
@@ -517,32 +578,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         "categoryId": 0
       }).then((value) async {
         if (value == null) return;
-        final result = value is String ? jsonDecode(value) : value;
-        if (result != null &&
-            result["data"] != null &&
-            result["data"]["result"] != null) {
-          final KnownProductModel data = await parseKnownProducts(value);
-          if (data.data.isNotEmpty) {
-            myState(() {
-              knownProductList.clear();
-              knownProductList.addAll(data.data);
-            });
-          } else {
-            if (data.data.isEmpty && data.message == null) {
-              myState(() {
-                // Navigator.pop(context);
-                knownProductList.clear();
-              });
-            } else if (data.message != null && data.message!.isNotEmpty) {
-              Utils().showAlert(
-                  buildContext: context,
-                  message: data.message.toString(),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  });
-            }
-          }
-        }
+        await _processSearchProductsResponse(value, myState);
       });
     }
   }
@@ -653,340 +689,282 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   @override
   Widget build(BuildContext context) {
     currentWidth = MediaQuery.of(context).size.width;
-
     currentHeight = MediaQuery.of(context).size.height;
     return WillPopScope(
-        onWillPop: () async {
-          Get.back(result: {
-            "statusId": statusId,
-            "inspectionId": inspectionId,
-            "taskId": taskId,
-            "inspectorId": inspectorId
-          });
-          return false;
-        },
-        child: Scaffold(
-          backgroundColor: AppTheme.mainBackground,
-          resizeToAvoidBottomInset: true,
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                    height: 200,
-                    color: AppTheme.colorPrimary,
-                    width: double.infinity,
-                    child: Stack(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Get.back(result: {
-                              "statusId": statusId,
-                              "inspectionId": inspectionId,
-                              "taskId": taskId
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 10, top: 50, right: 10, bottom: 20),
-                            child: Card(
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
-                              elevation: 0,
-                              surfaceTintColor:
-                                  AppTheme.white.withValues(alpha: 0),
-                              color: AppTheme.white.withValues(alpha: 0),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Image.asset(
-                                  "${ASSET_PATH}back.png",
-                                  height: 15,
-                                  width: 15,
-                                  color: AppTheme.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.topCenter,
-                          child: CText(
-                            textAlign: TextAlign.center,
-                            padding: const EdgeInsets.only(
-                                left: 60, right: 60, top: 60),
-                            text: "Add a new Inspection Visit",
-                            textColor: AppTheme.textPrimary,
-                            fontFamily: AppTheme.urbanist,
-                            fontSize: AppTheme.big,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Container(
-                            margin: const EdgeInsets.only(
-                                left: 16.0, right: 16.0, bottom: 10, top: 120),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                        alignment: Alignment.center,
-                                        height: 25,
-                                        width: 25,
-                                        decoration: BoxDecoration(
-                                          color: tabType > 0
-                                              ? AppTheme.lightBlueTwo
-                                              : AppTheme.white,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: CText(
-                                          text: "1",
-                                          textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.urbanist,
-                                          fontSize: AppTheme.large,
-                                        )),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    CText(
-                                        text: "Details",
-                                        fontFamily: AppTheme.urbanist,
-                                        textAlign: TextAlign.center,
-                                        textColor: tabType > 0
-                                            ? AppTheme.textPrimary
-                                            : AppTheme.textPrimary,
-                                        fontSize: AppTheme.small),
-                                  ],
-                                ),
-                                Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      margin: const EdgeInsets.only(top: 10),
-                                      color: AppTheme.white,
-                                      height: 1,
-                                    )),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                        alignment: Alignment.center,
-                                        height: 25,
-                                        width: 25,
-                                        decoration: BoxDecoration(
-                                          color: tabType > 1
-                                              ? AppTheme.lightBlueTwo
-                                              : AppTheme.white,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: CText(
-                                          text: "2",
-                                          textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.urbanist,
-                                          fontSize: AppTheme.large,
-                                        )),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    CText(
-                                        text: "Products \nInspections",
-                                        fontFamily: AppTheme.urbanist,
-                                        textAlign: TextAlign.center,
-                                        textColor: tabType > 1
-                                            ? AppTheme.textPrimary
-                                            : AppTheme.textPrimary,
-                                        fontSize: AppTheme.small),
-                                  ],
-                                ),
-                                Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      margin: const EdgeInsets.only(top: 10),
-                                      color: AppTheme.white,
-                                      height: 1,
-                                    )),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                        alignment: Alignment.center,
-                                        height: 25,
-                                        width: 25,
-                                        decoration: BoxDecoration(
-                                          color: tabType > 2
-                                              ? AppTheme.lightBlueTwo
-                                              : AppTheme.white,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: CText(
-                                          text: "3",
-                                          textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.urbanist,
-                                          fontSize: AppTheme.large,
-                                        )),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    CText(
-                                        text: "Attachments",
-                                        fontFamily: AppTheme.urbanist,
-                                        textAlign: TextAlign.center,
-                                        textColor: tabType > 2
-                                            ? AppTheme.textPrimary
-                                            : AppTheme.textPrimary,
-                                        fontSize: AppTheme.small),
-                                  ],
-                                ),
-                                Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      margin: const EdgeInsets.only(top: 10),
-                                      color: AppTheme.white,
-                                      height: 1,
-                                    )),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                        alignment: Alignment.center,
-                                        height: 25,
-                                        width: 25,
-                                        decoration: BoxDecoration(
-                                          color: tabType > 3
-                                              ? AppTheme.lightBlueTwo
-                                              : AppTheme.white,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: CText(
-                                          text: "4",
-                                          textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.urbanist,
-                                          fontSize: AppTheme.large,
-                                        )),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    CText(
-                                        text: "Witness & \nRepresentative",
-                                        fontFamily: AppTheme.urbanist,
-                                        textAlign: TextAlign.center,
-                                        textColor: tabType > 3
-                                            ? AppTheme.textPrimary
-                                            : AppTheme.textPrimary,
-                                        fontSize: AppTheme.small),
-                                  ],
-                                ),
-                              ],
-                            )),
-                      ],
-                    )),
-                Container(
-                    padding:
-                        const EdgeInsets.only(top: 10, right: 10, left: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Visibility(
-                            visible: tabType > 2,
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  if (tabType == 1) {
-                                  } else {
-                                    setState(() {
-                                      tabType--;
-                                    });
-                                  }
-                                });
-                              },
-                              behavior: HitTestBehavior.translucent,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  const Icon(
-                                    Icons.arrow_back,
-                                    size: 18,
-                                    color: AppTheme.colorPrimary,
-                                  ),
-                                  CText(
-                                    textAlign: TextAlign.center,
-                                    text: "Previous",
-                                    textColor: AppTheme.colorPrimary,
-                                    fontFamily: AppTheme.urbanist,
-                                    fontSize: AppTheme.medium,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ],
-                              ),
-                            )),
-                        Visibility(
-                          visible: tabType != 4 && inspectionId != 0,
-                          child: GestureDetector(
-                            onTap: () {
-                              if (validateNext()) {
-                                setState(() {
-                                  if (tabType == 4) {
-                                  } else if (tabType == 3 && image.isEmpty) {
-                                    Utils().showAlert(
-                                        buildContext: context,
-                                        title: "Alert",
-                                        message:
-                                            "Please attach at least one image.",
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        });
-                                  } else {
-                                    setState(() {
-                                      tabType++;
-                                    });
-                                  }
-                                });
-                              }
-                            },
-                            behavior: HitTestBehavior.translucent,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                CText(
-                                  textAlign: TextAlign.center,
-                                  text: tabType == 4 ? "Close Task" : "Next",
-                                  textColor: validateNext()
-                                      ? AppTheme.colorPrimary
-                                      : AppTheme.grey,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                Icon(
-                                  tabType == 4
-                                      ? Icons.close
-                                      : Icons.arrow_forward,
-                                  size: 18,
-                                  color: validateNext()
-                                      ? AppTheme.colorPrimary
-                                      : AppTheme.grey,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    )),
-                tabType == 1
-                    ? tabOneUI()
-                    : tabType == 2
-                        ? tabTwoUI()
-                        : tabType == 3
-                            ? tabThreeUI()
-                            : tabType == 4
-                                ? tabFourUI()
-                                : Container()
-              ],
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: AppTheme.mainBackground,
+        resizeToAvoidBottomInset: true,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildHeader(),
+              _buildNavigationButtons(),
+              _buildTabContent(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<bool> _onWillPop() async {
+    Get.back(result: {
+      "statusId": statusId,
+      "inspectionId": inspectionId,
+      "taskId": taskId,
+      "inspectorId": inspectorId
+    });
+    return false;
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      height: 200,
+      color: AppTheme.colorPrimary,
+      width: double.infinity,
+      child: Stack(
+        children: [
+          _buildBackButton(),
+          _buildTitle(),
+          _buildStepIndicator(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBackButton() {
+    return GestureDetector(
+      onTap: () {
+        Get.back(result: {
+          "statusId": statusId,
+          "inspectionId": inspectionId,
+          "taskId": taskId
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(
+            left: 10, top: 50, right: 10, bottom: 20),
+        child: Card(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12))),
+          elevation: 0,
+          surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+          color: AppTheme.white.withValues(alpha: 0),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Image.asset(
+              "${ASSET_PATH}back.png",
+              height: 15,
+              width: 15,
+              color: AppTheme.white,
             ),
           ),
-        ));
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: CText(
+        textAlign: TextAlign.center,
+        padding: const EdgeInsets.only(left: 60, right: 60, top: 60),
+        text: "Add a new Inspection Visit",
+        textColor: AppTheme.textPrimary,
+        fontFamily: AppTheme.urbanist,
+        fontSize: AppTheme.big,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        fontWeight: FontWeight.w700,
+      ),
+    );
+  }
+
+  Widget _buildStepIndicator() {
+    return Container(
+      margin: const EdgeInsets.only(
+          left: 16.0, right: 16.0, bottom: 10, top: 120),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildStepItem(1, "Details"),
+          _buildStepDivider(),
+          _buildStepItem(2, "Products \nInspections"),
+          _buildStepDivider(),
+          _buildStepItem(3, "Attachments"),
+          _buildStepDivider(),
+          _buildStepItem(4, "Witness & \nRepresentative"),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStepItem(int stepNumber, String label) {
+    final isActive = tabType >= stepNumber;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          alignment: Alignment.center,
+          height: 25,
+          width: 25,
+          decoration: BoxDecoration(
+            color: isActive ? AppTheme.lightBlueTwo : AppTheme.white,
+            shape: BoxShape.circle,
+          ),
+          child: CText(
+            text: "$stepNumber",
+            textColor: AppTheme.colorPrimary,
+            fontFamily: AppTheme.urbanist,
+            fontSize: AppTheme.large,
+          ),
+        ),
+        const SizedBox(height: 5),
+        CText(
+          text: label,
+          fontFamily: AppTheme.urbanist,
+          textAlign: TextAlign.center,
+          textColor: AppTheme.textPrimary,
+          fontSize: AppTheme.small,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStepDivider() {
+    return Expanded(
+      flex: 1,
+      child: Container(
+        margin: const EdgeInsets.only(top: 10),
+        color: AppTheme.white,
+        height: 1,
+      ),
+    );
+  }
+
+  Widget _buildNavigationButtons() {
+    return Container(
+      padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildPreviousButton(),
+          _buildNextButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPreviousButton() {
+    return Visibility(
+      visible: tabType > 2,
+      child: GestureDetector(
+        onTap: _handlePreviousTap,
+        behavior: HitTestBehavior.translucent,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            const Icon(
+              Icons.arrow_back,
+              size: 18,
+              color: AppTheme.colorPrimary,
+            ),
+            CText(
+              textAlign: TextAlign.center,
+              text: "Previous",
+              textColor: AppTheme.colorPrimary,
+              fontFamily: AppTheme.urbanist,
+              fontSize: AppTheme.medium,
+              fontWeight: FontWeight.w700,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _handlePreviousTap() {
+    if (tabType > 1) {
+      setState(() {
+        tabType--;
+      });
+    }
+  }
+
+  Widget _buildNextButton() {
+    return Visibility(
+      visible: tabType != 4 && inspectionId != 0,
+      child: GestureDetector(
+        onTap: _handleNextTap,
+        behavior: HitTestBehavior.translucent,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            CText(
+              textAlign: TextAlign.center,
+              text: _getNextButtonText(),
+              textColor: _getNextButtonColor(),
+              fontFamily: AppTheme.urbanist,
+              fontSize: AppTheme.medium,
+              fontWeight: FontWeight.w700,
+            ),
+            Icon(
+              _getNextButtonIcon(),
+              size: 18,
+              color: _getNextButtonColor(),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getNextButtonText() {
+    return tabType == 4 ? "Close Task" : "Next";
+  }
+
+  Color _getNextButtonColor() {
+    return validateNext() ? AppTheme.colorPrimary : AppTheme.grey;
+  }
+
+  IconData _getNextButtonIcon() {
+    return tabType == 4 ? Icons.close : Icons.arrow_forward;
+  }
+
+  void _handleNextTap() {
+    if (!validateNext()) return;
+
+    if (tabType == 3 && image.isEmpty) {
+      _showImageRequiredAlert();
+      return;
+    }
+
+    if (tabType < 4) {
+      setState(() {
+        tabType++;
+      });
+    }
+  }
+
+  void _showImageRequiredAlert() {
+    Utils().showAlert(
+      buildContext: context,
+      title: "Alert",
+      message: "Please attach at least one image.",
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  Widget _buildTabContent() {
+    if (tabType == 1) return tabOneUI();
+    if (tabType == 2) return tabTwoUI();
+    if (tabType == 3) return tabThreeUI();
+    if (tabType == 4) return tabFourUI();
+    return Container();
   }
 
   ///tab two
