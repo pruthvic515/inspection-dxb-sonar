@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:patrol_system/utils/constants.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:patrol_system/utils/utils.dart';
-
 import '../controls/text.dart';
 import '../model/entity_detail_model.dart';
 import '../model/patrol_visit_model.dart';

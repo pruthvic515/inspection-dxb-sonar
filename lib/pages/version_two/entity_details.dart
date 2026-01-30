@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
@@ -20,7 +19,6 @@ import 'package:patrol_system/pages/version_two/select_inspector.dart';
 import 'package:patrol_system/utils/log_print.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../controls/form_mobile_text_field.dart';
 import '../../controls/form_text_field.dart';
 import '../../controls/text.dart';

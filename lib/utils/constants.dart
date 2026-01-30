@@ -20,11 +20,11 @@ const String ASSET_PATH = "assets/images/";
 // Inspection DXB UAT URL:  http://4.161.39.155:8092/inspectionApi/swagger/index.html
 //UAT
 // const String baseUrl = "http://4.161.39.155:8090/";
-// todo change prod date 08-11-2024
+//  change prod date 08-11-2024
 // const String baseUrl = "https://licensedxb.ae/Inspectionapi/";
-// todo change UAT date 16-10-2025
+//  change UAT date 16-10-2025
 const String baseUrl = "http://4.161.39.155:8092/inspectionApi/";
-// todo change prod date 16-10-2025
+//  change prod date 16-10-2025
 // const String baseUrl = "https://licensedxb.ae/Inspectionapi/";
 
 const double SIZE_02 = 2;

@@ -1,7 +1,6 @@
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-
 import '../utils/color_const.dart';
 
 class FullScreenImage extends StatefulWidget {

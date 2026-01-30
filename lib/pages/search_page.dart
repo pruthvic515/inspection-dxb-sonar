@@ -1,11 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:patrol_system/model/place_model.dart';
 import 'package:patrol_system/pages/version_two/entity_details.dart';
-
 import '../controls/loading_indicator_dialog.dart';
 import '../controls/text.dart';
 import '../encrypteddecrypted/encrypt_and_decrypt.dart';

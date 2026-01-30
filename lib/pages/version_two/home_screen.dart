@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -18,7 +17,6 @@ import 'package:patrol_system/utils/constants.dart';
 import 'package:patrol_system/utils/log_print.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:patrol_system/utils/utils.dart';
-
 import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../../model/entity_detail_model.dart';
 import '../../model/task_model.dart';

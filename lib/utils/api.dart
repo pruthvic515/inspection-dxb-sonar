@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:patrol_system/utils/utils.dart';
-
 import '../encrypteddecrypted/encrypted_http_client.dart';
 import '../encrypteddecrypted/encryption_config.dart';
 import '../utils/constants.dart' as constants;

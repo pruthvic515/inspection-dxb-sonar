@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:patrol_system/utils/api.dart';
 import 'package:patrol_system/utils/color_const.dart';
-
 import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
 import '../../model/search_entity_model.dart';

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +8,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:patrol_system/controls/loading_indicator_dialog.dart';
 import 'package:patrol_system/utils/utils.dart';
 import 'package:signature/signature.dart';
-
 import '../../controls/text.dart';
 import '../../model/representative_model.dart';
 import '../../utils/api.dart';

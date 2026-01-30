@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:patrol_system/encrypteddecrypted/encrypt_and_decrypt.dart';
 
 KnownProductModel knownProductFromJson(String str) =>

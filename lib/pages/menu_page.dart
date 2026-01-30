@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:patrol_system/pages/welcome_page.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:patrol_system/utils/utils.dart';
-
 import '../controls/loading_indicator_dialog.dart';
 import '../controls/text.dart';
 import '../model/patrol_visit_model.dart';
@@ -26,12 +25,6 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   var visitCount = 0;
   var storeUserData = StoreUserData();
-
-/*  @override
-  void initState() {
-    getVisits();
-    super.initState();
-  }*/
 
   @override
   Widget build(BuildContext context) {

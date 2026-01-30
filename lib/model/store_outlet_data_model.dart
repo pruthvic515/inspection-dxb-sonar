@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'outlet_model.dart';
 
 StoreOutletDataModel outletsFromJson(String str) =>

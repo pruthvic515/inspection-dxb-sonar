@@ -1,5 +1,4 @@
 import 'dart:isolate';
-
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -12,7 +11,6 @@ import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:patrol_system/utils/color_const.dart';
 import 'package:patrol_system/utils/firebase_options.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
-
 import 'notification_services/local_notification.dart';
 
 // user

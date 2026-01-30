@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../utils/color_const.dart';
 
 class CCardText extends StatelessWidget {

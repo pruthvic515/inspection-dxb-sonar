@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import '../utils/color_const.dart';
 
 class CTextFieldPassword extends StatelessWidget {

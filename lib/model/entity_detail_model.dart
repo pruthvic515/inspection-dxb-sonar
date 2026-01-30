@@ -1,8 +1,6 @@
 import 'dart:convert';
-
 import 'package:patrol_system/model/place_model.dart';
 import 'package:patrol_system/utils/utils.dart';
-
 import 'outlet_model.dart';
 
 EntityDetailModel entityFromJson(String str) =>

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +10,6 @@ import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:patrol_system/utils/color_const.dart';
 import 'package:patrol_system/utils/constants.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
-
 import '../controls/text.dart';
 import '../controls/text_field.dart';
 import '../encrypteddecrypted/encrypt_and_decrypt.dart';

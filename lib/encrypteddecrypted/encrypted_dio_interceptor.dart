@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-
 import '../utils/api.dart';
 import '../utils/constants.dart';
 import 'encrypt_and_decrypt.dart';

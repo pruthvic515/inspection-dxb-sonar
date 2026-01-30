@@ -1,9 +1,7 @@
 import 'dart:convert';
-
 import 'package:patrol_system/model/attachments.dart';
 import 'package:patrol_system/model/representative_model.dart';
 import 'package:patrol_system/model/witness_model.dart';
-
 import 'inspection_product_model.dart';
 
 InspectionDetailModel detailFromJson(String str) =>

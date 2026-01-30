@@ -12,7 +12,6 @@ import 'package:patrol_system/utils/api.dart';
 import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
-
 import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
 import '../../model/entity_detail_model.dart';

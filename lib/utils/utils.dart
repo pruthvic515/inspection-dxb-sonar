@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:core';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,7 +7,6 @@ import 'package:patrol_system/controls/text.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-
 import '../controls/custom_dialog.dart';
 import '../controls/custom_yes_no_dialog.dart';
 import 'color_const.dart';

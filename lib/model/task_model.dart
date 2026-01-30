@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:patrol_system/model/place_model.dart';
 
 TaskModel tasksFromJson(String str) => TaskModel.fromJson(json.decode(str));

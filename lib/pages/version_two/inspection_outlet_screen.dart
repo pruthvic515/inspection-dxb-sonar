@@ -9,7 +9,6 @@ import 'package:patrol_system/pages/version_two/inspection_detail_screen.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
 import '../../model/area_model.dart';

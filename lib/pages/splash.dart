@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +9,6 @@ import 'package:patrol_system/pages/welcome_page.dart';
 import 'package:patrol_system/utils/color_const.dart';
 import 'package:patrol_system/utils/constants.dart';
 import 'package:patrol_system/utils/log_print.dart';
-
 import '../dialog/version_dialog.dart';
 import '../utils/api.dart';
 import '../utils/store_user_data.dart';
@@ -40,15 +38,16 @@ class _SplashState extends State<Splash> {
 
   void _logInitialInfo() {
     LogPrint().log("baseurl : $baseUrl");
-    LogPrint().log("USER_TOKEN : ${storeUserData.getString(USER_TOKEN).toString()}");
+    LogPrint()
+        .log("USER_TOKEN : ${storeUserData.getString(USER_TOKEN).toString()}");
   }
 
   void _setAppVersion() {
-    // todo version code manage version: 1.0.0+9
-    // todo version name 1.0.0 and version code 8
-    // todo latest version code is 1.0.9
-    // todo latest version code is 1.0.10 PRO
-    // todo latest version code is 1.0.9 UAT
+    // version code manage version: 1.0.0+9
+    // version name 1.0.0 and version code 8
+    // latest version code is 1.0.9
+    // latest version code is 1.0.10 PRO
+    // latest version code is 1.0.9 UAT
     storeUserData.setString(LATEST_APP_VERSION, "1.0.9");
   }
 
@@ -184,7 +183,7 @@ class _SplashState extends State<Splash> {
         'Content-Type': "application/json-patch+json",
       },
     );*/
-    Api().getAPI(context, "Department/Task/AppVersion").then((value){
+    Api().getAPI(context, "Department/Task/AppVersion").then((value) {
       print("Department/Task/AppVersion");
       var data = jsonDecode(value);
 
@@ -203,6 +202,5 @@ class _SplashState extends State<Splash> {
         }
       }
     });
-
   }
 }

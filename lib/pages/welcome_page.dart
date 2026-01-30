@@ -6,7 +6,6 @@ import 'package:patrol_system/controls/text.dart';
 import 'package:patrol_system/pages/login_page.dart';
 import 'package:patrol_system/utils/color_const.dart';
 import 'package:patrol_system/utils/utils.dart';
-
 import '../notification_services/local_notification.dart';
 
 class WelcomePage extends StatefulWidget {
