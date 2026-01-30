@@ -56,9 +56,9 @@ android {
      signingConfigs {
         release {
             storeFile file("../keystore/keystore.jks")
-            storePassword "inspection_dxb"
-            keyAlias "inspection_dxb"
-            keyPassword "inspection_dxb"
+            storePassword "inspection_dbx"
+            keyAlias "inspection_dbx"
+            keyPassword "inspection_dbx"
         }
     }
     buildTypes {

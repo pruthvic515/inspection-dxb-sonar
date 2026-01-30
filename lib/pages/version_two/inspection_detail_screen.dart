@@ -14,6 +14,7 @@ import 'package:patrol_system/utils/log_print.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../../model/area_model.dart';
 import '../../model/attachments.dart';
 import '../../model/entity_detail_model.dart';
@@ -73,6 +74,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
   List<WitnessData> selectedMMIList = [];
   List<AreaData?> roleList = [];
   Timer? timer;
+  final encryptAndDecrypt = EncryptAndDecrypt();
 
   @override
   void initState() {
@@ -96,9 +98,17 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
     if (await Utils().hasNetwork(context, setState)) {
       if (!mounted) return;
 
+      final encryptedMainTaskId = await encryptAndDecrypt.encryption(
+        payload: widget.task.mainTaskId.toString(),
+        urlEncode: false,
+      );
+      final encryptedEntityId = await encryptAndDecrypt.encryption(
+        payload: widget.task.entityID.toString(),
+        urlEncode: false,
+      );
       Api().callAPI(
           context,
-          "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${widget.task.mainTaskId}&entityId=${widget.task.entityID}",
+          "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}",
           {}).then((value) async {
         setState(() {
           entity = entityFromJson(value);

@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
+import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../../model/area_model.dart';
 import '../../model/entity_detail_model.dart';
 import '../../model/outlet_model.dart';
@@ -79,11 +80,20 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
     }
   }
 
-  void getEntityDetail() {
+  void getEntityDetail() async {
     LoadingIndicatorDialog().show(context);
+    final encryptAndDecrypt = EncryptAndDecrypt();
+    final encryptedMainTaskId = await encryptAndDecrypt.encryption(
+      payload: widget.task.mainTaskId.toString(),
+      urlEncode: false,
+    );
+    final encryptedEntityId = await encryptAndDecrypt.encryption(
+      payload: widget.entityId.toString(),
+      urlEncode: false,
+    );
     Api().callAPI(
         context,
-        "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${widget.task.mainTaskId}&entityId=${widget.entityId}",
+        "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}",
         {}).then((value) async {
       LoadingIndicatorDialog().dismiss();
       if (value != null) {

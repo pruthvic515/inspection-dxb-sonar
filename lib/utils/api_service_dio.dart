@@ -394,10 +394,11 @@ class ApiServiceDio {
       var fcmToken = await encryptAndDecrypt.encryption(
           payload: storeUserData.getString(USER_FCM).toString(),
           urlEncode: false);
+
       final response = await instance.put(
         "api/Mobile/Notification/UpdateFcmToken"
         "?departmentUserId=${Uri.encodeComponent(departmentUserId)}"
-        "?fcmToken=${Uri.encodeComponent(fcmToken)}",
+        "&fcmToken=${Uri.encodeComponent(fcmToken)}",
       );
       if (response.isSuccess) {
         debugPrint("✅ FCM Token updated: ${response.data}");

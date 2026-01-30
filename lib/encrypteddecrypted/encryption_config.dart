@@ -40,9 +40,14 @@ class EncryptionConfig {
       'api/Mobile/EntityRepresentative/Delete',
       "Mobile/EntityRepresentative/GetInspectionDetail",
       'api/Mobile/ProduectDetail/Delete',
+      'api/Mobile/NewOutlet/Delete',
+      'api/Department/Report/ViewReport',
+      'api/Mobile/ProduectDetail/GetLiquorSizeEnum',
     ],
     'POST': [
       // POST methods that require encryption
+      'api/Department/User/Login',
+      'api/Agent/Employee/Login',
       'api/Department/Task/GetTask',
       'api/Department/Task/GetAll',
       'api/Department/Task/UpdateTaskStatus',
@@ -61,7 +66,14 @@ class EncryptionConfig {
       'api/Mobile/EntityRepresentative/Create',
       'api/Mobile/InspectionDocument/Create',
       'api/Mobile/EntityRepresentative/Update',
+      'api/Mobile/NewOutlet/Create',
+      'api/Mobile/NewOutlet/Update',
+      'api/Mobile/Patrol/GetAll',
+      'api/Mobile/Patrol/Count',
     ],
+    "PUT":[
+      "api/Mobile/Notification/UpdateFcmToken"
+    ]
   };
 
   // List of API endpoint patterns that should NOT use encryption (for all methods)

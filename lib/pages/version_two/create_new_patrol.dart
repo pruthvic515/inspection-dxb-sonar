@@ -744,8 +744,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         });
       },
       child: Padding(
-        padding: const EdgeInsets.only(
-            left: 10, top: 50, right: 10, bottom: 20),
+        padding:
+            const EdgeInsets.only(left: 10, top: 50, right: 10, bottom: 20),
         child: Card(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(12))),
@@ -785,8 +785,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Widget _buildStepIndicator() {
     return Container(
-      margin: const EdgeInsets.only(
-          left: 16.0, right: 16.0, bottom: 10, top: 120),
+      margin:
+          const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 10, top: 120),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1973,8 +1973,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   bool _hasInvalidSerialNumbers(List<TextEditingController> serial) {
-    return serial.any((element) =>
-        element.text.isEmpty || element.text.length < 5);
+    return serial
+        .any((element) => element.text.isEmpty || element.text.length < 5);
   }
 
   bool _hasMissingSizes(List<AreaData?> sizeList) {
@@ -2024,8 +2024,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       typeId: productTab,
       products: products,
       productId: 0,
-      createdOn: DateFormat(fullDateTimeFormat)
-          .format(Utils().getCurrentGSTTime()),
+      createdOn:
+          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       categoryId: 0,
       notes: notes.text,
     ).toJson());
@@ -2040,8 +2040,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       typeId: productTab,
       products: products,
       productId: model.productId,
-      createdOn: DateFormat(fullDateTimeFormat)
-          .format(Utils().getCurrentGSTTime()),
+      createdOn:
+          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       categoryId: 0,
       notes: notes.text,
     ).toJson());
@@ -2227,9 +2227,10 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          backgroundColor: _isQuantityFormValid(quantity, controllers)
-                              ? AppTheme.colorPrimary
-                              : AppTheme.paleGray,
+                          backgroundColor:
+                              _isQuantityFormValid(quantity, controllers)
+                                  ? AppTheme.colorPrimary
+                                  : AppTheme.paleGray,
                           minimumSize: const Size.fromHeight(50),
                         ),
                         child: CText(
@@ -2364,8 +2365,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   bool _hasInvalidSerialNumbersForQuantity(
     List<TextEditingController> controllers,
   ) {
-    return controllers.any((element) =>
-        element.text.isEmpty || element.text.length < 5);
+    return controllers
+        .any((element) => element.text.isEmpty || element.text.length < 5);
   }
 
   bool _isQuantityFormValid(
@@ -2425,8 +2426,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       "productId": model.productId,
       "productName": model.productName,
       "qty": quantity,
-      "createdOn": DateFormat(fullDateTimeFormat)
-          .format(Utils().getCurrentGSTTime()),
+      "createdOn":
+          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "categoryId": model.categoryId,
       "notes": notes.text,
     });
@@ -2448,8 +2449,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       "productId": model.productId,
       "productName": model.productName,
       "qty": quantity,
-      "createdOn": DateFormat(fullDateTimeFormat)
-          .format(Utils().getCurrentGSTTime()),
+      "createdOn":
+          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "categoryId": model.categoryId,
       "notes": notes.text,
     });
@@ -2524,7 +2525,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     cursorWidth: 2,
                     decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(5),
-                        hintText:searchHint,
+                        hintText: searchHint,
                         border: InputBorder.none,
                         prefixIcon: Icon(
                           Icons.search,
@@ -2915,7 +2916,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           setState(() {
             var data = allUsersFromJson(value);
             if (data.data.isNotEmpty) {
-
               showInspectorSheet(data.data);
             } else {
               Utils().showAlert(
@@ -3098,8 +3098,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       "location": googleAddress,
       "agentEmployeeIds": agentMap,
       "departmentEmployeeId": inspectorMap,
-      "createdOn": DateFormat(fullDateTimeFormat)
-          .format(Utils().getCurrentGSTTime()),
+      "createdOn":
+          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "comments": initialNotes.text.toString(),
       "finalNotes": "",
       "createdByName": "",

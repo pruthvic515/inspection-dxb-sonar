@@ -67,24 +67,24 @@ class OutletData {
 
   factory OutletData.fromJson(Map<String, dynamic> json) {
     return OutletData(
-        outletId: json['outletId'] ?? json["newOutletId"] ?? 0,
-        outletName: json['outletName'] ?? "N/A",
+        outletId: json['OutletId'] ?? json["NewOutletId"] ?? 0,
+        outletName: json['OutletName'] ?? "N/A",
         ownerShipTypeId: json['ownerShipTypeId'] ?? 1,
-        serviceTypeId: json['serviceTypeId'] ?? 1,
-        ownerShipType: json['ownerShipType'] ?? "",
-        serviceType: json['serviceType'] ?? "",
-        managerName: json['managerName'] ?? "-",
-        emiratesId: json['emiratesId'] ?? "-",
-        contactNumber: json['contactNumber'] ?? "-",
-        outletStatusId: json['outletStatusId'] ?? 0,
-        outletStatus: json['outletStatus'],
-        outletTypeId: json['outletTypeId'] ?? 0,
-        outletType: json['outletType'] ?? "-",
-        notes: json['notes'] ?? "-",
-        newAdded: json['newAdded'] ?? false,
-        inspectionStatusId: json['inspectionStatusId'] ?? 0,
-        inspectionId: json['inspectionId'] ?? 0,
-        inspectorId: json["inspectorId"] ?? 0);
+        serviceTypeId: json['ServiceTypeId'] ?? 1,
+        ownerShipType: json['OwnerShipType'] ?? "",
+        serviceType: json['ServiceType'] ?? "",
+        managerName: json['<m>anagerName'] ?? "-",
+        emiratesId: json['EmiratesId'] ?? "-",
+        contactNumber: json['ContactNumber'] ?? "-",
+        outletStatusId: json['OutletStatusId'] ?? 0,
+        outletStatus: json['OutletStatus'],
+        outletTypeId: json['OutletTypeId'] ?? 0,
+        outletType: json['OutletType'] ?? "-",
+        notes: json['Notes'] ?? "-",
+        newAdded: json['NewAdded'] ?? false,
+        inspectionStatusId: json['InspectionStatusId'] ?? 0,
+        inspectionId: json['InspectionId'] ?? 0,
+        inspectorId: json["InspectorId"] ?? 0);
   }
 
   Map<String, dynamic> toJson() {
