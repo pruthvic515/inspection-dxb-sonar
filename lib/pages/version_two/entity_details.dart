@@ -143,112 +143,158 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   Future<void> getEntityDetail() async {
-    if (await Utils().hasNetwork(context, setState)) {
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
+
+    LoadingIndicatorDialog().show(context);
+    try {
+      final endPoint = await _buildEntityDetailEndpoint();
       if (!mounted) return;
-      LoadingIndicatorDialog().show(context);
-      var endPoint = "";
-      final encryptAndDecrypt = EncryptAndDecrypt();
-      if (widget.task != null) {
-        final encryptedMainTaskId = await encryptAndDecrypt.encryption(
-          payload: widget.task!.mainTaskId.toString(),
-          urlEncode: false,
-        );
-        final encryptedEntityId = await encryptAndDecrypt.encryption(
-          payload: widget.entityId.toString(),
-          urlEncode: false,
-        );
 
-        debugPrint("Original MainTaskId ${widget.task!.mainTaskId}");
-        debugPrint("encryptedMainTaskId $encryptedMainTaskId");
-        debugPrint("Original EntityId ${widget.entityId}");
-        debugPrint("encryptedEntityId $encryptedEntityId");
-        endPoint =
-            "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}";
-      } else {
-        final encryptedEntityId = await encryptAndDecrypt.encryption(
-          payload: widget.entityId.toString(),
-          urlEncode: false,
-        );
-        endPoint =
-            "Mobile/Entity/GetEntityInspectionDetails?entityId=${Uri.encodeComponent(encryptedEntityId)}";
+      final value = await Api().callAPI(context, endPoint, null);
+      await _processEntityDetailResponse(value);
+    } finally {
+      if (mounted) {
+        LoadingIndicatorDialog().dismiss();
       }
-
-      if (!mounted) {
-        return;
-      }
-
-      Api().callAPI(context, endPoint, null).then((value) async {
-        if (value != null) {
-          if (!mounted) return;
-          LoadingIndicatorDialog().dismiss();
-          debugPrint("Response with $value");
-          setState(() {
-            entity = entityFromJson(value);
-            if (entity != null) {
-              if (widget.category == 1) {
-                tabType = 1;
-                searchOutletList.clear();
-                if (storeUserData.getString(entityId.toString()).isNotEmpty) {
-                  final String musicsString =
-                      storeUserData.getString(entityId.toString());
-
-                  final List<OutletData> data = OutletData.decode(musicsString);
-
-                  for (var i in data) {
-                    if (entity!.outletModels.firstWhereOrNull(
-                            (element) => element.outletId == i.outletId) ==
-                        null) {
-                      searchOutletList.add(i);
-                    }
-                  }
-                }
-
-                searchOutletList.addAll(entity!.outletModels);
-                outletList.clear();
-                for (var item in searchOutletList) {
-                  if (item.outletStatus == null) {
-                    item.newAdded = true;
-                  }
-                  if (tabType == 2 && item.newAdded == true) {
-                    outletList.add(item);
-                  } else if (tabType == 1 && item.newAdded == false) {
-                    if (item.outletStatus != null) {
-                      outletList.add(item);
-                    }
-                  }
-                }
-              } else {
-                if (entity!.inspectionId != null && entity!.inspectionId != 0) {
-                  widget.inspectionId = entity!.inspectionId!;
-                  restaurantInspectionStatusId = entity!.inspectionStatusId!;
-                  // widget.statusId = 5;
-                }
-              }
-            } else {
-              Utils().showAlert(
-                  buildContext: context,
-                  message: noEntityMessage,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-                    Navigator.pop(context);
-                  });
-            }
-          });
-        } else {
-          if (!mounted) return;
-
-          Utils().showAlert(
-              buildContext: context,
-              message: noEntityMessage,
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-                Navigator.pop(context);
-              });
-        }
-      });
     }
+  }
+
+  Future<String> _buildEntityDetailEndpoint() async {
+    final encryptAndDecrypt = EncryptAndDecrypt();
+    final encryptedEntityId = await encryptAndDecrypt.encryption(
+      payload: widget.entityId.toString(),
+      urlEncode: false,
+    );
+
+    if (widget.task != null) {
+      final encryptedMainTaskId = await encryptAndDecrypt.encryption(
+        payload: widget.task!.mainTaskId.toString(),
+        urlEncode: false,
+      );
+      _logEncryptionDetails(encryptedMainTaskId, encryptedEntityId);
+      return "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}";
+    }
+
+    return "Mobile/Entity/GetEntityInspectionDetails?entityId=${Uri.encodeComponent(encryptedEntityId)}";
+  }
+
+  void _logEncryptionDetails(String encryptedMainTaskId, String encryptedEntityId) {
+    debugPrint("Original MainTaskId ${widget.task!.mainTaskId}");
+    debugPrint("encryptedMainTaskId $encryptedMainTaskId");
+    debugPrint("Original EntityId ${widget.entityId}");
+    debugPrint("encryptedEntityId $encryptedEntityId");
+  }
+
+  Future<void> _processEntityDetailResponse(String? value) async {
+    if (value == null) {
+      _handleNullResponse();
+      return;
+    }
+
+    if (!mounted) return;
+    debugPrint("Response with $value");
+
+    setState(() {
+      entity = entityFromJson(value);
+      if (entity != null) {
+        _processEntityData();
+      } else {
+        _handleNullEntity();
+      }
+    });
+  }
+
+  void _processEntityData() {
+    if (widget.category == 1) {
+      _processCategoryOneEntity();
+    } else {
+      _processOtherCategoryEntity();
+    }
+  }
+
+  void _processCategoryOneEntity() {
+    tabType = 1;
+    searchOutletList.clear();
+    _loadStoredOutlets();
+    searchOutletList.addAll(entity!.outletModels);
+    _buildOutletList();
+  }
+
+  void _loadStoredOutlets() {
+    final storedData = storeUserData.getString(entityId.toString());
+    if (storedData.isEmpty) return;
+
+    final List<OutletData> data = OutletData.decode(storedData);
+    for (var outlet in data) {
+      if (_isOutletNotInEntity(outlet)) {
+        searchOutletList.add(outlet);
+      }
+    }
+  }
+
+  bool _isOutletNotInEntity(OutletData outlet) {
+    return entity!.outletModels.firstWhereOrNull(
+          (element) => element.outletId == outlet.outletId,
+        ) == null;
+  }
+
+  void _buildOutletList() {
+    outletList.clear();
+    for (var item in searchOutletList) {
+      _markNewOutlet(item);
+      if (_shouldAddOutletToList(item)) {
+        outletList.add(item);
+      }
+    }
+  }
+
+  void _markNewOutlet(OutletData item) {
+    if (item.outletStatus == null) {
+      item.newAdded = true;
+    }
+  }
+
+  bool _shouldAddOutletToList(OutletData item) {
+    if (tabType == 2 && item.newAdded == true) {
+      return true;
+    }
+    if (tabType == 1 && item.newAdded == false) {
+      return item.outletStatus != null;
+    }
+    return false;
+  }
+
+  void _processOtherCategoryEntity() {
+    if (entity!.inspectionId != null && entity!.inspectionId != 0) {
+      widget.inspectionId = entity!.inspectionId!;
+      restaurantInspectionStatusId = entity!.inspectionStatusId!;
+    }
+  }
+
+  void _handleNullEntity() {
+    Utils().showAlert(
+      buildContext: context,
+      message: noEntityMessage,
+      onPressed: () {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  void _handleNullResponse() {
+    if (!mounted) return;
+    Utils().showAlert(
+      buildContext: context,
+      message: noEntityMessage,
+      onPressed: () {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.pop(context);
+      },
+    );
   }
 
   @override

@@ -14,8 +14,7 @@ class EncryptAndDecrypt {
   static const AESMode _encryptionMode = AESMode.cbc;
 
   /// Creates an AES encrypter with secure mode and padding scheme
-  Encrypter _createEncrypter() =>
-      Encrypter(AES(key, mode: _encryptionMode));
+  Encrypter _createEncrypter() => Encrypter(AES(key, mode: _encryptionMode));
 
   /// Generate a random 16-character IV (UTF-8 string)
   String generateRandomString({int length = 16}) {

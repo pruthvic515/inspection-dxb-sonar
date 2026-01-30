@@ -1418,335 +1418,422 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     _initializeProductSheet(model, serial, sizeList, focusNodeList);
     _setupFocusListeners(focusNodeList, scrollController);
     showModalBottomSheet(
-        enableDrag: false,
-        isDismissible: false,
-        context: context,
-        backgroundColor: AppTheme.mainBackground,
-        isScrollControlled: true,
-        builder: (BuildContext buildContext) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: const BoxDecoration(
-                  color: AppTheme.mainBackground,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(15),
-                      topLeft: Radius.circular(15))),
-              height: currentHeight - 50,
-              child: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context)
-                        .viewInsets
-                        .bottom, // Adjust padding based on keyboard
-                  ),
-                  controller: scrollController,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Stack(
-                        children: [
-                          Center(
-                              child: CText(
-                            text: "Add Product",
-                            padding: const EdgeInsets.only(top: 20, bottom: 10),
-                            textColor: AppTheme.black,
-                            fontSize: AppTheme.big_20,
-                            fontFamily: AppTheme.urbanist,
-                            fontWeight: FontWeight.w700,
-                          )),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                icon: const Icon(
-                                  Icons.close,
-                                  size: 20,
-                                  color: AppTheme.black,
-                                )),
-                          ),
-                        ],
-                      ),
-                      Stack(
-                        children: [
-                          FormTextField(
-                            onChange: (value) {
-                              if (productName.text.length > 3 &&
-                                  focusNode.hasFocus) {
-                                _searchKnownProduct.text = productName.text;
-                                getAllKnownProducts(setState);
-                                // showKnownProductSheet();
-                              }
-                              setState(() {});
-                            },
-                            focusNode: focusNode,
-                            controller: productName,
-                            hint: "",
-                            value: productName.text,
-                            title: 'Product Name :',
-                            inputBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            textColor: AppTheme.grayAsparagus,
-                            inputType: TextInputType.text,
-                          ),
-                          Positioned(
-                            top: 0,
-                            right: 10,
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  knownProductList.clear();
-                                  _searchKnownProduct.text = productName.text;
-                                  if (_searchKnownProduct.text.isNotEmpty) {
-                                    getSearchAllKnownProducts(setState);
-                                  } else {}
-
-                                  showKnownProductSheet();
-                                });
-                              },
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  border: Border(
-                                    top: BorderSide(
-                                      color: Colors.transparent,
-                                      width: 0,
-                                    ),
-                                    left: BorderSide(
-                                      color: Colors.transparent,
-                                      width: 0,
-                                    ),
-                                    right: BorderSide(
-                                      color: Colors.transparent,
-                                      width: 0,
-                                    ),
-                                    bottom: BorderSide(
-                                      color: AppTheme.colorPrimary,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.zero,
-                                child: CText(
-                                  text: "Search",
-                                  fontSize: AppTheme.large,
-                                  textColor: AppTheme.colorPrimary,
-                                  fontFamily: AppTheme.poppins,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      FormTextField(
-                        hint: "",
-                        value: quantity.toString(),
-                        title: 'Quantity :',
-                        inputBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        textColor: AppTheme.grayAsparagus,
-                        onTap: () {
-                          Get.to(const SelectQuantity())?.then((value) {
-                            if (value != null) {
-                              _handleQuantityChange(
-                                value,
-                                serial,
-                                sizeList,
-                                focusNodeList,
-                                setState,
-                              );
-                            }
-                          });
-                        },
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      serial.isNotEmpty
-                          ? ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              itemCount: serial.length,
-                              itemBuilder: (context, index) {
-                                LogPrint().log(
-                                    "on set value : ${serial[index].text}");
-                                return Stack(
-                                  children: [
-                                    Container(
-                                      // flex: 1,
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 3,
-                                            child: FormTextField(
-                                              onChange: (value) {
-                                                setState(() {
-                                                  //serial[index] = value;
-                                                  focusNodeList[index]
-                                                      .requestFocus();
-                                                  LogPrint().log(
-                                                      "on changes value : $value");
-                                                });
-                                              },
-                                              controller: serial[index],
-                                              focusNode: focusNodeList[index],
-                                              hint: "",
-                                              title:
-                                                  "Product code - ${index + 1}:",
-                                              inputBorder: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              textColor: AppTheme.grayAsparagus,
-                                              inputType: TextInputType.text,
-                                              inputFormatters: [
-                                                LengthLimitingTextInputFormatter(
-                                                    20),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 2,
-                                            child: FormTextField(
-                                              onChange: (value) {
-                                                setState(() {});
-                                              },
-                                              hint: "",
-                                              value:
-                                                  sizeList[index]?.text ?? "",
-                                              title: "Size - ${index + 1} :",
-                                              inputBorder: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              textColor: AppTheme.grayAsparagus,
-                                              onTap: () {
-                                                showSizeSheet(node, sizeList,
-                                                    index, setState);
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Positioned(
-                                      right: 0,
-                                      top: 0,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          Utils().showYesNoAlert(
-                                              context: buildContext,
-                                              message:
-                                                  "Are you sure delete this serial number?",
-                                              onNoPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              onYesPressed: () {
-                                                Navigator.of(context).pop();
-                                                setState(() {
-                                                  serial.removeAt(index);
-                                                  focusNodeList.removeAt(index);
-                                                  sizeList.removeAt(index);
-                                                  quantity = serial.length;
-                                                });
-                                              });
-                                        },
-                                        icon: const Icon(
-                                          Icons.delete_outline,
-                                          color: AppTheme.red,
-                                          size: 20,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                );
-                              })
-                          : Container(),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Visibility(
-                          visible: _isFormValid(serial, sizeList),
-                          child: FormTextField(
-                            onChange: (value) {
-                              setState(() {});
-                            },
-                            hint: "",
-                            controller: notes,
-                            textColor: AppTheme.grayAsparagus,
-                            fontFamily: AppTheme.urbanist,
-                            title: 'Notes',
-                            maxLines: 3,
-                            minLines: 1,
-                          )),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Center(
-                        child: Container(
-                          width: 200,
-                          margin: const EdgeInsets.symmetric(vertical: 20),
-                          child: ElevatedButton(
-                            focusNode: node,
-                            onPressed: () {
-                              final errorMessage = _validateProductForm(
-                                serial,
-                                sizeList,
-                                buildContext,
-                              );
-                              if (errorMessage != null) {
-                                Utils().showAlert(
-                                  buildContext: buildContext,
-                                  message: errorMessage,
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                );
-                              } else {
-                                _saveProduct(
-                                  model,
-                                  serial,
-                                  sizeList,
-                                  setState,
-                                  context,
-                                );
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              backgroundColor: _isFormValid(serial, sizeList)
-                                  ? AppTheme.colorPrimary
-                                  : AppTheme.paleGray,
-                              minimumSize: const Size.fromHeight(50),
-                            ),
-                            child: CText(
-                              text: "SAVE",
-                              textColor: AppTheme.textPrimary,
-                              fontSize: AppTheme.large,
-                              fontFamily: AppTheme.urbanist,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Utils().sizeBoxHeight(height: 250)
-                    ],
-                  )),
+      enableDrag: false,
+      isDismissible: false,
+      context: context,
+      backgroundColor: AppTheme.mainBackground,
+      isScrollControlled: true,
+      builder: (BuildContext buildContext) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return _buildProductSheetContent(
+              model,
+              serial,
+              sizeList,
+              focusNodeList,
+              node,
+              scrollController,
+              buildContext,
+              setState,
             );
-          });
-        }).whenComplete(() {
+          },
+        );
+      },
+    ).whenComplete(() {
       setState(() {
         productName.text = "";
         quantity = 0;
         notes.text = "";
       });
     });
+  }
+
+  Widget _buildProductSheetContent(
+    ProductDetail? model,
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    List<FocusNode> focusNodeList,
+    FocusNode node,
+    ScrollController scrollController,
+    BuildContext buildContext,
+    StateSetter setState,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: const BoxDecoration(
+        color: AppTheme.mainBackground,
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(15),
+          topLeft: Radius.circular(15),
+        ),
+      ),
+      height: currentHeight - 50,
+      child: SingleChildScrollView(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        controller: scrollController,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            _buildProductSheetHeader(context),
+            _buildProductNameField(setState),
+            const SizedBox(height: 5),
+            _buildQuantityField(serial, sizeList, focusNodeList, setState),
+            const SizedBox(height: 5),
+            _buildSerialNumberList(
+              serial,
+              sizeList,
+              focusNodeList,
+              node,
+              buildContext,
+              setState,
+            ),
+            const SizedBox(height: 5),
+            _buildNotesField(serial, sizeList),
+            const SizedBox(height: 10),
+            _buildSaveButton(
+              model,
+              serial,
+              sizeList,
+              node,
+              buildContext,
+              setState,
+              context,
+            ),
+            Utils().sizeBoxHeight(height: 250),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProductSheetHeader(BuildContext context) {
+    return Stack(
+      children: [
+        Center(
+          child: CText(
+            text: "Add Product",
+            padding: const EdgeInsets.only(top: 20, bottom: 10),
+            textColor: AppTheme.black,
+            fontSize: AppTheme.big_20,
+            fontFamily: AppTheme.urbanist,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(
+              Icons.close,
+              size: 20,
+              color: AppTheme.black,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProductNameField(StateSetter setState) {
+    return Stack(
+      children: [
+        FormTextField(
+          onChange: (value) {
+            if (productName.text.length > 3 && focusNode.hasFocus) {
+              _searchKnownProduct.text = productName.text;
+              getAllKnownProducts(setState);
+            }
+            setState(() {});
+          },
+          focusNode: focusNode,
+          controller: productName,
+          hint: "",
+          value: productName.text,
+          title: 'Product Name :',
+          inputBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          textColor: AppTheme.grayAsparagus,
+          inputType: TextInputType.text,
+        ),
+        Positioned(
+          top: 0,
+          right: 10,
+          child: GestureDetector(
+            onTap: () => _handleProductSearchTap(setState),
+            child: Container(
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.transparent, width: 0),
+                  left: BorderSide(color: Colors.transparent, width: 0),
+                  right: BorderSide(color: Colors.transparent, width: 0),
+                  bottom: BorderSide(color: AppTheme.colorPrimary, width: 2),
+                ),
+              ),
+              alignment: Alignment.center,
+              padding: EdgeInsets.zero,
+              child: CText(
+                text: "Search",
+                fontSize: AppTheme.large,
+                textColor: AppTheme.colorPrimary,
+                fontFamily: AppTheme.poppins,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _handleProductSearchTap(StateSetter setState) {
+    setState(() {
+      knownProductList.clear();
+      _searchKnownProduct.text = productName.text;
+      if (_searchKnownProduct.text.isNotEmpty) {
+        getSearchAllKnownProducts(setState);
+      }
+      showKnownProductSheet();
+    });
+  }
+
+  Widget _buildQuantityField(
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    List<FocusNode> focusNodeList,
+    StateSetter setState,
+  ) {
+    return FormTextField(
+      hint: "",
+      value: quantity.toString(),
+      title: 'Quantity :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      onTap: () {
+        Get.to(const SelectQuantity())?.then((value) {
+          if (value != null) {
+            _handleQuantityChange(
+              value,
+              serial,
+              sizeList,
+              focusNodeList,
+              setState,
+            );
+          }
+        });
+      },
+    );
+  }
+
+  Widget _buildSerialNumberList(
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    List<FocusNode> focusNodeList,
+    FocusNode node,
+    BuildContext buildContext,
+    StateSetter setState,
+  ) {
+    if (serial.isEmpty) return Container();
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      itemCount: serial.length,
+      itemBuilder: (context, index) {
+        return _buildSerialNumberItem(
+          index,
+          serial,
+          sizeList,
+          focusNodeList,
+          node,
+          buildContext,
+          setState,
+        );
+      },
+    );
+  }
+
+  Widget _buildSerialNumberItem(
+    int index,
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    List<FocusNode> focusNodeList,
+    FocusNode node,
+    BuildContext buildContext,
+    StateSetter setState,
+  ) {
+    return Stack(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: FormTextField(
+                onChange: (value) {
+                  setState(() {
+                    focusNodeList[index].requestFocus();
+                    LogPrint().log("on changes value : $value");
+                  });
+                },
+                controller: serial[index],
+                focusNode: focusNodeList[index],
+                hint: "",
+                title: "Product code - ${index + 1}:",
+                inputBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                textColor: AppTheme.grayAsparagus,
+                inputType: TextInputType.text,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(20),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: FormTextField(
+                onChange: (value) => setState(() {}),
+                hint: "",
+                value: sizeList[index]?.text ?? "",
+                title: "Size - ${index + 1} :",
+                inputBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                textColor: AppTheme.grayAsparagus,
+                onTap: () => showSizeSheet(node, sizeList, index, setState),
+              ),
+            ),
+          ],
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          child: IconButton(
+            onPressed: () => _handleDeleteSerial(
+              index,
+              serial,
+              sizeList,
+              focusNodeList,
+              buildContext,
+              setState,
+            ),
+            icon: const Icon(
+              Icons.delete_outline,
+              color: AppTheme.red,
+              size: 20,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _handleDeleteSerial(
+    int index,
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    List<FocusNode> focusNodeList,
+    BuildContext buildContext,
+    StateSetter setState,
+  ) {
+    Utils().showYesNoAlert(
+      context: buildContext,
+      message: "Are you sure delete this serial number?",
+      onNoPressed: () => Navigator.of(context).pop(),
+      onYesPressed: () {
+        Navigator.of(context).pop();
+        setState(() {
+          serial.removeAt(index);
+          focusNodeList.removeAt(index);
+          sizeList.removeAt(index);
+          quantity = serial.length;
+        });
+      },
+    );
+  }
+
+  Widget _buildNotesField(
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+  ) {
+    return Visibility(
+      visible: _isFormValid(serial, sizeList),
+      child: FormTextField(
+        onChange: (value) {},
+        hint: "",
+        controller: notes,
+        textColor: AppTheme.grayAsparagus,
+        fontFamily: AppTheme.urbanist,
+        title: 'Notes',
+        maxLines: 3,
+        minLines: 1,
+      ),
+    );
+  }
+
+  Widget _buildSaveButton(
+    ProductDetail? model,
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    FocusNode node,
+    BuildContext buildContext,
+    StateSetter setState,
+    BuildContext context,
+  ) {
+    return Center(
+      child: Container(
+        width: 200,
+        margin: const EdgeInsets.symmetric(vertical: 20),
+        child: ElevatedButton(
+          focusNode: node,
+          onPressed: () => _handleSaveProduct(
+            model,
+            serial,
+            sizeList,
+            buildContext,
+            setState,
+            context,
+          ),
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            backgroundColor: _isFormValid(serial, sizeList)
+                ? AppTheme.colorPrimary
+                : AppTheme.paleGray,
+            minimumSize: const Size.fromHeight(50),
+          ),
+          child: CText(
+            text: "SAVE",
+            textColor: AppTheme.textPrimary,
+            fontSize: AppTheme.large,
+            fontFamily: AppTheme.urbanist,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handleSaveProduct(
+    ProductDetail? model,
+    List<TextEditingController> serial,
+    List<AreaData?> sizeList,
+    BuildContext buildContext,
+    StateSetter setState,
+    BuildContext context,
+  ) {
+    final errorMessage = _validateProductForm(serial, sizeList, buildContext);
+    if (errorMessage != null) {
+      Utils().showAlert(
+        buildContext: buildContext,
+        message: errorMessage,
+        onPressed: () => Navigator.of(context).pop(),
+      );
+    } else {
+      _saveProduct(model, serial, sizeList, setState, context);
+    }
   }
 
   void _initializeProductSheet(

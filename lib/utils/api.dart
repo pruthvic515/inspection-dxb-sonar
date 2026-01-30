@@ -37,73 +37,113 @@ class Api {
 
   callAPI(BuildContext context, String function,
       Map<String, dynamic>? fields) async {
-    if (storeUserData.getString(constants.USER_TOKEN).isNotEmpty) {
-      print("token  ${storeUserData.getString(constants.USER_TOKEN)}");
-    }
-
+    _logTokenIfPresent();
     final url = Uri.parse('${constants.baseUrl}$version/$function');
     final headers = await getHeaders();
-
-    // Check if encryption is required for this endpoint
     final requiresEncryption = EncryptionConfig.requiresEncryption(
       url.toString(),
       headers: headers,
       method: 'POST',
     );
 
-    http.Response response;
+    final response = await _makeApiCall(
+      url,
+      headers,
+      fields,
+      requiresEncryption,
+    );
 
+    _logResponse(response, fields);
+    if (!context.mounted) return;
+    return _handleApiResponse(response, context);
+  }
+
+  void _logTokenIfPresent() {
+    if (storeUserData.getString(constants.USER_TOKEN).isNotEmpty) {
+      print("token  ${storeUserData.getString(constants.USER_TOKEN)}");
+    }
+  }
+
+  Future<http.Response> _makeApiCall(
+    Uri url,
+    Map<String, String> headers,
+    Map<String, dynamic>? fields,
+    bool requiresEncryption,
+  ) async {
     if (requiresEncryption) {
       print("API URL is :- $url");
-      // Use encrypted HTTP client for this endpoint
       final encryptedClient = EncryptedHttpClient();
-      response = await encryptedClient.post(
-        url,
-        headers: headers,
-        body: jsonEncode(fields),
-      );
-    } else {
-      // Use normal HTTP client
-      response = await http.post(
+      return await encryptedClient.post(
         url,
         headers: headers,
         body: jsonEncode(fields),
       );
     }
+    return await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(fields),
+    );
+  }
 
+  void _logResponse(http.Response response, Map<String, dynamic>? fields) {
     print("${response.request!.url} ${response.statusCode}");
     print("fields : ${jsonEncode(fields)}");
+  }
 
-    if (response.statusCode == 200 || response.statusCode == 400) {
+  String? _handleApiResponse(http.Response response, BuildContext context) {
+    if (_isSuccessStatusCode(response.statusCode)) {
       return response.body;
-    } else if (response.statusCode == 500) {
-      if (!context.mounted) return;
-      Navigator.of(context).pop();
-      Utils().showAlert(
-          buildContext: context,
-          message: "Internal Server Error",
-          onPressed: () {});
-      return "{\"message\":\"Internal Server Error\"}";
-    } else {
-      if (isValidJson(response.body)) {
-        if (!context.mounted) return;
-        Utils().showAlert(
-            buildContext: context,
-            message: jsonDecode(response.body)["message"],
-            onPressed: () {});
-        return response.body;
-      } else {
-        if (!context.mounted) return;
-        Utils().showAlert(
-            buildContext: context,
-            title: "StatusCode : ${response.statusCode}",
-            message: "Response Null",
-            onPressed: () {
-              Get.back();
-            });
-        return null;
-      }
     }
+    if (response.statusCode == 500) {
+      return _handleServerError(context);
+    }
+    return _handleOtherErrors(response, context);
+  }
+
+  bool _isSuccessStatusCode(int statusCode) {
+    return statusCode == 200 || statusCode == 400;
+  }
+
+  String _handleServerError(BuildContext context) {
+    if (!context.mounted) return "{\"message\":\"Internal Server Error\"}";
+    Navigator.of(context).pop();
+    Utils().showAlert(
+      buildContext: context,
+      message: "Internal Server Error",
+      onPressed: () {},
+    );
+    return "{\"message\":\"Internal Server Error\"}";
+  }
+
+  String? _handleOtherErrors(http.Response response, BuildContext context) {
+    if (isValidJson(response.body)) {
+      return _handleValidJsonError(response, context);
+    }
+    return _handleInvalidJsonError(response, context);
+  }
+
+  String _handleValidJsonError(http.Response response, BuildContext context) {
+    if (!context.mounted) return response.body;
+    Utils().showAlert(
+      buildContext: context,
+      message: jsonDecode(response.body)["message"],
+      onPressed: () {},
+    );
+    return response.body;
+  }
+
+  String? _handleInvalidJsonError(http.Response response, BuildContext context) {
+    if (!context.mounted) return null;
+    Utils().showAlert(
+      buildContext: context,
+      title: "StatusCode : ${response.statusCode}",
+      message: "Response Null",
+      onPressed: () {
+        Get.back();
+      },
+    );
+    return null;
   }
 
   bool isValidJson(String jsonString) {

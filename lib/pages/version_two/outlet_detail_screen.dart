@@ -21,7 +21,7 @@ class OutletDetailScreen extends StatefulWidget {
   EntityDetailModel entity;
   int? taskId;
   int inspectionId;
-  var statusId;
+  int statusId;
   OutletData outlet;
   bool isNew;
   bool fromInactive;
