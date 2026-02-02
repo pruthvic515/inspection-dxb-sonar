@@ -81,6 +81,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
   }
 
   void getEntityDetail() async {
+    if (!mounted) return;
     LoadingIndicatorDialog().show(context);
     final encryptAndDecrypt = EncryptAndDecrypt();
     final encryptedMainTaskId = await encryptAndDecrypt.encryption(
@@ -91,10 +92,15 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
       payload: widget.entityId.toString(),
       urlEncode: false,
     );
+    if (!mounted) {
+      LoadingIndicatorDialog().dismiss();
+      return;
+    }
     Api().callAPI(
         context,
         "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}",
         {}).then((value) async {
+      if (!mounted) return;
       LoadingIndicatorDialog().dismiss();
       if (value != null) {
         setState(() {
@@ -103,6 +109,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
             outletList.clear();
             outletList.addAll(entity!.outletModels);
           } else {
+            if (!mounted) return;
             Utils().showAlert(
                 buildContext: context,
                 message: noEntityMessage,
@@ -114,6 +121,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
           }
         });
       } else {
+        if (!mounted) return;
         Utils().showAlert(
             buildContext: context,
             message: noEntityMessage,
@@ -679,11 +687,13 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
 
   Future<void> _fetchReportUrl() async {
     try {
+      if (!mounted) return;
       final value = await Api().getAPI(
         context,
         "Department/Report/ViewReport?mainTaskId=${widget.task.mainTaskId}&inspectionId=0",
       );
 
+      if (!mounted) return;
       LoadingIndicatorDialog().dismiss();
       print("ViewReport $value");
 
@@ -694,6 +704,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
 
       await _processReportResponse(value);
     } catch (e) {
+      if (!mounted) return;
       LoadingIndicatorDialog().dismiss();
       print("Error fetching report: $e");
     }
@@ -704,6 +715,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
     final reportUrl = data["data"];
 
     if (reportUrl == null) {
+      if (!mounted) return;
       _showNoReportError();
       return;
     }
@@ -729,6 +741,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
   }
 
   void _showNoReportError() {
+    if (!mounted) return;
     Utils().showAlert(
       buildContext: context,
       message: "No Found Report ",
@@ -739,6 +752,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
   }
 
   void _showNoPdfError() {
+    if (!mounted) return;
     Utils().showAlert(
       buildContext: context,
       message: "No PDF ",

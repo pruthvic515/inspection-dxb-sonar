@@ -101,34 +101,48 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> getTaskStatus() async {
-    if (await Utils().hasNetwork(context, setState)) {
-      if (!mounted) return;
-      Api()
-          .getAPI(context, "Department/Task/GetTaskStatus")
-          .then((value) async {
-        setState(() {
-          taskStatus.clear();
-          var data = areaFromJson(value);
-          debugPrint("GetTaskStatus $value}");
-          if (data.data.isNotEmpty) {
-            taskStatus.addAll(data.data);
-            if (!storeUserData.getBoolean(IS_AGENT_LOGIN)) {
-              refreshTask();
-            }
-          } else {
-            if (data.message.isNotEmpty) {
-              Utils().showAlert(
-                  buildContext: context,
-                  message: data.message,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  });
-            }
-          }
-        });
-      });
+  void _handleTaskStatusSuccess(AreaModel data) {
+    taskStatus.addAll(data.data);
+    if (!storeUserData.getBoolean(IS_AGENT_LOGIN)) {
+      refreshTask();
     }
+  }
+
+  void _handleTaskStatusError(AreaModel data) {
+    if (data.message.isNotEmpty) {
+      Utils().showAlert(
+        buildContext: context,
+        message: data.message,
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+    }
+  }
+
+  void _processTaskStatusResponse(String value) {
+    setState(() {
+      taskStatus.clear();
+      var data = areaFromJson(value);
+      debugPrint("GetTaskStatus $value}");
+      if (data.data.isNotEmpty) {
+        _handleTaskStatusSuccess(data);
+      } else {
+        _handleTaskStatusError(data);
+      }
+    });
+  }
+
+  Future<void> getTaskStatus() async {
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
+
+    Api()
+        .getAPI(context, "Department/Task/GetTaskStatus")
+        .then((value) async {
+      if (!mounted) return;
+      _processTaskStatusResponse(value);
+    });
   }
 
   Future<void> getTasks() async {

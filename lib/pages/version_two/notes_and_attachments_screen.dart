@@ -67,6 +67,245 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
     super.initState();
   }
 
+  Widget _buildHeader() {
+    return Container(
+      height: 170,
+      color: AppTheme.colorPrimary,
+      width: double.infinity,
+      child: Stack(
+        children: [
+          GestureDetector(
+            onTap: () => Get.back(),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  left: 10, top: 50, right: 10, bottom: 20),
+              child: Card(
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12))),
+                elevation: 0,
+                surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+                color: AppTheme.white.withValues(alpha: 0),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Image.asset(
+                    "${ASSET_PATH}back.png",
+                    height: 15,
+                    color: AppTheme.white,
+                    width: 15,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: CText(
+              text: "Complete Task",
+              textColor: AppTheme.white,
+              fontFamily: AppTheme.urbanist,
+              fontSize: AppTheme.big_20,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabButton(String label, String tabValue) {
+    final isSelected = tabType == tabValue;
+    return Expanded(
+      flex: 1,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          setState(() {
+            tabType = tabValue;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.only(top: 20),
+          color: AppTheme.white,
+          child: Column(
+            children: [
+              CText(
+                text: label,
+                textColor: isSelected
+                    ? AppTheme.black
+                    : AppTheme.textColorGray,
+                fontWeight: FontWeight.w400,
+                fontFamily: AppTheme.poppins,
+                fontSize: AppTheme.medium,
+              ),
+              Container(
+                height: 3,
+                margin: const EdgeInsets.only(top: 8),
+                color: isSelected
+                    ? AppTheme.colorPrimary
+                    : AppTheme.mainBackground,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabSection() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        children: [
+          _buildTabButton("Notes", "notes"),
+          _buildTabButton("Attachments", "attachments"),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotesSection() {
+    return Container(
+      margin: const EdgeInsets.only(left: 10, right: 10, top: 15),
+      padding: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: AppTheme.white,
+        border: Border.all(color: AppTheme.grey),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+      ),
+      child: CTextField(
+        textColor: AppTheme.textColor,
+        hint: "Notes here.....",
+        fontSize: AppTheme.medium,
+        minLines: 5,
+        fontWeight: FontWeight.w500,
+        fontFamily: AppTheme.poppins,
+        controller: _notes,
+        focusedBorder: InputBorder.none,
+        inputBorder: InputBorder.none,
+        onChange: (vl) {
+          setState(() {});
+        },
+      ),
+    );
+  }
+
+  Widget _buildAttachmentButton(String label, String type) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final buttonSize = (screenWidth - 50) / 2;
+    final margin = type == "video"
+        ? const EdgeInsets.only(left: 20, right: 5, top: 10)
+        : const EdgeInsets.only(left: 5, right: 20, top: 10);
+
+    return GestureDetector(
+      onTap: () async {
+        if (await Utils().hasNetwork(context, setState)) {
+          requestCameraPermissions(type, null, 9, setState);
+        }
+      },
+      child: Card(
+        margin: margin,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        elevation: 2,
+        child: Container(
+          decoration: const BoxDecoration(
+            color: AppTheme.white,
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          alignment: Alignment.center,
+          height: buttonSize,
+          width: buttonSize,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.add,
+                size: 30,
+                color: AppTheme.red,
+              ),
+              CText(
+                text: label,
+                padding: const EdgeInsets.only(left: 10),
+                fontSize: AppTheme.big,
+                textColor: AppTheme.black,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAttachmentsSection() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            _buildAttachmentButton("Videos", "video"),
+            _buildAttachmentButton("Images", "image"),
+          ],
+        ),
+        _buildSubmitButton(),
+      ],
+    );
+  }
+
+  void _handleSubmitInspection() {
+    if (_notes.text.isNotEmpty && image.isNotEmpty) {
+      Utils().showYesNoAlert(
+        context: context,
+        message: "Are you sure you want to finish the inspections?",
+        onYesPressed: () {
+          Get.back();
+          if (widget.isDXBTask) {
+            reasonBottomSheet(context, reasonList, onSelected: (selected) {
+              submitInspection(selected["inspectionReasonMasterId"]);
+            });
+          } else {
+            submitInspection(0);
+          }
+        },
+        onNoPressed: () {
+          Get.back();
+        },
+      );
+    } else {
+      Utils().showAlert(
+        buildContext: context,
+        title: "Alert",
+        message: "Please attach at least one image.",
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+    }
+  }
+
+  Widget _buildSubmitButton() {
+    final isValid = _notes.text.isNotEmpty && image.isNotEmpty;
+    return Container(
+      margin: const EdgeInsets.only(top: 30, right: 20, left: 20, bottom: 30),
+      child: ElevatedButton(
+        onPressed: _handleSubmitInspection,
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          backgroundColor: isValid ? AppTheme.colorPrimary : AppTheme.grey,
+          minimumSize: const Size.fromHeight(55),
+        ),
+        child: CText(
+          text: "SUBMIT & FINISH MY INSPECTION",
+          textColor: AppTheme.textPrimary,
+          fontSize: AppTheme.large,
+          fontFamily: AppTheme.urbanist,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,322 +314,19 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-              height: 170,
-              color: AppTheme.colorPrimary,
-              width: double.infinity,
-              child: Stack(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 10, top: 50, right: 10, bottom: 20),
-                      child: Card(
-                        shape: const RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(12))),
-                        elevation: 0,
-                        surfaceTintColor: AppTheme.white.withValues(alpha: 0),
-                        color: AppTheme.white.withValues(alpha: 0),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Image.asset(
-                            "${ASSET_PATH}back.png",
-                            height: 15,
-                            color: AppTheme.white,
-                            width: 15,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: CText(
-                      text: "Complete Task",
-                      textColor: AppTheme.white,
-                      fontFamily: AppTheme.urbanist,
-                      fontSize: AppTheme.big_20,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              )),
+          _buildHeader(),
           Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width,
-                      child: Row(
-                        children: [
-                          Expanded(
-                              flex: 1,
-                              child: GestureDetector(
-                                  behavior: HitTestBehavior.translucent,
-                                  onTap: () {
-                                    setState(() {
-                                      tabType = "notes";
-                                    });
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.only(top: 20),
-                                    color: AppTheme.white,
-                                    child: Column(
-                                      children: [
-                                        CText(
-                                            text: "Notes",
-                                            textColor: tabType == "notes"
-                                                ? AppTheme.black
-                                                : AppTheme.textColorGray,
-                                            fontWeight: FontWeight.w400,
-                                            fontFamily: AppTheme.poppins,
-                                            fontSize: AppTheme.medium),
-                                        Container(
-                                          height: 3,
-                                          margin: const EdgeInsets.only(top: 8),
-                                          color: tabType == "notes"
-                                              ? AppTheme.colorPrimary
-                                              : AppTheme.mainBackground,
-                                        )
-                                      ],
-                                    ),
-                                  ))),
-                          Expanded(
-                              flex: 1,
-                              child: GestureDetector(
-                                  behavior: HitTestBehavior.translucent,
-                                  onTap: () {
-                                    setState(() {
-                                      tabType = "attachments";
-                                    });
-                                  },
-                                  child: Container(
-                                      padding: const EdgeInsets.only(top: 20),
-                                      color: AppTheme.white,
-                                      child: Column(
-                                        children: [
-                                          CText(
-                                              text: "Attachments",
-                                              textColor: tabType ==
-                                                  "attachments"
-                                                  ? AppTheme.black
-                                                  : AppTheme.textColorGray,
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: AppTheme.poppins,
-                                              fontSize: AppTheme.medium),
-                                          Container(
-                                            height: 3,
-                                            margin: const EdgeInsets.only(
-                                                top: 8),
-                                            color: tabType == "attachments"
-                                                ? AppTheme.colorPrimary
-                                                : AppTheme.mainBackground,
-                                          )
-                                        ],
-                                      )))),
-                        ],
-                      ),
-                    ),
-                    if (tabType == "notes")
-                      Container(
-                        margin: const EdgeInsets.only(
-                            left: 10, right: 10, top: 15),
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color: AppTheme.white,
-                            border: Border.all(color: AppTheme.grey),
-                            borderRadius:
-                            const BorderRadius.all(Radius.circular(10))),
-                        child: CTextField(
-                          textColor: AppTheme.textColor,
-                          hint: "Notes here.....",
-                          fontSize: AppTheme.medium,
-                          minLines: 5,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: AppTheme.poppins,
-                          controller: _notes,
-                          focusedBorder: InputBorder.none,
-                          inputBorder: InputBorder.none,
-                          onChange: (vl) {
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                    if (tabType == "attachments")
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              if (await Utils().hasNetwork(context, setState)) {
-                                requestCameraPermissions(
-                                    "video", null, 9, setState);
-                              }
-                            },
-                            child: Card(
-                              margin: const EdgeInsets.only(
-                                  left: 20, right: 5, top: 10),
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                              elevation: 2,
-                              child: Container(
-                                  decoration: const BoxDecoration(
-                                    color: AppTheme.white,
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  alignment: Alignment.center,
-                                  height:
-                                  (MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width - 50) / 2,
-                                  width:
-                                  (MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width - 50) / 2,
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.add,
-                                        size: 30,
-                                        color: AppTheme.red,
-                                      ),
-                                      CText(
-                                        text: "Videos",
-                                        padding: const EdgeInsets.only(
-                                            left: 10),
-                                        fontSize: AppTheme.big,
-                                        textColor: AppTheme.black,
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              if (await Utils().hasNetwork(context, setState)) {
-                                requestCameraPermissions(
-                                    "image", null, 9, setState);
-                              }
-                            },
-                            child: Card(
-                              margin: const EdgeInsets.only(
-                                  left: 5, right: 20, top: 10),
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                              elevation: 2,
-                              child: Container(
-                                  decoration: const BoxDecoration(
-                                    color: AppTheme.white,
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  alignment: Alignment.center,
-                                  height:
-                                  (MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width - 50) / 2,
-                                  width:
-                                  (MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width - 50) / 2,
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.add,
-                                        size: 30,
-                                        color: AppTheme.red,
-                                      ),
-                                      CText(
-                                        text: "Images",
-                                        padding: const EdgeInsets.only(
-                                            left: 10),
-                                        fontSize: AppTheme.big,
-                                        textColor: AppTheme.black,
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ),
-                        ],
-                      ),
-                    if (tabType == "attachments")
-                      Container(
-                        margin: const EdgeInsets.only(
-                            top: 30, right: 20, left: 20, bottom: 30),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_notes.text.isNotEmpty && image.isNotEmpty) {
-                              Utils().showYesNoAlert(
-                                  context: context,
-                                  message:
-                                  "Are you sure you want to finish the inspections?",
-                                  onYesPressed: () {
-                                    Get.back();
-                                    if (widget.isDXBTask) {
-                                      reasonBottomSheet(context, reasonList,
-                                          onSelected: (selected) {
-                                            submitInspection(
-                                                selected["inspectionReasonMasterId"]);
-                                          });
-                                    } else {
-                                      submitInspection(0);
-                                    }
-                                  },
-                                  onNoPressed: () {
-                                    Get.back();
-                                  });
-                            } else {
-                              Utils().showAlert(
-                                  buildContext: context,
-                                  title: "Alert",
-                                  message: "Please attach at least one image.",
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  });
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            backgroundColor:
-                            _notes.text.isNotEmpty && image.isNotEmpty
-                                ? AppTheme.colorPrimary
-                                : AppTheme.grey,
-                            minimumSize: const Size.fromHeight(55),
-                          ),
-                          child: CText(
-                            text: "SUBMIT & FINISH MY INSPECTION",
-                            textColor: AppTheme.textPrimary,
-                            fontSize: AppTheme.large,
-                            fontFamily: AppTheme.urbanist,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ))
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildTabSection(),
+                  if (tabType == "notes") _buildNotesSection(),
+                  if (tabType == "attachments") _buildAttachmentsSection(),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

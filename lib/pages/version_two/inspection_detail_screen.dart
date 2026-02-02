@@ -106,14 +106,17 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
         payload: widget.task.entityID.toString(),
         urlEncode: false,
       );
+      if (!mounted) return;
       Api().callAPI(
           context,
           "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}",
           {}).then((value) async {
+        if (!mounted) return;
         setState(() {
           entity = entityFromJson(value);
           if (entity != null) {
           } else {
+            if (!mounted) return;
             Utils().showAlert(
                 buildContext: context,
                 message: noEntityMessage,
@@ -187,6 +190,243 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
     }
   }
 
+  Widget _buildBackButton() {
+    return GestureDetector(
+      onTap: () => Get.back(),
+      child: Padding(
+        padding: const EdgeInsets.only(
+            left: 10, top: 50, right: 10, bottom: 20),
+        child: Card(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12))),
+          elevation: 0,
+          surfaceTintColor: AppTheme.white.withValues(alpha: 0),
+          color: AppTheme.white.withValues(alpha: 0),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Image.asset(
+              "${ASSET_PATH}back.png",
+              height: 15,
+              width: 15,
+              color: AppTheme.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeaderTitle() {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: CText(
+        textAlign: TextAlign.center,
+        padding: const EdgeInsets.only(left: 60, right: 60, top: 60),
+        text: "Inspection Task detail",
+        textColor: AppTheme.white,
+        fontFamily: AppTheme.urbanist,
+        fontSize: AppTheme.big,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        fontWeight: FontWeight.w700,
+      ),
+    );
+  }
+
+  Widget _buildStepIndicator(int stepNumber, String label, int threshold) {
+    final isActive = tabType > threshold;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          alignment: Alignment.center,
+          height: 25,
+          width: 25,
+          decoration: BoxDecoration(
+            color: isActive ? AppTheme.lightBlueTwo : AppTheme.white,
+            shape: BoxShape.circle,
+          ),
+          child: CText(
+            text: stepNumber.toString(),
+            textColor: AppTheme.colorPrimary,
+            fontFamily: AppTheme.urbanist,
+            fontSize: AppTheme.large,
+          ),
+        ),
+        const SizedBox(height: 5),
+        CText(
+          text: label,
+          fontFamily: AppTheme.urbanist,
+          textAlign: TextAlign.center,
+          textColor: AppTheme.white,
+          fontSize: AppTheme.small,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStepSeparator() {
+    return Expanded(
+      flex: 1,
+      child: Container(
+        margin: const EdgeInsets.only(top: 10),
+        color: AppTheme.white,
+        height: 1,
+      ),
+    );
+  }
+
+  Widget _buildStepIndicators() {
+    return Container(
+      margin: const EdgeInsets.only(
+          left: 16.0, right: 16.0, bottom: 10, top: 120),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildStepIndicator(1, "Details", 0),
+          _buildStepSeparator(),
+          _buildStepIndicator(2, "Products \nInspections", 1),
+          _buildStepSeparator(),
+          _buildStepIndicator(3, "Attachments", 2),
+          _buildStepSeparator(),
+          _buildStepIndicator(4, "Witness & \nRepresentative", 3),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDownloadButton() {
+    final isVisible = !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
+        widget.completeStatus == true;
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Visibility(
+        visible: isVisible,
+        child: Container(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.white),
+            onPressed: () {
+              getDownloadReport();
+            },
+            child: CText(
+              text: "Download Report",
+              textColor: AppTheme.colorPrimary,
+              fontFamily: AppTheme.poppins,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      height: widget.completeStatus ? 240 : 200,
+      width: double.infinity,
+      color: AppTheme.colorPrimary,
+      child: Stack(
+        children: [
+          _buildBackButton(),
+          _buildHeaderTitle(),
+          _buildStepIndicators(),
+          _buildDownloadButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavigationButton(String label, IconData icon, bool isNext) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (isNext) {
+            tabType++;
+          } else {
+            tabType--;
+          }
+        });
+      },
+      behavior: HitTestBehavior.translucent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: isNext
+            ? [
+                CText(
+                  textAlign: TextAlign.center,
+                  text: label,
+                  textColor: AppTheme.colorPrimary,
+                  fontFamily: AppTheme.urbanist,
+                  fontSize: AppTheme.medium,
+                  fontWeight: FontWeight.w700,
+                ),
+                 Icon(
+                  icon,
+                  size: 18,
+                  color: AppTheme.colorPrimary,
+                ),
+              ]
+            : [
+                 Icon(
+                  icon,
+                  size: 18,
+                  color: AppTheme.colorPrimary,
+                ),
+                CText(
+                  textAlign: TextAlign.center,
+                  text: label,
+                  textColor: AppTheme.colorPrimary,
+                  fontFamily: AppTheme.urbanist,
+                  fontSize: AppTheme.medium,
+                  fontWeight: FontWeight.w700,
+                ),
+              ],
+      ),
+    );
+  }
+
+  Widget _buildNavigationButtons() {
+    return Container(
+      padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Visibility(
+            visible: tabType > 1,
+            child: _buildNavigationButton("Previous", Icons.arrow_back, false),
+          ),
+          Visibility(
+            visible: tabType != 4,
+            child: _buildNavigationButton("Next", Icons.arrow_forward, true),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    if (detail == null) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: AppTheme.black,
+        ),
+      );
+    }
+
+    switch (tabType) {
+      case 1:
+        return tabOneUI();
+      case 2:
+        return tabTwoUI();
+      case 3:
+        return tabThreeUI();
+      case 4:
+        return tabFourUI();
+      default:
+        return Container();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     currentWidth = MediaQuery.of(context).size.width;
@@ -199,311 +439,9 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-                height: widget.completeStatus ? 240 : 200,
-                width: double.infinity,
-                color: AppTheme.colorPrimary,
-                child: Stack(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 10, top: 50, right: 10, bottom: 20),
-                        child: Card(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
-                          elevation: 0,
-                          surfaceTintColor: AppTheme.white.withValues(alpha: 0),
-                          color: AppTheme.white.withValues(alpha: 0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Image.asset(
-                              "${ASSET_PATH}back.png",
-                              height: 15,
-                              width: 15,
-                              color: AppTheme.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: CText(
-                        textAlign: TextAlign.center,
-                        padding:
-                            const EdgeInsets.only(left: 60, right: 60, top: 60),
-                        text: "Inspection Task detail",
-                        textColor: AppTheme.white,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.big,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Container(
-                        margin: const EdgeInsets.only(
-                            left: 16.0, right: 16.0, bottom: 10, top: 120),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                    alignment: Alignment.center,
-                                    height: 25,
-                                    width: 25,
-                                    decoration: BoxDecoration(
-                                      color: tabType > 0
-                                          ? AppTheme.lightBlueTwo
-                                          : AppTheme.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: CText(
-                                      text: "1",
-                                      textColor: AppTheme.colorPrimary,
-                                      fontFamily: AppTheme.urbanist,
-                                      fontSize: AppTheme.large,
-                                    )),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                CText(
-                                    text: "Details",
-                                    fontFamily: AppTheme.urbanist,
-                                    textAlign: TextAlign.center,
-                                    textColor: tabType > 0
-                                        ? AppTheme.white
-                                        : AppTheme.white,
-                                    fontSize: AppTheme.small),
-                              ],
-                            ),
-                            Expanded(
-                                flex: 1,
-                                child: Container(
-                                  margin: const EdgeInsets.only(top: 10),
-                                  color: AppTheme.white,
-                                  height: 1,
-                                )),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                    alignment: Alignment.center,
-                                    height: 25,
-                                    width: 25,
-                                    decoration: BoxDecoration(
-                                      color: tabType > 1
-                                          ? AppTheme.lightBlueTwo
-                                          : AppTheme.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: CText(
-                                      text: "2",
-                                      textColor: AppTheme.colorPrimary,
-                                      fontFamily: AppTheme.urbanist,
-                                      fontSize: AppTheme.large,
-                                    )),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                CText(
-                                    text: "Products \nInspections",
-                                    fontFamily: AppTheme.urbanist,
-                                    textAlign: TextAlign.center,
-                                    textColor: tabType > 1
-                                        ? AppTheme.white
-                                        : AppTheme.white,
-                                    fontSize: AppTheme.small),
-                              ],
-                            ),
-                            Expanded(
-                                flex: 1,
-                                child: Container(
-                                  margin: const EdgeInsets.only(top: 10),
-                                  color: AppTheme.white,
-                                  height: 1,
-                                )),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                    alignment: Alignment.center,
-                                    height: 25,
-                                    width: 25,
-                                    decoration: BoxDecoration(
-                                      color: tabType > 2
-                                          ? AppTheme.lightBlueTwo
-                                          : AppTheme.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: CText(
-                                      text: "3",
-                                      textColor: AppTheme.colorPrimary,
-                                      fontFamily: AppTheme.urbanist,
-                                      fontSize: AppTheme.large,
-                                    )),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                CText(
-                                    text: "Attachments",
-                                    fontFamily: AppTheme.urbanist,
-                                    textAlign: TextAlign.center,
-                                    textColor: tabType > 2
-                                        ? AppTheme.white
-                                        : AppTheme.white,
-                                    fontSize: AppTheme.small),
-                              ],
-                            ),
-                            Expanded(
-                                flex: 1,
-                                child: Container(
-                                  margin: const EdgeInsets.only(top: 10),
-                                  color: AppTheme.white,
-                                  height: 1,
-                                )),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                    alignment: Alignment.center,
-                                    height: 25,
-                                    width: 25,
-                                    decoration: BoxDecoration(
-                                      color: tabType > 3
-                                          ? AppTheme.lightBlueTwo
-                                          : AppTheme.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: CText(
-                                      text: "4",
-                                      textColor: AppTheme.colorPrimary,
-                                      fontFamily: AppTheme.urbanist,
-                                      fontSize: AppTheme.large,
-                                    )),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                CText(
-                                    text: "Witness & \nRepresentative",
-                                    fontFamily: AppTheme.urbanist,
-                                    textAlign: TextAlign.center,
-                                    textColor: tabType > 3
-                                        ? AppTheme.white
-                                        : AppTheme.white,
-                                    fontSize: AppTheme.small),
-                              ],
-                            ),
-                          ],
-                        )),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Visibility(
-                          visible: !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
-                              widget.completeStatus == true,
-                          child: Container(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppTheme.white),
-                              onPressed: () {
-                                getDownloadReport();
-                              },
-                              child: CText(
-                                text: "Download Report",
-                                textColor: AppTheme.colorPrimary,
-                                fontFamily: AppTheme.poppins,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          )),
-                    )
-                  ],
-                )),
-            Container(
-                padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Visibility(
-                        visible: tabType > 1,
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              tabType--;
-                            });
-                          },
-                          behavior: HitTestBehavior.translucent,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              const Icon(
-                                Icons.arrow_back,
-                                size: 18,
-                                color: AppTheme.colorPrimary,
-                              ),
-                              CText(
-                                textAlign: TextAlign.center,
-                                text: "Previous",
-                                textColor: AppTheme.colorPrimary,
-                                fontFamily: AppTheme.urbanist,
-                                fontSize: AppTheme.medium,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ],
-                          ),
-                        )),
-                    Visibility(
-                      visible: tabType != 4,
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            tabType++;
-                          });
-                        },
-                        behavior: HitTestBehavior.translucent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            CText(
-                              textAlign: TextAlign.center,
-                              text: "Next",
-                              textColor: AppTheme.colorPrimary,
-                              fontFamily: AppTheme.urbanist,
-                              fontSize: AppTheme.medium,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            const Icon(
-                              Icons.arrow_forward,
-                              size: 18,
-                              color: AppTheme.colorPrimary,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                )),
-            detail == null
-                ? const Center(
-                    child: CircularProgressIndicator(
-                    color: AppTheme.black,
-                  ))
-                : tabType == 1
-                    ? tabOneUI()
-                    : tabType == 2
-                        ? tabTwoUI()
-                        : tabType == 3
-                            ? tabThreeUI()
-                            : tabType == 4
-                                ? tabFourUI()
-                                : Container()
+            _buildHeader(),
+            _buildNavigationButtons(),
+            _buildContent(),
           ],
         ),
       ),
