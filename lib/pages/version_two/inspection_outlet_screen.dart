@@ -3,12 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:patrol_system/pages/version_two/inspection_detail_screen.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
 import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
@@ -20,20 +22,18 @@ import '../../utils/api.dart';
 import '../../utils/color_const.dart';
 import '../../utils/constants.dart';
 import '../../utils/utils.dart';
-import 'package:http/http.dart' as http;
 
 class InspectionOutletScreen extends StatefulWidget {
   final int entityId;
   final Tasks task;
   bool completeStatus;
 
-   InspectionOutletScreen({
+  InspectionOutletScreen({
     super.key,
     required this.task,
     required this.entityId,
     required this.completeStatus,
   });
-
 
   @override
   State<InspectionOutletScreen> createState() => _InspectionOutletScreenState();
@@ -83,6 +83,20 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
   void getEntityDetail() async {
     if (!mounted) return;
     LoadingIndicatorDialog().show(context);
+
+    final encryptedIds = await _encryptEntityIds();
+    if (!_checkMountedAndDismiss()) return;
+
+    final url = _buildEntityDetailsUrl(encryptedIds);
+    if (!mounted) return;
+    Api().callAPI(context, url, {}).then((value) async {
+      if (!mounted) return;
+      LoadingIndicatorDialog().dismiss();
+      _processEntityResponse(value);
+    });
+  }
+
+  Future<Map<String, String>> _encryptEntityIds() async {
     final encryptAndDecrypt = EncryptAndDecrypt();
     final encryptedMainTaskId = await encryptAndDecrypt.encryption(
       payload: widget.task.mainTaskId.toString(),
@@ -92,46 +106,56 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
       payload: widget.entityId.toString(),
       urlEncode: false,
     );
+    return {
+      'mainTaskId': encryptedMainTaskId,
+      'entityId': encryptedEntityId,
+    };
+  }
+
+  bool _checkMountedAndDismiss() {
     if (!mounted) {
       LoadingIndicatorDialog().dismiss();
+      return false;
+    }
+    return true;
+  }
+
+  String _buildEntityDetailsUrl(Map<String, String> encryptedIds) {
+    return "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedIds['mainTaskId']!)}&entityId=${Uri.encodeComponent(encryptedIds['entityId']!)}";
+  }
+
+  void _processEntityResponse(String? value) {
+    if (value == null) {
+      _showEntityErrorAlert();
       return;
     }
-    Api().callAPI(
-        context,
-        "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}",
-        {}).then((value) async {
-      if (!mounted) return;
-      LoadingIndicatorDialog().dismiss();
-      if (value != null) {
-        setState(() {
-          entity = entityFromJson(value);
-          if (entity != null) {
-            outletList.clear();
-            outletList.addAll(entity!.outletModels);
-          } else {
-            if (!mounted) return;
-            Utils().showAlert(
-                buildContext: context,
-                message: noEntityMessage,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                  Navigator.pop(context);
-                });
-          }
-        });
+
+    setState(() {
+      entity = entityFromJson(value);
+      if (entity != null) {
+        _updateOutletList();
       } else {
-        if (!mounted) return;
-        Utils().showAlert(
-            buildContext: context,
-            message: noEntityMessage,
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
-              Navigator.pop(context);
-            });
+        _showEntityErrorAlert();
       }
     });
+  }
+
+  void _updateOutletList() {
+    outletList.clear();
+    outletList.addAll(entity!.outletModels);
+  }
+
+  void _showEntityErrorAlert() {
+    if (!mounted) return;
+    Utils().showAlert(
+      buildContext: context,
+      message: noEntityMessage,
+      onPressed: () {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.pop(context);
+      },
+    );
   }
 
   @override
@@ -240,8 +264,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
   }
 
   Widget _buildDownloadButton() {
-    final isVisible = !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
-        widget.completeStatus;
+    final isVisible =
+        !storeUserData.getBoolean(IS_AGENT_LOGIN) && widget.completeStatus;
 
     return Positioned(
       bottom: 0,
@@ -440,8 +464,8 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
   String _formatLastVisitedDate() {
     if (entity?.lastVisitedDate == null) return "-";
     try {
-      final date = DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-          .parse(entity!.lastVisitedDate!);
+      final date =
+          DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!);
       final dateStr = DateFormat(dateFormat).format(date);
       final timeStr = DateFormat("hh:mm:ss aa").format(date);
       return "$dateStr \n$timeStr";
@@ -462,9 +486,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
           fontSize: AppTheme.big_20,
           fontWeight: FontWeight.w700,
         ),
-        _shouldShowOutletList()
-            ? _buildOutletListView()
-            : Container(),
+        _shouldShowOutletList() ? _buildOutletListView() : Container(),
       ],
     );
   }
@@ -583,9 +605,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
     if (statusId == 3) return "Rejected";
     if (statusId == 6 || statusId == 7) return "Completed";
     try {
-      return taskStatus
-          .firstWhere((item) => item.id == statusId)
-          .text;
+      return taskStatus.firstWhere((item) => item.id == statusId).text;
     } catch (e) {
       return "";
     }
@@ -670,7 +690,6 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
       });
     }
   }
-
 
   //todo download pdf
 
