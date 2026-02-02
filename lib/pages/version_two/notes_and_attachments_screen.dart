@@ -12,6 +12,7 @@ import 'package:patrol_system/utils/api.dart';
 import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
+
 import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
 import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
@@ -34,13 +35,14 @@ class NotesAndAttachmentsScreen extends StatefulWidget {
   bool isDXBTask;
   final OutletData? outletData;
 
-  NotesAndAttachmentsScreen({super.key,
-    required this.inspectionId /*,required this.inspectorId*/,
-    required this.mainTaskId,
-    required this.entityId,
-    required this.taskId,
-    required this.isDXBTask,
-    this.outletData});
+  NotesAndAttachmentsScreen(
+      {super.key,
+      required this.inspectionId /*,required this.inspectorId*/,
+      required this.mainTaskId,
+      required this.entityId,
+      required this.taskId,
+      required this.isDXBTask,
+      this.outletData});
 
   @override
   State<NotesAndAttachmentsScreen> createState() =>
@@ -130,9 +132,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
             children: [
               CText(
                 text: label,
-                textColor: isSelected
-                    ? AppTheme.black
-                    : AppTheme.textColorGray,
+                textColor: isSelected ? AppTheme.black : AppTheme.textColorGray,
                 fontWeight: FontWeight.w400,
                 fontFamily: AppTheme.poppins,
                 fontSize: AppTheme.medium,
@@ -342,68 +342,88 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
       payload: widget.entityId.toString(),
       urlEncode: false,
     );
+    if (!mounted) return;
     Api().callAPI(
         context,
-        "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri
-            .encodeComponent(encryptedMainTaskId)}&entityId=${Uri
-            .encodeComponent(encryptedEntityId)}",
-            {}).then((value) async {
-          setState(() {
-            entity = entityFromJson(value);
-            if (entity != null) {
-              if (outletModel == null) {
-                inspectorId = entity!.inspectorId ?? 0;
-              } else {
-                inspectorId = outletModel!.inspectorId;
-              }
-            } else {
-              Utils().showAlert(
-                  buildContext: context,
-                  message: noEntityMessage,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  });
-            }
-          });
-        });
-    }
-
-  Future<void> requestCameraPermissions(String type, int? productId,
-      int? categoryId, StateSetter myState) async {
-    if (Platform.isIOS) {
-      cameraUpload(type, productId, categoryId, myState);
-    } else {
-      bool permissionStatus = false;
-      var cameraPermission = await Permission.camera.request();
-      LogPrint().log("camera permission is $cameraPermission");
-      if (cameraPermission.isGranted || cameraPermission.isProvisional) {
-        var microphone = await Permission.microphone.request();
-        LogPrint().log("microphone permission is $microphone");
-        if (microphone.isGranted || microphone.isProvisional) {
-          if (Platform.isIOS) {
-            permissionStatus = true;
-            cameraUpload(type, productId, categoryId, myState);
+        "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}",
+        {}).then((value) async {
+      setState(() {
+        entity = entityFromJson(value);
+        if (entity != null) {
+          if (outletModel == null) {
+            inspectorId = entity!.inspectorId ?? 0;
           } else {
-            DeviceInfoPlugin().androidInfo.then((value) async {
-              LogPrint().log("sdk level ${value.version.sdkInt}");
-              if (value.version.sdkInt > 32) {
-                permissionStatus = true;
-              } else {
-                permissionStatus = await Permission.storage
-                    .request()
-                    .isGranted;
-              }
-              LogPrint().log("permission : camera $permissionStatus");
-              cameraUpload(type, productId, categoryId, myState);
-            });
+            inspectorId = outletModel!.inspectorId;
           }
+        } else {
+          Utils().showAlert(
+              buildContext: context,
+              message: noEntityMessage,
+              onPressed: () {
+                Navigator.of(context).pop();
+              });
         }
-      }
-    }
+      });
+    });
   }
 
-  Future<void> cameraUpload(String type, int? productId, int? categoryId,
-      StateSetter myState) async {
+  Future<void> requestCameraPermissions(
+      String type, int? productId, int? categoryId, StateSetter myState) async {
+    if (Platform.isIOS) {
+      cameraUpload(type, productId, categoryId, myState);
+      return;
+    }
+
+    await _requestAndroidCameraPermissions(type, productId, categoryId, myState);
+  }
+
+  Future<void> _requestAndroidCameraPermissions(
+      String type, int? productId, int? categoryId, StateSetter myState) async {
+    final cameraPermission = await _requestCameraPermission();
+    if (!_isPermissionGranted(cameraPermission)) return;
+
+    final microphonePermission = await _requestMicrophonePermission();
+    if (!_isPermissionGranted(microphonePermission)) return;
+
+    await _handleAndroidStoragePermission(type, productId, categoryId, myState);
+  }
+
+  Future<PermissionStatus> _requestCameraPermission() async {
+    final permission = await Permission.camera.request();
+    LogPrint().log("camera permission is $permission");
+    return permission;
+  }
+
+  Future<PermissionStatus> _requestMicrophonePermission() async {
+    final permission = await Permission.microphone.request();
+    LogPrint().log("microphone permission is $permission");
+    return permission;
+  }
+
+  bool _isPermissionGranted(PermissionStatus status) {
+    return status.isGranted || status.isProvisional;
+  }
+
+  Future<void> _handleAndroidStoragePermission(
+      String type, int? productId, int? categoryId, StateSetter myState) async {
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    LogPrint().log("sdk level ${androidInfo.version.sdkInt}");
+
+    final hasStoragePermission = await _checkStoragePermission(androidInfo.version.sdkInt);
+    LogPrint().log("permission : camera $hasStoragePermission");
+
+    cameraUpload(type, productId, categoryId, myState);
+  }
+
+  Future<bool> _checkStoragePermission(int sdkInt) async {
+    if (sdkInt > 32) {
+      return true;
+    }
+    return await Permission.storage.request().isGranted;
+  }
+
+  Future<void> cameraUpload(
+      String type, int? productId, int? categoryId, StateSetter myState) async {
     if (type == "video") {
       LoadingIndicatorDialog().show(context);
       final ImagePicker picker = ImagePicker();
@@ -451,9 +471,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
               http.MultipartFile.fromBytes(
                 'file',
                 compressedBytes,
-                filename: Utils().getFileName(xFile.path
-                    .split("/")
-                    .last),
+                filename: Utils().getFileName(xFile.path.split("/").last),
               ),
               productId,
               categoryId,
@@ -487,7 +505,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
     print(map);
     Api()
         .callAPIWithFiles(
-        context, "Mobile/InspectionDocument/Create", map, listMedia)
+            context, "Mobile/InspectionDocument/Create", map, listMedia)
         .then((value) {
       LoadingIndicatorDialog().dismiss();
       LogPrint().log(value);
@@ -725,10 +743,11 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
         });
   }
 
-  Future<void> reasonBottomSheet(BuildContext context,
-      List<Map<String, dynamic>> reasonList, {
-        Function(Map<String, dynamic>)? onSelected,
-      }) {
+  Future<void> reasonBottomSheet(
+    BuildContext context,
+    List<Map<String, dynamic>> reasonList, {
+    Function(Map<String, dynamic>)? onSelected,
+  }) {
     int selectedIndex = -1; // local variable to keep track of selection
     return showModalBottomSheet(
       context: context,
