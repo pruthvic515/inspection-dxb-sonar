@@ -1001,42 +1001,118 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Widget getProductUI() {
-    return productTab == 1
-        ? ListView.builder(
-            padding: const EdgeInsets.only(top: 10),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: selectedKnownProductListData.length,
-            itemBuilder: (context, index) {
-              List<String> serialNumber = [];
-              for (var element
-                  in selectedKnownProductListData[index].products) {
-                serialNumber.add(element.serialNumber);
-              }
-              return Card(
-                color: AppTheme.white,
-                margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                surfaceTintColor: AppTheme.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CText(
+    if (productTab == 1) {
+      return ListView.builder(
+          padding: const EdgeInsets.only(top: 10),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: selectedKnownProductListData.length,
+          itemBuilder: (context, index) {
+            List<String> serialNumber = [];
+            for (var element
+                in selectedKnownProductListData[index].products) {
+              serialNumber.add(element.serialNumber);
+            }
+            return Card(
+              color: AppTheme.white,
+              margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+              surfaceTintColor: AppTheme.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CText(
+                          textAlign: TextAlign.start,
+                          padding: const EdgeInsets.only(
+                              right: 10, top: 5, bottom: 5),
+                          text: productCategoryList
+                              .firstWhere((element) =>
+                                  element.productCategoryId ==
+                                  selectedKnownProductListData[index]
+                                      .categoryId)
+                              .name,
+                          textColor: AppTheme.colorPrimary,
+                          fontFamily: AppTheme.urbanist,
+                          fontSize: AppTheme.large,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              requestCameraPermissions(
+                                  "image",
+                                  selectedKnownProductListData[index]
+                                      .productDetailsId,
+                                  1,
+                                  setState);
+                              /*   openImageVideoOption(
+                                  selectedKnownProductListData[index]
+                                      .productDetailsId);*/
+                            },
+                            icon: const Icon(Icons.attach_file))
+                      ],
+                    ),
+                    CText(
+                      textAlign: TextAlign.start,
+                      padding:
+                          const EdgeInsets.only(right: 10, top: 0, bottom: 5),
+                      text: selectedKnownProductListData[index].productName,
+                      textColor: AppTheme.grayAsparagus,
+                      fontFamily: AppTheme.urbanist,
+                      fontSize: AppTheme.large,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    CText(
+                      textAlign: TextAlign.start,
+                      padding: const EdgeInsets.only(right: 10, top: 0),
+                      text:
+                          "Quantity : ${selectedKnownProductListData[index].qty}",
+                      textColor: AppTheme.grayAsparagus,
+                      fontFamily: AppTheme.urbanist,
+                      fontSize: AppTheme.large,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: CText(
+                            textAlign: TextAlign.start,
+                            padding: const EdgeInsets.only(
+                                right: 10, top: 0, bottom: 5),
+                            text: "Product Code : ${serialNumber.join(", ")}",
+                            textColor: AppTheme.grayAsparagus,
+                            fontFamily: AppTheme.urbanist,
+                            fontSize: AppTheme.large,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            showQuantitySheet(
+                                selectedKnownProductListData[index],
+                                true,
+                                index);
+                          },
+                          behavior: HitTestBehavior.translucent,
+                          child: CText(
                             textAlign: TextAlign.start,
                             padding: const EdgeInsets.only(
                                 right: 10, top: 5, bottom: 5),
-                            text: productCategoryList
-                                .firstWhere((element) =>
-                                    element.productCategoryId ==
-                                    selectedKnownProductListData[index]
-                                        .categoryId)
-                                .name,
+                            text: "EDIT",
                             textColor: AppTheme.colorPrimary,
                             fontFamily: AppTheme.urbanist,
                             fontSize: AppTheme.large,
@@ -1044,136 +1120,62 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                             overflow: TextOverflow.ellipsis,
                             fontWeight: FontWeight.w700,
                           ),
-                          IconButton(
-                              onPressed: () {
-                                requestCameraPermissions(
-                                    "image",
-                                    selectedKnownProductListData[index]
-                                        .productDetailsId,
-                                    1,
-                                    setState);
-                                /*   openImageVideoOption(
-                                    selectedKnownProductListData[index]
-                                        .productDetailsId);*/
-                              },
-                              icon: const Icon(Icons.attach_file))
-                        ],
-                      ),
-                      CText(
-                        textAlign: TextAlign.start,
-                        padding:
-                            const EdgeInsets.only(right: 10, top: 0, bottom: 5),
-                        text: selectedKnownProductListData[index].productName,
-                        textColor: AppTheme.grayAsparagus,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.large,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      CText(
-                        textAlign: TextAlign.start,
-                        padding: const EdgeInsets.only(right: 10, top: 0),
-                        text:
-                            "Quantity : ${selectedKnownProductListData[index].qty}",
-                        textColor: AppTheme.grayAsparagus,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.large,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: CText(
-                              textAlign: TextAlign.start,
-                              padding: const EdgeInsets.only(
-                                  right: 10, top: 0, bottom: 5),
-                              text: "Product Code : ${serialNumber.join(", ")}",
-                              textColor: AppTheme.grayAsparagus,
-                              fontFamily: AppTheme.urbanist,
-                              fontSize: AppTheme.large,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              showQuantitySheet(
-                                  selectedKnownProductListData[index],
-                                  true,
-                                  index);
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 10),
+                          width: 0.5,
+                          height: AppTheme.big_20,
+                          color: AppTheme.grey,
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              Utils().showYesNoAlert(
+                                  context: context,
+                                  message:
+                                      "Are you sure you want to delete the product?",
+                                  onYesPressed: () {
+                                    Navigator.of(context).pop();
+                                    deleteProduct(
+                                        selectedKnownProductListData[index]
+                                            .productDetailsId);
+                                  },
+                                  onNoPressed: () {
+                                    Navigator.of(context).pop();
+                                  });
                             },
-                            behavior: HitTestBehavior.translucent,
-                            child: CText(
-                              textAlign: TextAlign.start,
-                              padding: const EdgeInsets.only(
-                                  right: 10, top: 5, bottom: 5),
-                              text: "EDIT",
-                              textColor: AppTheme.colorPrimary,
-                              fontFamily: AppTheme.urbanist,
-                              fontSize: AppTheme.large,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 10),
-                            width: 0.5,
-                            height: AppTheme.big_20,
-                            color: AppTheme.grey,
-                          ),
-                          IconButton(
-                              onPressed: () {
-                                Utils().showYesNoAlert(
-                                    context: context,
-                                    message:
-                                        "Are you sure you want to delete the product?",
-                                    onYesPressed: () {
-                                      Navigator.of(context).pop();
-                                      deleteProduct(
-                                          selectedKnownProductListData[index]
-                                              .productDetailsId);
-                                    },
-                                    onNoPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
-                              },
-                              icon: const Icon(
-                                Icons.delete_outline,
-                                color: AppTheme.red,
-                                size: 20,
-                              ))
-                        ],
-                      ),
-                    ],
-                  ),
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              color: AppTheme.red,
+                              size: 20,
+                            ))
+                      ],
+                    ),
+                  ],
                 ),
-              );
-            })
-        : productTab == 2
-            ? ListView.builder(
-                padding: const EdgeInsets.only(top: 10),
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: foreignLabelsList.length,
-                itemBuilder: (context, index) {
-                  return getProductList(foreignLabelsList, index);
-                })
-            : productTab == 3
-                ? ListView.builder(
-                    padding: const EdgeInsets.only(top: 10),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: unknownProductList.length,
-                    itemBuilder: (context, index) {
-                      return getProductList(unknownProductList, index);
-                    })
-                : Container();
+              ),
+            );
+          });
+    } else if (productTab == 2) {
+      return ListView.builder(
+          padding: const EdgeInsets.only(top: 10),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: foreignLabelsList.length,
+          itemBuilder: (context, index) {
+            return getProductList(foreignLabelsList, index);
+          });
+    } else if (productTab == 3) {
+      return ListView.builder(
+          padding: const EdgeInsets.only(top: 10),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: unknownProductList.length,
+          itemBuilder: (context, index) {
+            return getProductList(unknownProductList, index);
+          });
+    } else {
+      return Container();
+    }
   }
 
   Future<void> updateProduct(Map<String, dynamic> fields) async {
@@ -1242,6 +1244,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           .getAPI(context,
               "Mobile/ProduectDetail/Delete?productDetailsId=$productId")
           .then((value) async {
+        if (!mounted) return;
         LoadingIndicatorDialog().dismiss();
         LogPrint().log("response : $value");
         var data = jsonDecode(value);
@@ -1432,7 +1435,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               focusNodeList,
               node,
               scrollController,
-              buildContext,
               setState,
             );
           },
@@ -1454,7 +1456,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     List<FocusNode> focusNodeList,
     FocusNode node,
     ScrollController scrollController,
-    BuildContext buildContext,
     StateSetter setState,
   ) {
     return Container(
@@ -1486,7 +1487,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               sizeList,
               focusNodeList,
               node,
-              buildContext,
               setState,
             ),
             const SizedBox(height: 5),
@@ -1497,9 +1497,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               serial,
               sizeList,
               node,
-              buildContext,
               setState,
-              context,
             ),
             Utils().sizeBoxHeight(height: 250),
           ],
@@ -1632,7 +1630,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     List<AreaData?> sizeList,
     List<FocusNode> focusNodeList,
     FocusNode node,
-    BuildContext buildContext,
     StateSetter setState,
   ) {
     if (serial.isEmpty) return Container();
@@ -1648,7 +1645,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           sizeList,
           focusNodeList,
           node,
-          buildContext,
           setState,
         );
       },
@@ -1661,7 +1657,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     List<AreaData?> sizeList,
     List<FocusNode> focusNodeList,
     FocusNode node,
-    BuildContext buildContext,
     StateSetter setState,
   ) {
     return Stack(
@@ -1714,7 +1709,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               serial,
               sizeList,
               focusNodeList,
-              buildContext,
               setState,
             ),
             icon: const Icon(
@@ -1733,11 +1727,10 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
     List<FocusNode> focusNodeList,
-    BuildContext buildContext,
     StateSetter setState,
   ) {
     Utils().showYesNoAlert(
-      context: buildContext,
+      context: context,
       message: "Are you sure delete this serial number?",
       onNoPressed: () => Navigator.of(context).pop(),
       onYesPressed: () {
@@ -1776,9 +1769,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
     FocusNode node,
-    BuildContext buildContext,
     StateSetter setState,
-    BuildContext context,
   ) {
     return Center(
       child: Container(
@@ -1790,9 +1781,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             model,
             serial,
             sizeList,
-            buildContext,
             setState,
-            context,
           ),
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
@@ -1819,14 +1808,12 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     ProductDetail? model,
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
-    BuildContext buildContext,
     StateSetter setState,
-    BuildContext context,
   ) {
-    final errorMessage = _validateProductForm(serial, sizeList, buildContext);
+    final errorMessage = _validateProductForm(serial, sizeList);
     if (errorMessage != null) {
       Utils().showAlert(
-        buildContext: buildContext,
+        buildContext: context,
         message: errorMessage,
         onPressed: () => Navigator.of(context).pop(),
       );
@@ -1955,7 +1942,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   String? _validateProductForm(
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
-    BuildContext buildContext,
   ) {
     if (productName.text.isEmpty) {
       return "Please enter product name";

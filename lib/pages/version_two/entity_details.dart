@@ -1007,24 +1007,23 @@ class _EntityDetailsState extends State<EntityDetails> {
                                     fontSize: AppTheme.big_20,
                                     fontWeight: FontWeight.w700,
                                   ),
-                                  !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
-                                          widget.fromActive &&
-                                          widget.statusId != 6 &&
-                                          widget.statusId != 7
-                                      ? ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  AppTheme.colorPrimary),
-                                          onPressed: () {
-                                            showAddOutletSheet(null);
-                                          },
-                                          child: CText(
-                                            text: "Add Outlet",
-                                            textColor: AppTheme.white,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        )
-                                      : Container(),
+                                  if (!storeUserData.getBoolean(IS_AGENT_LOGIN) &&
+                                      widget.fromActive &&
+                                      widget.statusId != 6 &&
+                                      widget.statusId != 7)
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              AppTheme.colorPrimary),
+                                      onPressed: () {
+                                        showAddOutletSheet(null);
+                                      },
+                                      child: CText(
+                                        text: "Add Outlet",
+                                        textColor: AppTheme.white,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
