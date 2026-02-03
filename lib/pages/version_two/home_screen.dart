@@ -686,75 +686,86 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future getGeoLocationPosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      if (!mounted) return;
-      Utils().showAlert(
-          buildContext: context,
-          message: "Location services are disabled.",
-          onPressed: () {
-            Navigator.of(context).pop();
-            Geolocator.openLocationSettings().whenComplete(() {
-              getGeoLocationPosition();
-            });
-          });
-    } else {
-      permission = await Geolocator.checkPermission();
-      if (permission != LocationPermission.always) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied ||
-            permission == LocationPermission.deniedForever) {
-          if (!mounted) return;
-          Utils().showAlert(
-              buildContext: context,
-              message: "Location permissions are denied.",
-              onPressed: () {
-                Navigator.of(context).pop();
-              });
-        } else {
-          Position position = await Geolocator.getCurrentPosition(
-              locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.high,
-          ));
-          latitude = position.latitude;
-          longitude = position.longitude;
-          List placeMarks = await placemarkFromCoordinates(
-              position.latitude, position.longitude);
-          LogPrint().log(placeMarks);
-          Placemark place = placeMarks[0];
-          if (mounted) {
-            setState(() {
-              isFetched = true;
-              googleAddress =
-                  '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
-            });
-          }
-          LogPrint().log("address$googleAddress");
-        }
-      } else {
-        Position position = await Geolocator.getCurrentPosition(
-            locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ));
-        latitude = position.latitude;
-        longitude = position.longitude;
-        List placeMarks = await placemarkFromCoordinates(
-            position.latitude, position.longitude);
-        LogPrint().log(placeMarks);
-        Placemark place = placeMarks[0];
-        if (mounted) {
-          setState(() {
-            isFetched = true;
-            googleAddress =
-                '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
-          });
-        }
-        LogPrint().log("address$googleAddress");
-      }
+      _handleLocationServiceDisabled();
+      return;
     }
+
+    final permission = await _checkAndRequestLocationPermission();
+    if (!_hasLocationPermission(permission)) {
+      _handlePermissionDenied();
+      return;
+    }
+
+    await _fetchAndUpdateLocation();
+  }
+
+  void _handleLocationServiceDisabled() {
+    if (!mounted) return;
+    Utils().showAlert(
+      buildContext: context,
+      message: "Location services are disabled.",
+      onPressed: () {
+        Navigator.of(context).pop();
+        Geolocator.openLocationSettings().whenComplete(() {
+          getGeoLocationPosition();
+        });
+      },
+    );
+  }
+
+  Future<LocationPermission> _checkAndRequestLocationPermission() async {
+    var permission = await Geolocator.checkPermission();
+    if (permission != LocationPermission.always) {
+      permission = await Geolocator.requestPermission();
+    }
+    return permission;
+  }
+
+  bool _hasLocationPermission(LocationPermission permission) {
+    return permission != LocationPermission.denied &&
+        permission != LocationPermission.deniedForever;
+  }
+
+  void _handlePermissionDenied() {
+    if (!mounted) return;
+    Utils().showAlert(
+      buildContext: context,
+      message: "Location permissions are denied.",
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  Future<void> _fetchAndUpdateLocation() async {
+    final position = await Geolocator.getCurrentPosition(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+      ),
+    );
+    
+    latitude = position.latitude;
+    longitude = position.longitude;
+    
+    final placeMarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+    
+    LogPrint().log(placeMarks);
+    final place = placeMarks[0];
+    
+    if (mounted) {
+      setState(() {
+        isFetched = true;
+        googleAddress =
+            '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+      });
+    }
+    
+    LogPrint().log("address$googleAddress");
   }
 
   @override

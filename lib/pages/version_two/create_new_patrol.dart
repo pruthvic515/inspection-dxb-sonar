@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,8 +15,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:patrol_system/controls/loading_indicator_dialog.dart';
 import 'package:patrol_system/controls/form_text_field.dart';
+import 'package:patrol_system/controls/loading_indicator_dialog.dart';
 import 'package:patrol_system/controls/text.dart';
 import 'package:patrol_system/model/known_product_model.dart';
 import 'package:patrol_system/model/outlet_model.dart';
@@ -24,13 +25,14 @@ import 'package:patrol_system/pages/version_two/all_attachments_screen.dart';
 import 'package:patrol_system/pages/version_two/home_screen.dart';
 import 'package:patrol_system/pages/version_two/select_quantity.dart';
 import 'package:patrol_system/pages/version_two/sign_representative.dart';
-import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:patrol_system/utils/api.dart';
+import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:patrol_system/utils/color_const.dart';
 import 'package:patrol_system/utils/log_print.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
+
 import '../../controls/form_mobile_text_field.dart';
 import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../../model/all_user_model.dart';
@@ -1009,8 +1011,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           itemCount: selectedKnownProductListData.length,
           itemBuilder: (context, index) {
             List<String> serialNumber = [];
-            for (var element
-                in selectedKnownProductListData[index].products) {
+            for (var element in selectedKnownProductListData[index].products) {
               serialNumber.add(element.serialNumber);
             }
             return Card(
@@ -3987,11 +3988,12 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Future<void> getInspectionRepresentative() async {
     _clearRepresentativeLists();
-    
+
     if (!await Utils().hasNetwork(context, setState)) return;
     if (!mounted) return;
 
-    final url = "Mobile/EntityRepresentative/GetInspectionDetail?inspectionId=$inspectionId";
+    final url =
+        "Mobile/EntityRepresentative/GetInspectionDetail?inspectionId=$inspectionId";
     Api().getAPI(context, url).then((value) async {
       LogPrint().log("response : $value");
       final data = representativeFromJson(value);
@@ -4376,22 +4378,23 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       cameraUpload(type, productId, categoryId, myState);
       return;
     }
-    
-    await _requestAndroidCameraPermissions(type, productId, categoryId, myState);
+
+    await _requestAndroidCameraPermissions(
+        type, productId, categoryId, myState);
   }
 
   Future<void> _requestAndroidCameraPermissions(
       String type, int? productId, int? categoryId, StateSetter myState) async {
     final cameraPermission = await Permission.camera.request();
     LogPrint().log("camera permission is $cameraPermission");
-    
+
     if (!_isPermissionGranted(cameraPermission)) {
       return;
     }
 
     final microphone = await Permission.microphone.request();
     LogPrint().log("microphone permission is $microphone");
-    
+
     if (!_isPermissionGranted(microphone)) {
       return;
     }
@@ -4407,14 +4410,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       String type, int? productId, int? categoryId, StateSetter myState) async {
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     LogPrint().log("sdk level ${androidInfo.version.sdkInt}");
-    
+
     final bool permissionStatus;
     if (androidInfo.version.sdkInt > 32) {
       permissionStatus = true;
     } else {
       permissionStatus = await Permission.storage.request().isGranted;
     }
-    
+
     LogPrint().log("permission : camera $permissionStatus");
     cameraUpload(type, productId, categoryId, myState);
   }
@@ -4490,7 +4493,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       StateSetter myState, String type, String filePath) {
     final listMedia = [media];
     final map = _buildUploadRequestMap(productId, categoryId);
-    
+
     Api()
         .callAPIWithFiles(
             context, "Mobile/InspectionDocument/Create", map, listMedia)
@@ -4514,8 +4517,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     return map;
   }
 
-  void _handleUploadResponse(String value, int? categoryId,
-      StateSetter myState, String type, String filePath) {
+  void _handleUploadResponse(String value, int? categoryId, StateSetter myState,
+      String type, String filePath) {
     if (value == "error") {
       _showErrorAlert(value);
       return;

@@ -95,38 +95,56 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
   }
 
   Future<void> getEntityDetail() async {
-    if (await Utils().hasNetwork(context, setState)) {
-      if (!mounted) return;
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
 
-      final encryptedMainTaskId = await encryptAndDecrypt.encryption(
-        payload: widget.task.mainTaskId.toString(),
-        urlEncode: false,
-      );
-      final encryptedEntityId = await encryptAndDecrypt.encryption(
-        payload: widget.task.entityID.toString(),
-        urlEncode: false,
-      );
+    final encryptedParams = await _encryptEntityParams();
+    if (!mounted) return;
+
+    final url = _buildEntityDetailUrl(encryptedParams);
+    Api().callAPI(context, url, {}).then((value) async {
       if (!mounted) return;
-      Api().callAPI(
-          context,
-          "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(encryptedMainTaskId)}&entityId=${Uri.encodeComponent(encryptedEntityId)}",
-          {}).then((value) async {
-        if (!mounted) return;
-        setState(() {
-          entity = entityFromJson(value);
-          if (entity != null) {
-          } else {
-            if (!mounted) return;
-            Utils().showAlert(
-                buildContext: context,
-                message: noEntityMessage,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                });
-          }
-        });
-      });
-    }
+      _handleEntityDetailResponse(value);
+    });
+  }
+
+  Future<Map<String, String>> _encryptEntityParams() async {
+    final encryptedMainTaskId = await encryptAndDecrypt.encryption(
+      payload: widget.task.mainTaskId.toString(),
+      urlEncode: false,
+    );
+    final encryptedEntityId = await encryptAndDecrypt.encryption(
+      payload: widget.task.entityID.toString(),
+      urlEncode: false,
+    );
+    return {
+      'mainTaskId': encryptedMainTaskId,
+      'entityId': encryptedEntityId,
+    };
+  }
+
+  String _buildEntityDetailUrl(Map<String, String> params) {
+    return "Mobile/Entity/GetEntityInspectionDetails?mainTaskId=${Uri.encodeComponent(params['mainTaskId']!)}&entityId=${Uri.encodeComponent(params['entityId']!)}";
+  }
+
+  void _handleEntityDetailResponse(String value) {
+    setState(() {
+      entity = entityFromJson(value);
+      if (entity == null) {
+        _showNoEntityAlert();
+      }
+    });
+  }
+
+  void _showNoEntityAlert() {
+    if (!mounted) return;
+    Utils().showAlert(
+      buildContext: context,
+      message: noEntityMessage,
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
   }
 
   Future<void> getInspectionDetail() async {

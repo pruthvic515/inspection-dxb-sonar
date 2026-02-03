@@ -2957,65 +2957,84 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   Future<void> updateOutlet(StateSetter myState, OutletData model) async {
-    if (await Utils().hasNetwork(context, setState)) {
-      if (!mounted) {
-        return;
-      }
-      LoadingIndicatorDialog().show(context);
-      Api().callAPI(context, "Mobile/NewOutlet/Update", {
-        "newOutletId": model.outletId,
-        "entityId": entityId,
-        "outletName": model.outletName,
-        "ownerShipTypeId": model.ownerShipTypeId,
-        "serviceTypeId": model.serviceTypeId,
-        "outletTypeId": model.outletTypeId,
-        "managerName": model.managerName,
-        "contactNumber": model.contactNumber,
-        "emiratesId": model.emiratesId,
-        "notes": model.notes,
-        "createdBy": storeUserData.getInt(USER_ID),
-        "createdOn":
-            DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
-        "modifiedOn":
-            DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
-        "modifiedBy": storeUserData.getInt(USER_ID)
-      }).then((value) async {
-        LoadingIndicatorDialog().dismiss();
-        var data = jsonDecode(value);
-        if (data["statusCode"] == 200) {
-          myState(() {
-            var position = searchOutletList
-                .indexWhere((test) => test.outletId == model.outletId);
-            searchOutletList.removeAt(position);
-            searchOutletList.insert(position, model);
-            outletList.clear();
-            List<OutletData> inActiveList = [];
-            for (var item in searchOutletList) {
-              if (item.newAdded == true) {
-                inActiveList.add(item);
-              }
-              if (tabType == 2 && item.newAdded == true) {
-                outletList.add(item);
-              } else if (tabType == 1 && item.newAdded == false) {
-                outletList.add(item);
-              }
-            }
-            print("inActiveList.length ");
-            print(inActiveList.length);
-            storeUserData.setString(
-                entityId.toString(), OutletData.encode(inActiveList));
-          });
-          Navigator.of(context).pop();
-        } else {
-          Utils().showAlert(
-              buildContext: context,
-              message: noEntityMessage,
-              onPressed: () {
-                Navigator.of(context).pop();
-              });
-        }
-      });
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
+
+    LoadingIndicatorDialog().show(context);
+    final payload = _buildUpdateOutletPayload(model);
+    
+    Api().callAPI(context, "Mobile/NewOutlet/Update", payload).then((value) async {
+      LoadingIndicatorDialog().dismiss();
+      _handleUpdateOutletResponse(value, myState, model);
+    });
+  }
+
+  Map<String, dynamic> _buildUpdateOutletPayload(OutletData model) {
+    final currentTime = DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime());
+    final userId = storeUserData.getInt(USER_ID);
+    
+    return {
+      "newOutletId": model.outletId,
+      "entityId": entityId,
+      "outletName": model.outletName,
+      "ownerShipTypeId": model.ownerShipTypeId,
+      "serviceTypeId": model.serviceTypeId,
+      "outletTypeId": model.outletTypeId,
+      "managerName": model.managerName,
+      "contactNumber": model.contactNumber,
+      "emiratesId": model.emiratesId,
+      "notes": model.notes,
+      "createdBy": userId,
+      "createdOn": currentTime,
+      "modifiedOn": currentTime,
+      "modifiedBy": userId,
+    };
+  }
+
+  void _handleUpdateOutletResponse(String value, StateSetter myState, OutletData model) {
+    final data = jsonDecode(value);
+    
+    if (data["statusCode"] == 200) {
+      _processSuccessfulOutletUpdate(myState, model);
+      Navigator.of(context).pop();
+    } else {
+      _showUpdateOutletError();
     }
+  }
+
+  void _processSuccessfulOutletUpdate(StateSetter myState, OutletData model) {
+    myState(() {
+      _updateOutletInList(model);
+      outletList.clear();
+      
+      final inActiveList = _buildInActiveList();
+      _populateOutletList();
+      
+      print("inActiveList.length ");
+      print(inActiveList.length);
+      storeUserData.setString(
+        entityId.toString(),
+        OutletData.encode(inActiveList),
+      );
+    });
+  }
+
+  void _updateOutletInList(OutletData model) {
+    final position = searchOutletList.indexWhere((test) => test.outletId == model.outletId);
+    if (position != -1) {
+      searchOutletList.removeAt(position);
+      searchOutletList.insert(position, model);
+    }
+  }
+
+  void _showUpdateOutletError() {
+    Utils().showAlert(
+      buildContext: context,
+      message: noEntityMessage,
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
   }
 
   Future<void> completeTask(String notes) async {
