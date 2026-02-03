@@ -460,183 +460,10 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.only(
-              left: 20,
-              right: 20,
-              top: 20,
-            ),
-            width: MediaQuery.of(context).size.width,
-            color: AppTheme.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CText(
-                  text: "My Task",
-                  textColor: AppTheme.black,
-                  fontFamily: AppTheme.urbanist,
-                  fontSize: AppTheme.big_20,
-                  fontWeight: FontWeight.w800,
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.colorPrimary),
-                  onPressed: () {
-                    showSelectionSheet();
-                  },
-                  child: CText(
-                    text: searchEntityTitle,
-                    textColor: AppTheme.textPrimary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Tabs for Agent Users (statusId 6 first, then 4)
-          Container(
-            width: MediaQuery.of(context).size.width,
-            color: AppTheme.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // First tab: Proceed For Agent Feedback (statusId = 6)
-                Expanded(
-                    flex: 1,
-                    child: GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: () {
-                          setState(() {
-                            agentTabType = "feedback";
-                          });
-                          // Load data if not already loaded
-                          if (tasks.isEmpty) {
-                            getAgentTasks();
-                          } else {
-                            list.clear();
-                            list.addAll(tasks.where((e) => e.statusId == 6));
-                          }
-                        },
-                        child: Container(
-                            padding: const EdgeInsets.only(top: 10),
-                            color: AppTheme.white,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CText(
-                                    text: "Awaiting Feedback($feedbackCount)",
-                                    textColor: agentTabType == "feedback"
-                                        ? AppTheme.black
-                                        : AppTheme.textColorGray,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: AppTheme.poppins,
-                                    textAlign: TextAlign.center,
-                                    fontSize: AppTheme.medium),
-                                Container(
-                                  height: 3,
-                                  margin: const EdgeInsets.only(top: 8),
-                                  color: agentTabType == "feedback"
-                                      ? AppTheme.colorPrimary
-                                      : AppTheme.mainBackground,
-                                )
-                              ],
-                            )))),
-                // Second tab: Waiting For Agent Confirmation (statusId = 4)
-                Expanded(
-                    flex: 1,
-                    child: GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: () {
-                          setState(() {
-                            agentTabType = "waiting";
-                          });
-                          // Load data if not already loaded
-                          if (list.isEmpty) {
-                            getAgentTasks();
-                          } else {
-                            list.clear();
-                            list.addAll(tasks.where((e) => e.statusId == 4));
-                          }
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 10),
-                          color: AppTheme.white,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              CText(
-                                text: "Awaiting Confirmation($waitingCount)",
-                                textColor: agentTabType == "waiting"
-                                    ? AppTheme.black
-                                    : AppTheme.textColorGray,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: AppTheme.poppins,
-                                fontSize: AppTheme.medium,
-                                textAlign: TextAlign.center,
-                              ),
-                              Container(
-                                height: 3,
-                                margin: const EdgeInsets.only(top: 8),
-                                color: agentTabType == "waiting"
-                                    ? AppTheme.colorPrimary
-                                    : AppTheme.mainBackground,
-                              )
-                            ],
-                          ),
-                        ))),
-              ],
-            ),
-          ),
-          // Search field
-          Container(
-            margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-            height: 45,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.0),
-              color: AppTheme.white,
-            ),
-            child: TextFormField(
-              controller: _searchController,
-              onChanged: (value) {
-                if (_debounce?.isActive ?? false) {
-                  _debounce!.cancel();
-                }
-
-                _debounce = Timer(const Duration(milliseconds: 850), () {
-                  currentPageIndex = 1;
-                  isLastPage = false;
-                  getAgentTasks();
-                });
-              },
-              maxLines: 1,
-              cursorColor: AppTheme.colorPrimary,
-              cursorWidth: 2,
-              decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.all(5),
-                  hintText: searchHint,
-                  border: InputBorder.none,
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: AppTheme.grey,
-                  ),
-                  hintStyle: TextStyle(
-                      fontFamily: AppTheme.poppins,
-                      fontWeight: FontWeight.w400,
-                      color: AppTheme.black,
-                      fontSize: AppTheme.large)),
-            ),
-          ),
-          // Task list or empty state
-          list.isEmpty && !isLoading
-              ? _buildEmptyState()
-              : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: list.length,
-                  padding: const EdgeInsets.only(top: 10),
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return _buildTaskCard(list[index], index);
-                  }),
+          _buildAgentTaskHeader(),
+          _buildAgentTabs(),
+          _buildAgentSearchField(),
+          _buildAgentTaskList(),
           if (isLoading && list.isEmpty)
             const Padding(
               padding: EdgeInsets.all(20.0),
@@ -645,6 +472,186 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 20),
         ],
       ),
+    );
+  }
+
+  Widget _buildAgentTaskHeader() {
+    return Container(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      width: MediaQuery.of(context).size.width,
+      color: AppTheme.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CText(
+            text: "My Task",
+            textColor: AppTheme.black,
+            fontFamily: AppTheme.urbanist,
+            fontSize: AppTheme.big_20,
+            fontWeight: FontWeight.w800,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.colorPrimary,
+            ),
+            onPressed: () {
+              showSelectionSheet();
+            },
+            child: CText(
+              text: searchEntityTitle,
+              textColor: AppTheme.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAgentTabs() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      color: AppTheme.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildAgentTab(
+            "Awaiting Feedback($feedbackCount)",
+            "feedback",
+            agentTabType == "feedback",
+            () => _handleFeedbackTabTap(),
+          ),
+          _buildAgentTab(
+            "Awaiting Confirmation($waitingCount)",
+            "waiting",
+            agentTabType == "waiting",
+            () => _handleWaitingTabTap(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAgentTab(
+    String label,
+    String tabType,
+    bool isActive,
+    VoidCallback onTap,
+  ) {
+    return Expanded(
+      flex: 1,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.only(top: 10),
+          color: AppTheme.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CText(
+                text: label,
+                textColor: isActive ? AppTheme.black : AppTheme.textColorGray,
+                fontWeight: FontWeight.w400,
+                fontFamily: AppTheme.poppins,
+                textAlign: TextAlign.center,
+                fontSize: AppTheme.medium,
+              ),
+              Container(
+                height: 3,
+                margin: const EdgeInsets.only(top: 8),
+                color: isActive
+                    ? AppTheme.colorPrimary
+                    : AppTheme.mainBackground,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handleFeedbackTabTap() {
+    setState(() {
+      agentTabType = "feedback";
+    });
+    _loadTabData(6);
+  }
+
+  void _handleWaitingTabTap() {
+    setState(() {
+      agentTabType = "waiting";
+    });
+    _loadTabData(4);
+  }
+
+  void _loadTabData(int statusId) {
+    if (tasks.isEmpty) {
+      getAgentTasks();
+    } else {
+      list.clear();
+      list.addAll(tasks.where((e) => e.statusId == statusId));
+    }
+  }
+
+  Widget _buildAgentSearchField() {
+    return Container(
+      margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      height: 45,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        color: AppTheme.white,
+      ),
+      child: TextFormField(
+        controller: _searchController,
+        onChanged: (value) {
+          _handleSearchChange();
+        },
+        maxLines: 1,
+        cursorColor: AppTheme.colorPrimary,
+        cursorWidth: 2,
+        decoration: const InputDecoration(
+          contentPadding: EdgeInsets.all(5),
+          hintText: searchHint,
+          border: InputBorder.none,
+          prefixIcon: Icon(
+            Icons.search,
+            color: AppTheme.grey,
+          ),
+          hintStyle: TextStyle(
+            fontFamily: AppTheme.poppins,
+            fontWeight: FontWeight.w400,
+            color: AppTheme.black,
+            fontSize: AppTheme.large,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handleSearchChange() {
+    if (_debounce?.isActive ?? false) {
+      _debounce!.cancel();
+    }
+    _debounce = Timer(const Duration(milliseconds: 850), () {
+      currentPageIndex = 1;
+      isLastPage = false;
+      getAgentTasks();
+    });
+  }
+
+  Widget _buildAgentTaskList() {
+    if (list.isEmpty && !isLoading) {
+      return _buildEmptyState();
+    }
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: list.length,
+      padding: const EdgeInsets.only(top: 10),
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return _buildTaskCard(list[index], index);
+      },
     );
   }
 

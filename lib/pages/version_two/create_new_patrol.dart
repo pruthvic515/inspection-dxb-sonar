@@ -3376,223 +3376,262 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   void showAEMMISheet(List<WitnessData> list) {
-    List<WitnessData> agent1 = [];
-    agent1.addAll(selectedAEList);
-    List<WitnessData> agent2 = [];
-    agent2.addAll(selectedMMIList);
+    final agent1 = List<WitnessData>.from(selectedAEList);
+    final agent2 = List<WitnessData>.from(selectedMMIList);
+    
     showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
-            builder: (BuildContext context, StateSetter myState) {
-          return Container(
-            decoration: const BoxDecoration(
-                color: AppTheme.mainBackground,
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(15),
-                    topLeft: Radius.circular(15))),
-            height: currentHeight - 50,
-            child: Column(
-              children: [
-                // Sticky SAVE header
-                Container(
-                  width: double.infinity,
-                  color: AppTheme.mainBackground,
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: CText(
-                        padding: const EdgeInsets.all(15),
-                        textAlign: TextAlign.center,
-                        text: "SAVE",
-                        textColor: AppTheme.colorPrimary,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.medium,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-                const Divider(height: 1, color: AppTheme.grey),
-
-                Expanded(
-                  flex: 1,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        ListView.builder(
-                            padding: const EdgeInsets.only(top: 10),
-                            shrinkWrap: true,
-                            physics: const ClampingScrollPhysics(),
-                            itemCount: list.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                  onTap: () {
-                                    myState(() {
-                                      if (list[index].agentId == 1) {
-                                        if (agent1.firstWhereOrNull((element) =>
-                                                element.agentEmployeeId ==
-                                                list[index].agentEmployeeId) !=
-                                            null) {
-                                          agent1.removeWhere((element) =>
-                                              element.agentEmployeeId ==
-                                              list[index].agentEmployeeId);
-                                        } else {
-                                          agent1.add(list[index]);
-                                        }
-                                      } else {
-                                        if (agent2.firstWhereOrNull((element) =>
-                                                element.agentEmployeeId ==
-                                                list[index].agentEmployeeId) !=
-                                            null) {
-                                          agent2.removeWhere((element) =>
-                                              element.agentEmployeeId ==
-                                              list[index].agentEmployeeId);
-                                        } else {
-                                          agent2.add(list[index]);
-                                        }
-                                      }
-                                    });
-                                  },
-                                  child: Card(
-                                    color: AppTheme.white,
-                                    margin: const EdgeInsets.only(
-                                        left: 20, right: 20, bottom: 10),
-                                    surfaceTintColor: AppTheme.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                              child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              CText(
-                                                textAlign: TextAlign.start,
-                                                padding: const EdgeInsets.only(
-                                                    right: 10, bottom: 5),
-                                                text: list[index].agentName,
-                                                textColor:
-                                                    AppTheme.colorPrimary,
-                                                fontFamily: AppTheme.urbanist,
-                                                fontSize: AppTheme.large,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                              CText(
-                                                textAlign: TextAlign.start,
-                                                padding: const EdgeInsets.only(
-                                                    right: 10,
-                                                    top: 0,
-                                                    bottom: 5),
-                                                text: list[index].emiratesId,
-                                                textColor:
-                                                    AppTheme.grayAsparagus,
-                                                fontFamily: AppTheme.urbanist,
-                                                fontSize: AppTheme.large,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              CText(
-                                                textAlign: TextAlign.start,
-                                                padding: const EdgeInsets.only(
-                                                    right: 10),
-                                                text: list[index].phoneNo,
-                                                textColor:
-                                                    AppTheme.grayAsparagus,
-                                                fontFamily: AppTheme.urbanist,
-                                                fontSize: AppTheme.large,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ],
-                                          )),
-                                          list[index].agentId == 1
-                                              ? agent1.firstWhereOrNull((element) =>
-                                                          element
-                                                              .agentEmployeeId ==
-                                                          list[index]
-                                                              .agentEmployeeId) !=
-                                                      null
-                                                  ? const Icon(
-                                                      Icons.check_box,
-                                                      size: 20,
-                                                      color:
-                                                          AppTheme.colorPrimary,
-                                                    )
-                                                  : const Icon(
-                                                      Icons
-                                                          .check_box_outline_blank,
-                                                      size: 20,
-                                                      color: AppTheme.grey,
-                                                    )
-                                              : agent2.firstWhereOrNull((element) =>
-                                                          element
-                                                              .agentEmployeeId ==
-                                                          list[index]
-                                                              .agentEmployeeId) !=
-                                                      null
-                                                  ? const Icon(
-                                                      Icons.check_box,
-                                                      size: 20,
-                                                      color:
-                                                          AppTheme.colorPrimary,
-                                                    )
-                                                  : const Icon(
-                                                      Icons
-                                                          .check_box_outline_blank,
-                                                      size: 20,
-                                                      color: AppTheme.grey,
-                                                    ),
-                                        ],
-                                      ),
-                                    ),
-                                  ));
-                            }),
-                        Utils().sizeBoxHeight(height: 250)
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
+          builder: (BuildContext context, StateSetter myState) {
+            return _buildAEMMISheetContent(
+              context,
+              myState,
+              list,
+              agent1,
+              agent2,
+            );
+          },
+        );
       },
     ).whenComplete(() {
-      setState(() {
-        tabType = 1;
-        selectedAEList.clear();
-        selectedAEList.addAll(agent1);
-        selectedMMIList.clear();
-        selectedMMIList.addAll(agent2);
-        aeNameList.clear();
-        for (var element in selectedAEList) {
-          aeNameList.add(element.agentName);
-        }
-        mmiNameList.clear();
-        for (var element in selectedMMIList) {
-          mmiNameList.add(element.agentName);
-        }
-      });
+      _saveAgentSelections(agent1, agent2);
     });
+  }
+
+  Widget _buildAEMMISheetContent(
+    BuildContext context,
+    StateSetter myState,
+    List<WitnessData> list,
+    List<WitnessData> agent1,
+    List<WitnessData> agent2,
+  ) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppTheme.mainBackground,
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(15),
+          topLeft: Radius.circular(15),
+        ),
+      ),
+      height: currentHeight - 50,
+      child: Column(
+        children: [
+          _buildSaveHeader(context),
+          const Divider(height: 1, color: AppTheme.grey),
+          Expanded(
+            flex: 1,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _buildAgentList(
+                    list,
+                    agent1,
+                    agent2,
+                    myState,
+                  ),
+                  Utils().sizeBoxHeight(height: 250),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSaveHeader(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: AppTheme.mainBackground,
+      child: Align(
+        alignment: Alignment.topRight,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          child: CText(
+            padding: const EdgeInsets.all(15),
+            textAlign: TextAlign.center,
+            text: "SAVE",
+            textColor: AppTheme.colorPrimary,
+            fontFamily: AppTheme.urbanist,
+            fontSize: AppTheme.medium,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAgentList(
+    List<WitnessData> list,
+    List<WitnessData> agent1,
+    List<WitnessData> agent2,
+    StateSetter myState,
+  ) {
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 10),
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        return _buildAgentCard(
+          list[index],
+          agent1,
+          agent2,
+          myState,
+        );
+      },
+    );
+  }
+
+  Widget _buildAgentCard(
+    WitnessData agent,
+    List<WitnessData> agent1,
+    List<WitnessData> agent2,
+    StateSetter myState,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        _handleAgentTap(agent, agent1, agent2, myState);
+      },
+      child: Card(
+        color: AppTheme.white,
+        margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+        surfaceTintColor: AppTheme.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: _buildAgentInfo(agent),
+              ),
+              _buildCheckboxIcon(agent, agent1, agent2),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAgentInfo(WitnessData agent) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CText(
+          textAlign: TextAlign.start,
+          padding: const EdgeInsets.only(right: 10, bottom: 5),
+          text: agent.agentName,
+          textColor: AppTheme.colorPrimary,
+          fontFamily: AppTheme.urbanist,
+          fontSize: AppTheme.large,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          fontWeight: FontWeight.w700,
+        ),
+        CText(
+          textAlign: TextAlign.start,
+          padding: const EdgeInsets.only(right: 10, top: 0, bottom: 5),
+          text: agent.emiratesId,
+          textColor: AppTheme.grayAsparagus,
+          fontFamily: AppTheme.urbanist,
+          fontSize: AppTheme.large,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          fontWeight: FontWeight.w600,
+        ),
+        CText(
+          textAlign: TextAlign.start,
+          padding: const EdgeInsets.only(right: 10),
+          text: agent.phoneNo,
+          textColor: AppTheme.grayAsparagus,
+          fontFamily: AppTheme.urbanist,
+          fontSize: AppTheme.large,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          fontWeight: FontWeight.w600,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCheckboxIcon(
+    WitnessData agent,
+    List<WitnessData> agent1,
+    List<WitnessData> agent2,
+  ) {
+    final selectedList = agent.agentId == 1 ? agent1 : agent2;
+    final isSelected = selectedList.firstWhereOrNull(
+          (element) => element.agentEmployeeId == agent.agentEmployeeId,
+        ) !=
+        null;
+
+    return isSelected
+        ? const Icon(
+            Icons.check_box,
+            size: 20,
+            color: AppTheme.colorPrimary,
+          )
+        : const Icon(
+            Icons.check_box_outline_blank,
+            size: 20,
+            color: AppTheme.grey,
+          );
+  }
+
+  void _handleAgentTap(
+    WitnessData agent,
+    List<WitnessData> agent1,
+    List<WitnessData> agent2,
+    StateSetter myState,
+  ) {
+    myState(() {
+      final selectedList = agent.agentId == 1 ? agent1 : agent2;
+      final existingIndex = selectedList.indexWhere(
+        (element) => element.agentEmployeeId == agent.agentEmployeeId,
+      );
+
+      if (existingIndex != -1) {
+        selectedList.removeAt(existingIndex);
+      } else {
+        selectedList.add(agent);
+      }
+    });
+  }
+
+  void _saveAgentSelections(
+    List<WitnessData> agent1,
+    List<WitnessData> agent2,
+  ) {
+    setState(() {
+      tabType = 1;
+      selectedAEList.clear();
+      selectedAEList.addAll(agent1);
+      selectedMMIList.clear();
+      selectedMMIList.addAll(agent2);
+      _updateNameLists();
+    });
+  }
+
+  void _updateNameLists() {
+    aeNameList.clear();
+    for (var element in selectedAEList) {
+      aeNameList.add(element.agentName);
+    }
+    mmiNameList.clear();
+    for (var element in selectedMMIList) {
+      mmiNameList.add(element.agentName);
+    }
   }
 
   String formatEmiratesID(String id) {

@@ -342,8 +342,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
       alignment: Alignment.bottomCenter,
       child: Visibility(
         visible: isVisible,
-        child: Container(
-          child: ElevatedButton(
+        child:  ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.white),
             onPressed: () {
               getDownloadReport();
@@ -354,7 +353,6 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
               fontFamily: AppTheme.poppins,
               fontWeight: FontWeight.w700,
             ),
-          ),
         ),
       ),
     );
@@ -751,105 +749,122 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
   }
 
   Widget getProductUI() {
-    return productTab == 1
-        ? ListView.builder(
-            padding: const EdgeInsets.only(top: 10),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: selectedKnownProductListData.length,
-            itemBuilder: (context, index) {
-              List<String> serialNumber = [];
-              for (var element
-                  in selectedKnownProductListData[index].products) {
-                serialNumber.add(element.serialNumber);
-              }
-              return Card(
-                color: AppTheme.white,
-                margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                surfaceTintColor: AppTheme.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CText(
-                        textAlign: TextAlign.start,
-                        padding:
-                            const EdgeInsets.only(right: 10, top: 5, bottom: 5),
-                        text: productCategoryList
-                            .firstWhere((element) =>
-                                element.productCategoryId ==
-                                selectedKnownProductListData[index].categoryId)
-                            .name,
-                        textColor: AppTheme.colorPrimary,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.large,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      CText(
-                        textAlign: TextAlign.start,
-                        padding:
-                            const EdgeInsets.only(right: 10, top: 0, bottom: 5),
-                        text: selectedKnownProductListData[index].productName,
-                        textColor: AppTheme.grayAsparagus,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.large,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      CText(
-                        textAlign: TextAlign.start,
-                        padding: const EdgeInsets.only(right: 10, top: 0),
-                        text:
-                            "Quantity : ${selectedKnownProductListData[index].qty}",
-                        textColor: AppTheme.grayAsparagus,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.large,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      CText(
-                        textAlign: TextAlign.start,
-                        padding:
-                            const EdgeInsets.only(right: 10, top: 0, bottom: 5),
-                        text: "Serial Number : ${serialNumber.join(", ")}",
-                        textColor: AppTheme.grayAsparagus,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.large,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ],
-                  ),
+    if (productTab == 1) {
+      return _buildKnownProductList();
+    } else if (productTab == 2) {
+      return _buildForeignLabelsList();
+    } else if (productTab == 3) {
+      return _buildUnknownProductList();
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildKnownProductList() {
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 10),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: selectedKnownProductListData.length,
+      itemBuilder: (context, index) {
+        List<String> serialNumber = [];
+        for (var element
+            in selectedKnownProductListData[index].products) {
+          serialNumber.add(element.serialNumber);
+        }
+        return Card(
+          color: AppTheme.white,
+          margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+          surfaceTintColor: AppTheme.white,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12)),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 15.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CText(
+                  textAlign: TextAlign.start,
+                  padding:
+                      const EdgeInsets.only(right: 10, top: 5, bottom: 5),
+                  text: productCategoryList
+                      .firstWhere((element) =>
+                          element.productCategoryId ==
+                          selectedKnownProductListData[index].categoryId)
+                      .name,
+                  textColor: AppTheme.colorPrimary,
+                  fontFamily: AppTheme.urbanist,
+                  fontSize: AppTheme.large,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  fontWeight: FontWeight.w700,
                 ),
-              );
-            })
-        : productTab == 2
-            ? ListView.builder(
-                padding: const EdgeInsets.only(top: 10),
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: foreignLabelsList.length,
-                itemBuilder: (context, index) {
-                  return getProductList(foreignLabelsList, index);
-                })
-            : productTab == 3
-                ? ListView.builder(
-                    padding: const EdgeInsets.only(top: 10),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: unknownProductList.length,
-                    itemBuilder: (context, index) {
-                      return getProductList(unknownProductList, index);
-                    })
-                : Container();
+                CText(
+                  textAlign: TextAlign.start,
+                  padding:
+                      const EdgeInsets.only(right: 10, top: 0, bottom: 5),
+                  text: selectedKnownProductListData[index].productName,
+                  textColor: AppTheme.grayAsparagus,
+                  fontFamily: AppTheme.urbanist,
+                  fontSize: AppTheme.large,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  fontWeight: FontWeight.w600,
+                ),
+                CText(
+                  textAlign: TextAlign.start,
+                  padding: const EdgeInsets.only(right: 10, top: 0),
+                  text:
+                      "Quantity : ${selectedKnownProductListData[index].qty}",
+                  textColor: AppTheme.grayAsparagus,
+                  fontFamily: AppTheme.urbanist,
+                  fontSize: AppTheme.large,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  fontWeight: FontWeight.w600,
+                ),
+                CText(
+                  textAlign: TextAlign.start,
+                  padding:
+                      const EdgeInsets.only(right: 10, top: 0, bottom: 5),
+                  text: "Serial Number : ${serialNumber.join(", ")}",
+                  textColor: AppTheme.grayAsparagus,
+                  fontFamily: AppTheme.urbanist,
+                  fontSize: AppTheme.large,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  fontWeight: FontWeight.w600,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildForeignLabelsList() {
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 10),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: foreignLabelsList.length,
+      itemBuilder: (context, index) {
+        return getProductList(foreignLabelsList, index);
+      },
+    );
+  }
+
+  Widget _buildUnknownProductList() {
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 10),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: unknownProductList.length,
+      itemBuilder: (context, index) {
+        return getProductList(unknownProductList, index);
+      },
+    );
   }
 
   Widget getProductList(List<ProductDetail> list, int index) {

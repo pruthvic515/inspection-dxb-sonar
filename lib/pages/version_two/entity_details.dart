@@ -2267,77 +2267,94 @@ class _EntityDetailsState extends State<EntityDetails> {
       List<SearchEntityData> agents,
       String notes,
       bool isHideAgents) async {
-    // isHideAgents true means Liquor Task  task else DXB task
-    if (await Utils().hasNetwork(context, setState)) {
-      // List<int> entityList = [];
-      List<int> agentUserId = [];
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
 
-      /*     entities.forEach((entity) => entityList.add(entity.entityId));
-      if (!entityList.contains(widget.entityId)) {
-        entityList.add(widget.entityId);
-      }*/
-      for (var entity in agents) {
-        agentUserId.add(entity.entityId);
-      }
-      List<Map<String, dynamic>> users = [];
+    final agentUserId = _collectAgentUserIds(agents);
+    final users = _buildUserList(primaryUser, otherUsers);
+    final fields = _buildTaskFields(
+      taskName,
+      users,
+      agentUserId,
+      notes,
+    );
 
-// Assuming primaryUsers is now a List
-//       List<AllUserData> primaryUsers = [primaryUser]; // or already a list
+    LogPrint().log("CreateTask $fields");
+    LoadingIndicatorDialog().show(context);
 
-      for (var pUser in primaryUser) {
-        users.add({"item1": pUser.departmentUserId, "item2": true});
-      }
+    Api().callAPI(context, "Department/Task/CreateTask", fields).then((value) async {
+      LoadingIndicatorDialog().dismiss();
+      _handleAddTaskResponse(value);
+    });
+  }
 
-      for (var user in otherUsers) {
-        // Only add if not in primaryUsers
-        if (!primaryUser
-            .any((pUser) => pUser.departmentUserId == user.departmentUserId)) {
-          users.add({"item1": user.departmentUserId, "item2": false});
-        }
-      }
-      var fields = {
-        "taskName": taskName,
-        "entityId": [widget.entityId],
-        "statusId": 1,
-        "inspectorId": users,
-        "agentUserId": agentUserId.isEmpty ? [] : agentUserId,
-        "notes": notes,
-        "createdBy": storeUserData.getInt(USER_ID),
-        "createdOn":
-            DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
-      };
+  List<int> _collectAgentUserIds(List<SearchEntityData> agents) {
+    return agents.map((entity) => entity.entityId).toList();
+  }
 
-      // isHideAgents is true means liquor task else DXB task
-      /*    if (isHideAgents) {
+  List<Map<String, dynamic>> _buildUserList(
+    List<AllUserData> primaryUser,
+    List<AllUserData> otherUsers,
+  ) {
+    final users = <Map<String, dynamic>>[];
 
-      } else {
-        fields["taskType"] = 2;
-      }*/
-      fields["taskType"] = 1;
-      LogPrint().log("CreateTask $fields");
-      if (!mounted) {
-        return;
-      }
-      LoadingIndicatorDialog().show(context);
-
-      Api()
-          .callAPI(context, "Department/Task/CreateTask", fields)
-          .then((value) async {
-        LoadingIndicatorDialog().dismiss();
-        var data = jsonDecode(value);
-        if (data["statusCode"] == 200) {
-          Navigator.of(context).pop();
-          Get.offAll(transition: Transition.rightToLeft, const HomeScreen());
-        } else {
-          Utils().showAlert(
-              buildContext: context,
-              message: data["message"],
-              onPressed: () {
-                Navigator.of(context).pop();
-              });
-        }
-      });
+    for (var pUser in primaryUser) {
+      users.add({"item1": pUser.departmentUserId, "item2": true});
     }
+
+    for (var user in otherUsers) {
+      if (!primaryUser
+          .any((pUser) => pUser.departmentUserId == user.departmentUserId)) {
+        users.add({"item1": user.departmentUserId, "item2": false});
+      }
+    }
+
+    return users;
+  }
+
+  Map<String, dynamic> _buildTaskFields(
+    String taskName,
+    List<Map<String, dynamic>> users,
+    List<int> agentUserId,
+    String notes,
+  ) {
+    return {
+      "taskName": taskName,
+      "entityId": [widget.entityId],
+      "statusId": 1,
+      "inspectorId": users,
+      "agentUserId": agentUserId.isEmpty ? [] : agentUserId,
+      "notes": notes,
+      "createdBy": storeUserData.getInt(USER_ID),
+      "createdOn":
+          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
+      "taskType": 1,
+    };
+  }
+
+  void _handleAddTaskResponse(String value) {
+    final data = jsonDecode(value);
+    
+    if (data["statusCode"] == 200) {
+      _navigateToHomeScreen();
+    } else {
+      _showAddTaskError(data["message"]);
+    }
+  }
+
+  void _navigateToHomeScreen() {
+    Navigator.of(context).pop();
+    Get.offAll(transition: Transition.rightToLeft, const HomeScreen());
+  }
+
+  void _showAddTaskError(String message) {
+    Utils().showAlert(
+      buildContext: context,
+      message: message,
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
   }
 
   void showCompleteSheet() {
@@ -2550,46 +2567,58 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   Future<void> deleteOutlet(int outletId) async {
-    if (await Utils().hasNetwork(context, setState)) {
-      if (!mounted) {
-        return;
-      }
-      LoadingIndicatorDialog().show(context);
-      Api()
-          .getAPI(context, "Mobile/NewOutlet/Delete?newOutletid=$outletId")
-          .then((value) async {
-        LoadingIndicatorDialog().dismiss();
-        var data = jsonDecode(value);
-        if (data["statusCode"] == 200) {
-          setState(() {
-            var position = searchOutletList
-                .indexWhere((test) => test.outletId == outletId);
-            searchOutletList.removeAt(position);
-            outletList.clear();
-            List<OutletData> inActiveList = [];
-            for (var item in searchOutletList) {
-              if (item.newAdded == true) {
-                inActiveList.add(item);
-              }
-              if (tabType == 2 && item.newAdded == true) {
-                outletList.add(item);
-              } else if (tabType == 1 && item.newAdded == false) {
-                outletList.add(item);
-              }
-            }
-            storeUserData.setString(
-                entityId.toString(), OutletData.encode(inActiveList));
-          });
-        } else {
-          Utils().showAlert(
-              buildContext: context,
-              message: noEntityMessage,
-              onPressed: () {
-                Navigator.of(context).pop();
-              });
-        }
-      });
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
+
+    LoadingIndicatorDialog().show(context);
+    final url = "Mobile/NewOutlet/Delete?newOutletid=$outletId";
+    
+    Api().getAPI(context, url).then((value) async {
+      LoadingIndicatorDialog().dismiss();
+      _handleDeleteOutletResponse(value, outletId);
+    });
+  }
+
+  void _handleDeleteOutletResponse(String value, int outletId) {
+    final data = jsonDecode(value);
+    
+    if (data["statusCode"] == 200) {
+      _processSuccessfulOutletDelete(outletId);
+    } else {
+      _showDeleteOutletError();
     }
+  }
+
+  void _processSuccessfulOutletDelete(int outletId) {
+    setState(() {
+      _removeOutletFromList(outletId);
+      outletList.clear();
+      
+      final inActiveList = _buildInActiveList();
+      _populateOutletList();
+      
+      storeUserData.setString(
+        entityId.toString(),
+        OutletData.encode(inActiveList),
+      );
+    });
+  }
+
+  void _removeOutletFromList(int outletId) {
+    final position = searchOutletList.indexWhere((test) => test.outletId == outletId);
+    if (position != -1) {
+      searchOutletList.removeAt(position);
+    }
+  }
+
+  void _showDeleteOutletError() {
+    Utils().showAlert(
+      buildContext: context,
+      message: noEntityMessage,
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
   }
 
   String formatEmiratesID(String id) {
