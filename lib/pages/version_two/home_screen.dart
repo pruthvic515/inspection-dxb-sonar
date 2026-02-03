@@ -65,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPageIndex = 1;
 
   // Legacy pagination (for non-agent users)
-  int pageIndex = 1;
   final int pageSize = 10;
   bool isLastPage = false;
   bool isLoading = false;
@@ -303,8 +302,9 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!_shouldLoadAgentTasks()) return;
     if (!await _initializeAgentTaskLoad()) return;
     if (!mounted) return;
-
-    LoadingIndicatorDialog().show(context);
+    if (currentPageIndex == 1) {
+      LoadingIndicatorDialog().show(context);
+    }
     try {
       final payload = _buildAgentTaskPayload();
       final value =
@@ -516,13 +516,13 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildAgentTab(
-            "Awaiting Feedback($feedbackCount)",
+            "Awaiting \nFeedback($feedbackCount)",
             "feedback",
             agentTabType == "feedback",
             () => _handleFeedbackTabTap(),
           ),
           _buildAgentTab(
-            "Awaiting Confirmation($waitingCount)",
+            "Awaiting \nConfirmation($waitingCount)",
             "waiting",
             agentTabType == "waiting",
             () => _handleWaitingTabTap(),
@@ -560,9 +560,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 height: 3,
                 margin: const EdgeInsets.only(top: 8),
-                color: isActive
-                    ? AppTheme.colorPrimary
-                    : AppTheme.mainBackground,
+                color:
+                    isActive ? AppTheme.colorPrimary : AppTheme.mainBackground,
               ),
             ],
           ),
@@ -752,18 +751,18 @@ class _HomeScreenState extends State<HomeScreen> {
         accuracy: LocationAccuracy.high,
       ),
     );
-    
+
     latitude = position.latitude;
     longitude = position.longitude;
-    
+
     final placeMarks = await placemarkFromCoordinates(
       position.latitude,
       position.longitude,
     );
-    
+
     LogPrint().log(placeMarks);
     final place = placeMarks[0];
-    
+
     if (mounted) {
       setState(() {
         isFetched = true;
@@ -771,7 +770,7 @@ class _HomeScreenState extends State<HomeScreen> {
             '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
       });
     }
-    
+
     LogPrint().log("address$googleAddress");
   }
 
@@ -1848,6 +1847,10 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!storeUserData.getBoolean(IS_AGENT_LOGIN)) {
       getTasks();
     } else {
+      currentPageIndex=1;
+      setState(() {
+
+      });
       // Refresh both tabs
       getAgentTasks();
     }
