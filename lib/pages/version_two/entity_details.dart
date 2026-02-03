@@ -1357,19 +1357,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                                                 textAlign:
                                                                     TextAlign
                                                                         .start,
-                                                                text: outletList[index]
-                                                                            .inspectionStatusId ==
-                                                                        1
-                                                                    ? "Pending"
-                                                                    : outletList[index].inspectionStatusId ==
-                                                                            2
-                                                                        ? "In Progress"
-                                                                        : outletList[index].inspectionStatusId ==
-                                                                                3
-                                                                            ? "Not Accepted"
-                                                                            : outletList[index].inspectionStatusId == 6 || outletList[index].inspectionStatusId == 7
-                                                                                ? "Completed"
-                                                                                : taskStatus.firstWhere((item) => item.id == outletList[index].inspectionStatusId).text,
+                                                                text: _getOutletStatusText(outletList[index].inspectionStatusId),
                                                                 textColor:
                                                                     AppTheme
                                                                         .white,
@@ -3191,6 +3179,20 @@ class _EntityDetailsState extends State<EntityDetails> {
         Navigator.of(context).pop();
       },
     );
+  }
+
+  String _getOutletStatusText(int statusId) {
+    if (statusId == 1) {
+      return "Pending";
+    } else if (statusId == 2) {
+      return "In Progress";
+    } else if (statusId == 3) {
+      return "Not Accepted";
+    } else if (statusId == 6 || statusId == 7) {
+      return "Completed";
+    } else {
+      return taskStatus.firstWhere((item) => item.id == statusId).text;
+    }
   }
 
   void selectOutletTypeSheet(List<AreaData> list, String types,

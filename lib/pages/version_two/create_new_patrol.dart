@@ -3834,19 +3834,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                               "image", null, type == 1 ? 4 : 5, myState);
                         },
                       ),
-                      imageAttach.isNotEmpty
-                          ? Container(
-                              margin: EdgeInsets.only(
-                                  bottom: currentWidth > SIZE_600 ? 20 : 10,
-                                  top: currentWidth > SIZE_600 ? 20 : 10,
-                                  left: currentWidth > SIZE_600 ? 15 : 10,
-                                  right: currentWidth > SIZE_600 ? 15 : 10),
-                              width: 150,
-                              height: 150,
-                              child:
-                                  Image.network(imageAttach, fit: BoxFit.cover),
-                            )
-                          : Container(),
+                      _buildImageAttachmentPreview(),
                       const SizedBox(
                         height: 10,
                       ),
@@ -3956,6 +3944,27 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         tabType = 4;
       });
     });
+  }
+
+  Widget _buildImageAttachmentPreview() {
+    if (imageAttach.isEmpty) {
+      return Container();
+    }
+
+    final marginValue = currentWidth > SIZE_600 ? 20.0 : 10.0;
+    final horizontalMargin = currentWidth > SIZE_600 ? 15.0 : 10.0;
+
+    return Container(
+      margin: EdgeInsets.only(
+        bottom: marginValue,
+        top: marginValue,
+        left: horizontalMargin,
+        right: horizontalMargin,
+      ),
+      width: 150,
+      height: 150,
+      child: Image.network(imageAttach, fit: BoxFit.cover),
+    );
   }
 
   void updateRepresentative(Map<String, dynamic> fields) {
