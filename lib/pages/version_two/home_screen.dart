@@ -1847,11 +1847,10 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!storeUserData.getBoolean(IS_AGENT_LOGIN)) {
       getTasks();
     } else {
-      currentPageIndex=1;
-      setState(() {
-
-      });
-      // Refresh both tabs
+      currentPageIndex = 1;
+      isLastPage = false;
+      isLoading = false;
+      setState(() {});
       getAgentTasks();
     }
   }
