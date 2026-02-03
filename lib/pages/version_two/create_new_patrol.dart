@@ -2240,6 +2240,74 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
+  void _submitRepresentative({
+    required RepresentativeData? model,
+    required int type,
+    required TextEditingController name,
+    required TextEditingController emiratesId,
+    required TextEditingController mobileNumber,
+    required TextEditingController roleName,
+    required TextEditingController notes,
+  }) {
+    final data = RepresentativeData(
+      entityRepresentativeId: model?.entityRepresentativeId ?? 0,
+      inspectionId: inspectionId,
+      typeId: type,
+      name: name.text,
+      emiratesId: emiratesId.text.replaceAll("-", ""),
+      phoneNo: "+9715${mobileNumber.text}",
+      roleId: 0,
+      roleName: roleName.text,
+      notes: notes.text,
+    );
+
+    Navigator.of(context).pop();
+
+    if (model == null) {
+      addRepresentative(data.toJson());
+    } else {
+      updateRepresentative(data.toJson());
+    }
+  }
+
+  void _showError(BuildContext context, String message) {
+    Utils().showAlert(
+      buildContext: context,
+      message: message,
+      onPressed: () => Navigator.of(context).pop(),
+    );
+  }
+
+  bool _validateForm({
+    required BuildContext context,
+    required TextEditingController name,
+    required TextEditingController emiratesId,
+    required TextEditingController mobileNumber,
+    required TextEditingController roleName,
+  }) {
+    if (name.text.isEmpty) {
+      _showError(context, "Please enter name");
+      return false;
+    }
+
+    if (emiratesId.text.isEmpty || emiratesId.text.length != 18) {
+      _showError(context, "Please enter valid emiratesID");
+      return false;
+    }
+
+    if (mobileNumber.text.isEmpty || mobileNumber.text.length != 8) {
+      _showError(context, "Please enter valid contact number");
+      return false;
+    }
+
+    if (roleName.text.isEmpty) {
+      _showError(context, "Please enter role");
+      return false;
+    }
+
+    return true;
+  }
+
   Color getSaveButtonColor(
       int quantity, List<TextEditingController> controllers) {
     return _isQuantityFormValid(quantity, controllers)
@@ -3691,6 +3759,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     final node3 = FocusNode();
     final node4 = FocusNode();
     final node5 = FocusNode();
+
     imageAttach = "";
     if (model != null) {
       setState(() {
@@ -3701,6 +3770,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         notes.text = model.notes ?? "";
       });
     }
+
     showModalBottomSheet(
         enableDrag: false,
         isDismissible: false,
@@ -3708,6 +3778,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         backgroundColor: AppTheme.mainBackground,
         isScrollControlled: true,
         builder: (BuildContext buildContext) {
+          bool isFormValid() {
+            return name.text.isNotEmpty &&
+                emiratesId.text.length == 18 &&
+                mobileNumber.text.length == 8 &&
+                roleName.text.isNotEmpty;
+          }
+
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter myState) {
             return Container(
@@ -3874,83 +3951,34 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           width: 200,
                           margin: const EdgeInsets.symmetric(vertical: 20),
                           child: ElevatedButton(
-                            onPressed: () {
-                              if (name.text.isEmpty) {
-                                Utils().showAlert(
-                                    buildContext: buildContext,
-                                    message: "Please enter name",
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
-                              } else if (emiratesId.text.isEmpty ||
-                                  emiratesId.text.length != 18) {
-                                Utils().showAlert(
-                                    buildContext: buildContext,
-                                    message: "Please enter valid emiratesID",
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
-                              } else if (mobileNumber.text.isEmpty ||
-                                  mobileNumber.text.length != 8) {
-                                Utils().showAlert(
-                                    buildContext: buildContext,
-                                    message:
-                                        "Please enter valid contact number",
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
-                              } else if (roleName.text.isEmpty) {
-                                Utils().showAlert(
-                                    buildContext: buildContext,
-                                    message: "Please enter role",
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    });
-                              } else {
-                                if (model == null) {
-                                  Navigator.of(context).pop();
-                                  addRepresentative(RepresentativeData(
-                                          entityRepresentativeId: 0,
-                                          inspectionId: inspectionId,
-                                          typeId: type,
-                                          name: name.text.toString(),
-                                          emiratesId: emiratesId.text
-                                              .toString()
-                                              .replaceAll("-", ""),
-                                          phoneNo: "+9715${mobileNumber.text}",
-                                          roleId: 0,
-                                          roleName: roleName.text.toString(),
-                                          notes: notes.text.toString())
-                                      .toJson());
-                                } else {
-                                  Navigator.of(context).pop();
-                                  updateRepresentative(RepresentativeData(
-                                          entityRepresentativeId:
-                                              model.entityRepresentativeId,
-                                          inspectionId: inspectionId,
-                                          typeId: type,
-                                          name: name.text.toString(),
-                                          emiratesId: emiratesId.text
-                                              .toString()
-                                              .replaceAll("-", ""),
-                                          phoneNo: "+9715${mobileNumber.text}",
-                                          roleId: 0,
-                                          roleName: roleName.text.toString(),
-                                          notes: notes.text.toString())
-                                      .toJson());
-                                }
-                              }
-                            },
+                            onPressed: isFormValid()
+                                ? () {
+                                    final isValid = _validateForm(
+                                      context: context,
+                                      name: name,
+                                      emiratesId: emiratesId,
+                                      mobileNumber: mobileNumber,
+                                      roleName: roleName,
+                                    );
+
+                                    if (!isValid) return;
+
+                                    _submitRepresentative(
+                                      model: model,
+                                      type: type,
+                                      name: name,
+                                      emiratesId: emiratesId,
+                                      mobileNumber: mobileNumber,
+                                      roleName: roleName,
+                                      notes: notes,
+                                    );
+                                  }
+                                : null,
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              backgroundColor: name.text.isNotEmpty &&
-                                      emiratesId.text.isNotEmpty &&
-                                      mobileNumber.text.isNotEmpty &&
-                                      roleName.text.isNotEmpty &&
-                                      emiratesId.text.length == 18 &&
-                                      mobileNumber.text.length == 8
+                              backgroundColor: isFormValid()
                                   ? AppTheme.colorPrimary
                                   : AppTheme.paleGray,
                               minimumSize: const Size.fromHeight(50),

@@ -2444,7 +2444,6 @@ class _EntityDetailsState extends State<EntityDetails> {
     }
   }
 
-
   String formatEmiratesID(String id) {
     // ignore: deprecated_member_use
     id = id.replaceAll(RegExp(r'\D'), '');
@@ -2492,6 +2491,22 @@ class _EntityDetailsState extends State<EntityDetails> {
       backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
+        String? validateOutletForm() {
+          if (itemName.text.isEmpty) return "Please enter outlet name";
+          if (serviceType == null) return "Please select service type";
+          if (ownerShipType == null) return "Please select ownership type";
+          if (outletType == null) return "Please select outlet type";
+          if (managerName.text.isEmpty) return "Please enter manager name";
+          if (emiratesId.text.length != 18) {
+            return "Please enter valid emirates ID";
+          }
+          if (mobileNumber.text.length != 8) {
+            return "Please enter valid contact number";
+          }
+          if (notes.text.isEmpty) return "Please enter notes";
+          return null;
+        }
+
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
           return Container(
@@ -2658,115 +2673,42 @@ class _EntityDetailsState extends State<EntityDetails> {
                       child: ElevatedButton(
                         focusNode: focusNodeButton,
                         onPressed: () {
-                          if (itemName.text.isEmpty) {
+                          final error = validateOutletForm();
+
+                          if (error != null) {
                             Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter outlet name",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (serviceType == null) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please select service type",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (ownerShipType == null) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please select ownership type",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (outletType == null) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please select outlet type",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (managerName.text.isEmpty) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter manager name",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (emiratesId.text.isEmpty ||
-                              emiratesId.text.length != 18) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter valid emiratesID",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (mobileNumber.text.isEmpty ||
-                              mobileNumber.text.length != 8) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter valid contact number",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (notes.text.isEmpty) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter notes",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
+                              buildContext: buildContext,
+                              message: error,
+                              onPressed: () => Navigator.of(context).pop(),
+                            );
+                            return;
+                          }
+
+                          final outlet = OutletData(
+                            outletId: model?.outletId ?? 0,
+                            outletName: itemName.text,
+                            ownerShipTypeId: ownerShipType!.id,
+                            serviceTypeId: serviceType!.id,
+                            ownerShipType: ownerShipType!.text,
+                            serviceType: serviceType!.text,
+                            managerName: managerName.text,
+                            emiratesId: emiratesId.text,
+                            contactNumber: mobileNumber.text,
+                            notes: notes.text,
+                            outletTypeId: outletType!.id,
+                            outletType: outletType!.text,
+                            outletStatusId: model?.outletStatusId,
+                            outletStatus: model?.outletStatus,
+                            newAdded: model == null,
+                            inspectionStatusId: model?.inspectionStatusId ?? 0,
+                            inspectionId: model?.inspectionId ?? 0,
+                            inspectorId: storeUserData.getInt(USER_ID),
+                          );
+
+                          if (model != null) {
+                            updateOutlet(myState, outlet);
                           } else {
-                            if (model != null) {
-                              updateOutlet(
-                                  myState,
-                                  OutletData(
-                                      outletId: model.outletId,
-                                      outletName: itemName.text,
-                                      ownerShipTypeId: ownerShipType!.id,
-                                      serviceTypeId: serviceType!.id,
-                                      ownerShipType: ownerShipType!.text,
-                                      emiratesId: emiratesId.text
-                                          .toString()
-                                          .replaceAll("-", ""),
-                                      managerName: managerName.text,
-                                      contactNumber:
-                                          "+9715${mobileNumber.text}",
-                                      notes: notes.text,
-                                      outletTypeId: outletType!.id,
-                                      outletType: outletType!.text,
-                                      newAdded: true,
-                                      serviceType: serviceType!.text,
-                                      inspectionStatusId:
-                                          model.inspectionStatusId,
-                                      inspectorId:
-                                          storeUserData.getInt(USER_ID),
-                                      inspectionId: model.inspectionId));
-                            } else {
-                              addOutlet(
-                                  myState,
-                                  OutletData(
-                                      outletId: 0,
-                                      outletName: itemName.text,
-                                      ownerShipTypeId: ownerShipType!.id,
-                                      serviceTypeId: serviceType!.id,
-                                      ownerShipType: ownerShipType!.text,
-                                      emiratesId: emiratesId.text
-                                          .toString()
-                                          .replaceAll("-", ""),
-                                      managerName: managerName.text,
-                                      contactNumber:
-                                          "+9715${mobileNumber.text}",
-                                      notes: notes.text,
-                                      newAdded: true,
-                                      inspectorId:
-                                          storeUserData.getInt(USER_ID),
-                                      serviceType: serviceType!.text,
-                                      outletTypeId: outletType!.id,
-                                      outletType: outletType!.text,
-                                      inspectionStatusId: 0,
-                                      inspectionId: 0));
-                            }
+                            addOutlet(myState, outlet);
                           }
                         },
                         style: ElevatedButton.styleFrom(
