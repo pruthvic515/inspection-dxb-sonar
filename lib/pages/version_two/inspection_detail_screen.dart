@@ -1307,50 +1307,61 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
   //todo download pdf
 
   Future<void> getDownloadReport() async {
-    if (await Utils().hasNetwork(context, setState)) {
-      if (!mounted) return;
-      LoadingIndicatorDialog().show(context);
-      // http://4.161.39.155:8096/inspectionApi/api/Department/Report/ViewReport?mainTaskId=4512&inspectionId=0
-      Api()
-          .getAPI(context,
-              "Department/Report/ViewReport?mainTaskId=${widget.task.mainTaskId}&inspectionId=0")
-          .then((value) async {
-        LoadingIndicatorDialog().dismiss();
-        print("ViewReport $value");
-        if (value != null) {
-          var data = jsonDecode(value);
-          if (data["data"] != null) {
-            final url = Uri.parse(
-              data["data"],
-            );
-            if (await canLaunchUrl(url)) {
-              print(url);
-              await launchUrl(
-                url,
-                mode: LaunchMode.externalApplication,
-              );
-            } else {
-              print("Can't launch ${data["data"]}");
-            }
-          } else {
-            Utils().showAlert(
-                buildContext: context,
-                message: "No Found Report ",
-                onPressed: () {
-                  Navigator.pop(context);
-                });
-          }
-        } else {
-          Utils().showAlert(
-              buildContext: context,
-              message: "No PDF ",
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pop(context);
-              });
-        }
-      });
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
+    
+    LoadingIndicatorDialog().show(context);
+    final url = "Department/Report/ViewReport?mainTaskId=${widget.task.mainTaskId}&inspectionId=0";
+    
+    Api().getAPI(context, url).then((value) async {
+      LoadingIndicatorDialog().dismiss();
+      print("ViewReport $value");
+      _handleReportResponse(value);
+    });
+  }
+
+  void _handleReportResponse(String? value) {
+    if (value == null) {
+      _showNoPdfAlert();
+      return;
     }
+
+    final data = jsonDecode(value);
+    if (data["data"] == null) {
+      _showNoReportAlert();
+      return;
+    }
+
+    _launchReportUrl(data["data"]);
+  }
+
+  Future<void> _launchReportUrl(String urlString) async {
+    final url = Uri.parse(urlString);
+    if (await canLaunchUrl(url)) {
+      print(url);
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      print("Can't launch $urlString");
+    }
+  }
+
+  void _showNoReportAlert() {
+    Utils().showAlert(
+        buildContext: context,
+        message: "No Found Report ",
+        onPressed: () {
+          Navigator.pop(context);
+        });
+  }
+
+  void _showNoPdfAlert() {
+    Utils().showAlert(
+        buildContext: context,
+        message: "No PDF ",
+        onPressed: () {
+          Navigator.of(context).pop();
+          Navigator.pop(context);
+        });
   }
 
   // Method to extract filename from URL

@@ -4455,65 +4455,91 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   void uploadImage(http.MultipartFile media, int? productId, int? categoryId,
       StateSetter myState, String type, String filePath) {
-    List<http.MultipartFile> listMedia = [];
-    listMedia.add(media);
-    var map = {
-      "InspectionId": inspectionId.toString(),
-    };
-    if (productId != null) {
-      map.addAll({"ProductDetailsId": productId.toString()});
-    }
-    if (categoryId != null) {
-      map.addAll({"CategoryId": categoryId.toString()});
-    }
+    final listMedia = [media];
+    final map = _buildUploadRequestMap(productId, categoryId);
+    
     Api()
         .callAPIWithFiles(
             context, "Mobile/InspectionDocument/Create", map, listMedia)
         .then((value) {
       LoadingIndicatorDialog().dismiss();
       LogPrint().log(value);
-      if (value == "error") {
-        Utils().showAlert(
-            buildContext: context,
-            message: value,
-            onPressed: () {
-              Navigator.of(context).pop();
-            });
-      } else {
-        var json = jsonDecode(value);
-        if (json["data"] != null) {
-          if (categoryId == 9) {
-            if (type == "image") {
-              image.add(filePath);
-            }
-            setState(() {
-              attachedLink = json["data"];
-            });
+      _handleUploadResponse(value, categoryId, myState, type, filePath);
+    });
+  }
 
-            showAttachmentDialog(attachedLink);
-          } else {
-            if (categoryId == 1) {
-              myState(() {
-                attachedProduct = json["data"];
-              });
-              showAttachmentDialog(attachedProduct);
-            } else {
-              myState(() {
-                imageAttach = json["data"];
-              });
-            }
-          }
-          Utils().showSnackBar(context, "Uploaded successfully.");
-          getInspectionDetail();
-        } else {
-          Utils().showAlert(
-              buildContext: context,
-              message: json["message"],
-              onPressed: () {
-                Navigator.of(context).pop();
-              });
-        }
-      }
+  Map<String, String> _buildUploadRequestMap(int? productId, int? categoryId) {
+    final map = <String, String>{
+      "InspectionId": inspectionId.toString(),
+    };
+    if (productId != null) {
+      map["ProductDetailsId"] = productId.toString();
+    }
+    if (categoryId != null) {
+      map["CategoryId"] = categoryId.toString();
+    }
+    return map;
+  }
+
+  void _handleUploadResponse(String value, int? categoryId,
+      StateSetter myState, String type, String filePath) {
+    if (value == "error") {
+      _showErrorAlert(value);
+      return;
+    }
+
+    final json = jsonDecode(value);
+    if (json["data"] == null) {
+      _showErrorAlert(json["message"]);
+      return;
+    }
+
+    _handleCategorySpecificLogic(
+        json["data"], categoryId, myState, type, filePath);
+    Utils().showSnackBar(context, "Uploaded successfully.");
+    getInspectionDetail();
+  }
+
+  void _showErrorAlert(String message) {
+    Utils().showAlert(
+        buildContext: context,
+        message: message,
+        onPressed: () {
+          Navigator.of(context).pop();
+        });
+  }
+
+  void _handleCategorySpecificLogic(String data, int? categoryId,
+      StateSetter myState, String type, String filePath) {
+    if (categoryId == 9) {
+      _handleCategory9Logic(data, type, filePath);
+    } else if (categoryId == 1) {
+      _handleCategory1Logic(data, myState);
+    } else {
+      _handleOtherCategoryLogic(data, myState);
+    }
+  }
+
+  void _handleCategory9Logic(String data, String type, String filePath) {
+    if (type == "image") {
+      image.add(filePath);
+    }
+    setState(() {
+      attachedLink = data;
+    });
+    showAttachmentDialog(attachedLink);
+  }
+
+  void _handleCategory1Logic(String data, StateSetter myState) {
+    myState(() {
+      attachedProduct = data;
+    });
+    showAttachmentDialog(attachedProduct);
+  }
+
+  void _handleOtherCategoryLogic(String data, StateSetter myState) {
+    myState(() {
+      imageAttach = data;
     });
   }
 

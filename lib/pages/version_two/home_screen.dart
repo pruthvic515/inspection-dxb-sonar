@@ -2111,40 +2111,60 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _filterList(String searchText) {
-    if (!storeUserData.getBoolean(IS_AGENT_LOGIN)) {
-      list.clear();
-      if (searchText.isEmpty) {
-        if (tabType == "pending") {
-          list.addAll(tasks.where((item) =>
-              item.statusId == 1 ||
-              item.statusId == 2 ||
-              item.statusId == 4 ||
-              item.statusId == 5));
-        } else {
-          list.addAll(tasks.where((item) =>
-              item.statusId != 1 &&
-              item.statusId != 2 &&
-              item.statusId != 4 &&
-              item.statusId != 5));
-        }
-      } else {
-        for (var item in tasks) {
-          if (item.entityName
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()) ||
-              item.taskName.toLowerCase().contains(searchText.toLowerCase())) {
-            if (tabType == "pending" &&
-                (item.statusId < 6 || item.statusId != 3)) {
-              list.add(item);
-            } else {
-              if (item.statusId > 5 || item.statusId == 3) {
-                list.add(item);
-              }
-            }
-          }
-        }
+    if (storeUserData.getBoolean(IS_AGENT_LOGIN)) return;
+    
+    list.clear();
+    if (searchText.isEmpty) {
+      _filterTasksWithoutSearch();
+    } else {
+      _filterTasksWithSearch(searchText);
+    }
+    setState(() {});
+  }
+
+  void _filterTasksWithoutSearch() {
+    if (tabType == "pending") {
+      list.addAll(tasks.where(_isPendingTask));
+    } else {
+      list.addAll(tasks.where(_isCompletedTask));
+    }
+  }
+
+  bool _isPendingTask(Tasks item) {
+    return item.statusId == 1 ||
+        item.statusId == 2 ||
+        item.statusId == 4 ||
+        item.statusId == 5;
+  }
+
+  bool _isCompletedTask(Tasks item) {
+    return item.statusId != 1 &&
+        item.statusId != 2 &&
+        item.statusId != 4 &&
+        item.statusId != 5;
+  }
+
+  void _filterTasksWithSearch(String searchText) {
+    final lowerSearchText = searchText.toLowerCase();
+    for (var item in tasks) {
+      if (!_matchesSearchText(item, lowerSearchText)) continue;
+      
+      if (_shouldIncludeTask(item)) {
+        list.add(item);
       }
-      setState(() {});
+    }
+  }
+
+  bool _matchesSearchText(Tasks item, String lowerSearchText) {
+    return item.entityName.toLowerCase().contains(lowerSearchText) ||
+        item.taskName.toLowerCase().contains(lowerSearchText);
+  }
+
+  bool _shouldIncludeTask(Tasks item) {
+    if (tabType == "pending") {
+      return item.statusId < 6 || item.statusId != 3;
+    } else {
+      return item.statusId > 5 || item.statusId == 3;
     }
   }
 
