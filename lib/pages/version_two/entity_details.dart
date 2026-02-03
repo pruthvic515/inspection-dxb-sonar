@@ -74,6 +74,19 @@ class EntityDetails extends StatefulWidget {
   State<EntityDetails> createState() => _EntityDetailsState();
 }
 
+class _AddTaskFormState {
+  final taskName = TextEditingController();
+  final notes = TextEditingController();
+  final List<String> users = [];
+  final List<String> primaryUsers = [];
+  final List<String> agents = [];
+  List<AllUserData> selectedUsers = [];
+  List<AllUserData> selectedPrimaryUsers = [];
+  List<SearchEntityData> selectedAgents = [];
+  final node = FocusNode();
+  final notesNode = FocusNode();
+}
+
 class _EntityDetailsState extends State<EntityDetails> {
   late int entityId;
   var storeUserData = StoreUserData();
@@ -1488,7 +1501,8 @@ class _EntityDetailsState extends State<EntityDetails> {
               "${DateFormat(dateFormat).format(DateFormat(fullDateTimeFormat).parse(log.createdOn))} \n${DateFormat("hh:mm:ss aa").format(DateFormat(fullDateTimeFormat).parse(log.createdOn))}",
             ),
             Utils().sizeBoxHeight(height: 5),
-            _buildLogRowWithRedText("Comments", log.comments),
+            _buildLogRow("Comments", log.comments,
+                textColor: AppTheme.textColorRed, maxLines: 1),
             Utils().sizeBoxHeight(height: 15),
           ],
         ),
@@ -1496,7 +1510,8 @@ class _EntityDetailsState extends State<EntityDetails> {
     );
   }
 
-  Widget _buildLogRow(String label, String value) {
+  Widget _buildLogRow(String label, String value,
+      {Color? textColor, int maxLines = 2}) {
     return Row(
       children: [
         Expanded(
@@ -1517,42 +1532,9 @@ class _EntityDetailsState extends State<EntityDetails> {
             padding: const EdgeInsets.only(right: 20, left: 10),
             textAlign: TextAlign.start,
             text: value,
-            maxLines: 2,
+            maxLines: maxLines,
             overflow: TextOverflow.ellipsis,
-            fontFamily: AppTheme.urbanist,
-            fontSize: AppTheme.large,
-            textColor: AppTheme.grayAsparagus,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLogRowWithRedText(String label, String value) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: CText(
-            padding: const EdgeInsets.only(left: 20, right: 10),
-            textAlign: TextAlign.start,
-            text: label,
-            fontFamily: AppTheme.urbanist,
-            fontSize: AppTheme.large,
-            textColor: AppTheme.grayAsparagus,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: CText(
-            padding: const EdgeInsets.only(right: 20, left: 10),
-            textAlign: TextAlign.start,
-            text: value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textColor: AppTheme.textColorRed,
+            textColor: textColor ?? AppTheme.grayAsparagus,
             fontFamily: AppTheme.urbanist,
             fontSize: AppTheme.large,
             fontWeight: FontWeight.w600,
@@ -1786,19 +1768,7 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   void showAddTaskSheet(bool isHideAgents) {
-    var taskName = TextEditingController();
-    var notes = TextEditingController();
-    //   List<String> entities = [];
-    List<String> users = [];
-    List<String> primaryUsers = [];
-    List<String> agents = [];
-    //  List<SearchEntityData> selectedEntity = [];
-    List<AllUserData> selectedUsers = [];
-    List<AllUserData> selectedPrimaryUsers = [];
-    List<SearchEntityData> selectedAgents = [];
-    // AllUserData? primaryInspector;
-    FocusNode node = FocusNode();
-    FocusNode notesNode = FocusNode();
+    final formState = _AddTaskFormState();
 
     showModalBottomSheet(
       isScrollControlled: true,
@@ -1816,221 +1786,23 @@ class _EntityDetailsState extends State<EntityDetails> {
             height: MediaQuery.of(context).size.height - 50,
             child: SingleChildScrollView(
               padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context)
-                    .viewInsets
-                    .bottom, // Adjust padding based on keyboard
+                bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: CText(
-                        padding:
-                            const EdgeInsets.only(right: 20, left: 10, top: 10),
-                        textAlign: TextAlign.center,
-                        text: "DONE",
-                        textColor: AppTheme.black,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.medium,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    controller: taskName,
-                    hint: "",
-                    focusNode: node,
-                    value: taskName.text,
-                    title: 'Task Name :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  FormTextField(
-                    onTap: () {
-                      Get.to(
-                              SelectInspector(
-                                isPrimary: true,
-                                selectedUsers: selectedUsers,
-                                primaryInspector: selectedPrimaryUsers,
-                              ),
-                              preventDuplicates: false)
-                          ?.then((value) {
-                        if (value != null) {
-                          myState(() {
-                            primaryUsers.clear();
-                            users.clear();
-                            selectedUsers.clear();
-                            selectedPrimaryUsers = value;
-                            for (var test in selectedPrimaryUsers) {
-                              primaryUsers.add(test.name);
-                            }
-                            node.unfocus();
-                            notesNode.unfocus();
-                            FocusScope.of(context).unfocus();
-                          });
-                        }
-                      });
-                    },
-                    hint: "",
-                    value: primaryUsers.isNotEmpty
-                        ? primaryUsers.join(", ").toString()
-                        : "",
-                    title: 'Primary Inspector :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  FormTextField(
-                    onTap: () {
-                      if (primaryUsers.isEmpty) {
-                        Utils().showAlert(
-                            buildContext: buildContext,
-                            message: "Please select primary inspector first.",
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            });
-                      } else {
-                        Get.to(
-                                SelectInspector(
-                                  primaryInspector: selectedPrimaryUsers,
-                                  isPrimary: false,
-                                  selectedUsers: selectedUsers,
-                                ),
-                                preventDuplicates: false)
-                            ?.then((value) {
-                          if (value != null) {
-                            myState(() {
-                              users.clear();
-                              selectedUsers = value;
-                              for (var test in selectedUsers) {
-                                users.add(test.name);
-                              }
-                              node.unfocus();
-                              notesNode.unfocus();
-                              FocusScope.of(context).unfocus();
-                            });
-                          }
-                        });
-                      }
-                    },
-                    hint: "",
-                    value: users.isNotEmpty ? users.join(", ").toString() : "",
-                    title: 'Other Inspectors :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  Visibility(
-                    visible: isHideAgents,
-                    child: FormTextField(
-                      onTap: () {
-                        List<SearchEntityData> list = [];
-                        list.add(
-                            SearchEntityData(entityId: 1, entityName: "MMI"));
-                        list.add(
-                            SearchEntityData(entityId: 2, entityName: "AE"));
-                        Get.to(
-                                SelectAgents(
-                                  list: list,
-                                  selectedAgents: selectedAgents,
-                                ),
-                                preventDuplicates: false)
-                            ?.then((value) {
-                          if (value != null) {
-                            myState(() {
-                              agents.clear();
-                              selectedAgents = value;
-                              for (var test in selectedAgents) {
-                                agents.add(test.entityName);
-                              }
-                              node.unfocus();
-                              notesNode.unfocus();
-                              FocusScope.of(context).unfocus();
-                            });
-                          }
-                        });
-                      },
-                      hint: "",
-                      value:
-                          agents.isNotEmpty ? agents.join(", ").toString() : "",
-                      title: 'Agents :',
-                      inputBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      textColor: AppTheme.grayAsparagus,
-                      inputType: TextInputType.text,
-                    ),
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    controller: notes,
-                    hint: "",
-                    focusNode: notesNode,
-                    value: notes.text,
-                    title: notesTitle,
-                    minLines: 2,
-                    maxLines: 3,
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  Center(
-                    child: Container(
-                      width: 200,
-                      margin: const EdgeInsets.symmetric(vertical: 20),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (taskName.text.isNotEmpty &&
-                              selectedPrimaryUsers.isNotEmpty &&
-                              selectedUsers.isNotEmpty &&
-                              (!isHideAgents || selectedAgents.isNotEmpty)) {
-                            addTask(
-                                taskName.text,
-                                selectedPrimaryUsers,
-                                selectedUsers,
-                                selectedAgents,
-                                notes.text,
-                                isHideAgents);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          backgroundColor: taskName.text.isNotEmpty &&
-                                  selectedUsers.isNotEmpty &&
-                                  selectedUsers.isNotEmpty &&
-                                  (!isHideAgents || selectedAgents.isNotEmpty)
-                              ? AppTheme.colorPrimary
-                              : AppTheme.paleGray,
-                          minimumSize: const Size.fromHeight(50),
-                        ),
-                        child: CText(
-                          text: "Add",
-                          textColor: AppTheme.textPrimary,
-                          fontSize: AppTheme.large,
-                          fontFamily: AppTheme.urbanist,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
+                  _buildDoneButton(context),
+                  _buildTaskNameField(formState, myState),
+                  _buildPrimaryInspectorField(
+                      context, formState, myState, buildContext),
+                  _buildOtherInspectorsField(
+                      context, formState, myState, buildContext),
+                  if (isHideAgents)
+                    _buildAgentsField(context, formState, myState),
+                  _buildNotesField(formState, myState),
+                  _buildAddButton(
+                      context, formState, isHideAgents, myState, buildContext),
                   Utils().sizeBoxHeight(height: 250)
                 ],
               ),
@@ -2041,6 +1813,281 @@ class _EntityDetailsState extends State<EntityDetails> {
     ).whenComplete(() {
       setState(() {});
     });
+  }
+
+  Widget _buildDoneButton(BuildContext context) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () => Navigator.of(context).pop(),
+        child: CText(
+          padding: const EdgeInsets.only(right: 20, left: 10, top: 10),
+          textAlign: TextAlign.center,
+          text: "DONE",
+          textColor: AppTheme.black,
+          fontFamily: AppTheme.urbanist,
+          fontSize: AppTheme.medium,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTaskNameField(_AddTaskFormState formState, StateSetter myState) {
+    return FormTextField(
+      onChange: (value) => myState(() {}),
+      controller: formState.taskName,
+      hint: "",
+      focusNode: formState.node,
+      value: formState.taskName.text,
+      title: 'Task Name :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.text,
+    );
+  }
+
+  Widget _buildPrimaryInspectorField(
+      BuildContext context,
+      _AddTaskFormState formState,
+      StateSetter myState,
+      BuildContext buildContext) {
+    return FormTextField(
+      onTap: () => _handlePrimaryInspectorSelection(
+          context, formState, myState, buildContext),
+      hint: "",
+      value: formState.primaryUsers.isNotEmpty
+          ? formState.primaryUsers.join(", ")
+          : "",
+      title: 'Primary Inspector :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.text,
+    );
+  }
+
+  Widget _buildOtherInspectorsField(
+      BuildContext context,
+      _AddTaskFormState formState,
+      StateSetter myState,
+      BuildContext buildContext) {
+    return FormTextField(
+      onTap: () => _handleOtherInspectorsSelection(
+          context, formState, myState, buildContext),
+      hint: "",
+      value: formState.users.isNotEmpty ? formState.users.join(", ") : "",
+      title: 'Other Inspectors :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.text,
+    );
+  }
+
+  Widget _buildAgentsField(
+      BuildContext context, _AddTaskFormState formState, StateSetter myState) {
+    return FormTextField(
+      onTap: () => _handleAgentsSelection(context, formState, myState),
+      hint: "",
+      value: formState.agents.isNotEmpty ? formState.agents.join(", ") : "",
+      title: 'Agents :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.text,
+    );
+  }
+
+  Widget _buildNotesField(_AddTaskFormState formState, StateSetter myState) {
+    return FormTextField(
+      onChange: (value) => myState(() {}),
+      controller: formState.notes,
+      hint: "",
+      focusNode: formState.notesNode,
+      value: formState.notes.text,
+      title: notesTitle,
+      minLines: 2,
+      maxLines: 3,
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.text,
+    );
+  }
+
+  Widget _buildAddButton(BuildContext context, _AddTaskFormState formState,
+      bool isHideAgents, StateSetter myState, BuildContext buildContext) {
+    final isValid = _isFormValid(formState, isHideAgents);
+    return Center(
+      child: Container(
+        width: 200,
+        margin: const EdgeInsets.symmetric(vertical: 20),
+        child: ElevatedButton(
+          onPressed:
+              isValid ? () => _submitTask(formState, isHideAgents) : null,
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            backgroundColor:
+                isValid ? AppTheme.colorPrimary : AppTheme.paleGray,
+            minimumSize: const Size.fromHeight(50),
+          ),
+          child: CText(
+            text: "Add",
+            textColor: AppTheme.textPrimary,
+            fontSize: AppTheme.large,
+            fontFamily: AppTheme.urbanist,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handlePrimaryInspectorSelection(
+      BuildContext context,
+      _AddTaskFormState formState,
+      StateSetter myState,
+      BuildContext buildContext) {
+    Get.to(
+            SelectInspector(
+              isPrimary: true,
+              selectedUsers: formState.selectedUsers,
+              primaryInspector: formState.selectedPrimaryUsers,
+            ),
+            preventDuplicates: false)
+        ?.then((value) {
+      if (value != null) {
+        if (!context.mounted) return;
+        _updatePrimaryInspectorSelection(context, formState, value, myState);
+      }
+    });
+  }
+
+  void _updatePrimaryInspectorSelection(
+      BuildContext context,
+      _AddTaskFormState formState,
+      List<AllUserData> value,
+      StateSetter myState) {
+    myState(() {
+      formState.primaryUsers.clear();
+      formState.users.clear();
+      formState.selectedUsers.clear();
+      formState.selectedPrimaryUsers = value;
+      for (var user in formState.selectedPrimaryUsers) {
+        formState.primaryUsers.add(user.name);
+      }
+      _unfocusFields(context, formState);
+    });
+  }
+
+  void _handleOtherInspectorsSelection(
+      BuildContext context,
+      _AddTaskFormState formState,
+      StateSetter myState,
+      BuildContext buildContext) {
+    if (formState.primaryUsers.isEmpty) {
+      _showPrimaryInspectorRequiredAlert(buildContext);
+      return;
+    }
+    Get.to(
+            SelectInspector(
+              primaryInspector: formState.selectedPrimaryUsers,
+              isPrimary: false,
+              selectedUsers: formState.selectedUsers,
+            ),
+            preventDuplicates: false)
+        ?.then((value) {
+      if (value != null) {
+        if (!context.mounted) return;
+        _updateOtherInspectorsSelection(context, formState, value, myState);
+      }
+    });
+  }
+
+  void _updateOtherInspectorsSelection(
+      BuildContext context,
+      _AddTaskFormState formState,
+      List<AllUserData> value,
+      StateSetter myState) {
+    myState(() {
+      formState.users.clear();
+      formState.selectedUsers = value;
+      for (var user in formState.selectedUsers) {
+        formState.users.add(user.name);
+      }
+      _unfocusFields(context, formState);
+    });
+  }
+
+  void _handleAgentsSelection(
+      BuildContext context, _AddTaskFormState formState, StateSetter myState) {
+    final agentList = _buildAgentList();
+    Get.to(
+            SelectAgents(
+                list: agentList, selectedAgents: formState.selectedAgents),
+            preventDuplicates: false)
+        ?.then((value) {
+      if (value != null) {
+        if (!context.mounted) return;
+        _updateAgentsSelection(context, formState, value, myState);
+      }
+    });
+  }
+
+  List<SearchEntityData> _buildAgentList() {
+    return [
+      SearchEntityData(entityId: 1, entityName: "MMI"),
+      SearchEntityData(entityId: 2, entityName: "AE"),
+    ];
+  }
+
+  void _updateAgentsSelection(BuildContext context, _AddTaskFormState formState,
+      List<SearchEntityData> value, StateSetter myState) {
+    myState(() {
+      formState.agents.clear();
+      formState.selectedAgents = value;
+      for (var agent in formState.selectedAgents) {
+        formState.agents.add(agent.entityName);
+      }
+      _unfocusFields(context, formState);
+    });
+  }
+
+  void _unfocusFields(BuildContext context, _AddTaskFormState formState) {
+    formState.node.unfocus();
+    formState.notesNode.unfocus();
+    FocusScope.of(context).unfocus();
+  }
+
+  void _showPrimaryInspectorRequiredAlert(BuildContext buildContext) {
+    Utils().showAlert(
+      buildContext: buildContext,
+      message: "Please select primary inspector first.",
+      onPressed: () => Navigator.of(context).pop(),
+    );
+  }
+
+  bool _isFormValid(_AddTaskFormState formState, bool isHideAgents) {
+    return formState.taskName.text.isNotEmpty &&
+        formState.selectedPrimaryUsers.isNotEmpty &&
+        formState.selectedUsers.isNotEmpty &&
+        (!isHideAgents || formState.selectedAgents.isNotEmpty);
+  }
+
+  void _submitTask(_AddTaskFormState formState, bool isHideAgents) {
+    addTask(
+      formState.taskName.text,
+      formState.selectedPrimaryUsers,
+      formState.selectedUsers,
+      formState.selectedAgents,
+      formState.notes.text,
+      isHideAgents,
+    );
   }
 
   Future<void> addTask(
@@ -2123,7 +2170,7 @@ class _EntityDetailsState extends State<EntityDetails> {
     if (data["statusCode"] == 200) {
       _navigateToHomeScreen();
     } else {
-      _showAddTaskError(data["message"]);
+      _showErrorAlert(data["message"]);
     }
   }
 
@@ -2132,7 +2179,7 @@ class _EntityDetailsState extends State<EntityDetails> {
     Get.offAll(transition: Transition.rightToLeft, const HomeScreen());
   }
 
-  void _showAddTaskError(String message) {
+  void _showErrorAlert(String message) {
     Utils().showAlert(
       buildContext: context,
       message: message,
@@ -2370,7 +2417,7 @@ class _EntityDetailsState extends State<EntityDetails> {
     if (data["statusCode"] == 200) {
       _processSuccessfulOutletDelete(outletId);
     } else {
-      _showDeleteOutletError();
+      _showErrorAlert(noEntityMessage);
     }
   }
 
@@ -2397,15 +2444,6 @@ class _EntityDetailsState extends State<EntityDetails> {
     }
   }
 
-  void _showDeleteOutletError() {
-    Utils().showAlert(
-      buildContext: context,
-      message: noEntityMessage,
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-  }
 
   String formatEmiratesID(String id) {
     // ignore: deprecated_member_use
@@ -2817,7 +2855,7 @@ class _EntityDetailsState extends State<EntityDetails> {
       _processSuccessfulOutletUpdate(myState, model);
       Navigator.of(context).pop();
     } else {
-      _showUpdateOutletError();
+      _showErrorAlert(noEntityMessage);
     }
   }
 
@@ -2845,16 +2883,6 @@ class _EntityDetailsState extends State<EntityDetails> {
       searchOutletList.removeAt(position);
       searchOutletList.insert(position, model);
     }
-  }
-
-  void _showUpdateOutletError() {
-    Utils().showAlert(
-      buildContext: context,
-      message: noEntityMessage,
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
   }
 
   Future<void> completeTask(String notes) async {
@@ -2931,7 +2959,7 @@ class _EntityDetailsState extends State<EntityDetails> {
       _processSuccessfulOutletAdd(myState, model, data["data"]);
       Navigator.of(context).pop();
     } else {
-      _showAddOutletError();
+      _showErrorAlert(noEntityMessage);
     }
   }
 
@@ -2977,16 +3005,6 @@ class _EntityDetailsState extends State<EntityDetails> {
       return item.newAdded == false;
     }
     return false;
-  }
-
-  void _showAddOutletError() {
-    Utils().showAlert(
-      buildContext: context,
-      message: noEntityMessage,
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
   }
 
   String _getOutletStatusText(int statusId) {

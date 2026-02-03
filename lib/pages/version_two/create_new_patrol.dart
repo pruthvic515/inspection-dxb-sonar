@@ -151,6 +151,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   List<Map<String, dynamic>> reasonList = [];
   final encryptAndDecrypt = EncryptAndDecrypt();
 
+  bool get canEdit =>
+      inspectorId == storeUserData.getInt(USER_ID) || widget.primary == true;
+
   @override
   void dispose() {
     if (timer != null && timer!.isActive) {
@@ -2097,17 +2100,26 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     inputType: TextInputType.number,
                     onTap: () {
                       Get.to(const SelectQuantity())?.then((value) {
-                        if (value != null) {
-                          myState(() {
-                            quantity = value;
-                            _handleQuantityChangeForSheet(
-                              quantity,
-                              controllers,
-                              focusNodes,
-                            );
-                          });
-                        }
+                        _onQuantitySelected(
+                          value,
+                          myState,
+                          controllers,
+                          focusNodes,
+                          (v) => quantity = v,
+                        );
                       });
+                      /*      Get.to(const SelectQuantity())?.then((value) {
+                            if (value != null) {
+                              myState(() {
+                                quantity = value;
+                                _handleQuantityChangeForSheet(
+                                  quantity,
+                                  controllers,
+                                  focusNodes,
+                                );
+                              });
+                            }
+                          });*/
                     },
                   ),
                   controllers.isNotEmpty
@@ -2184,40 +2196,22 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                       width: 200,
                       margin: const EdgeInsets.symmetric(vertical: 20),
                       child: ElevatedButton(
-                        onPressed: () {
-                          final errorMessage = _validateQuantityForm(
-                            quantity,
-                            controllers,
-                            buildContext,
-                          );
-                          if (errorMessage != null) {
-                            Utils().showAlert(
-                              buildContext: buildContext,
-                              message: errorMessage,
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          } else {
-                            _saveQuantitySheet(
-                              model,
-                              isEdit,
-                              quantity,
-                              controllers,
-                              notes,
-                              setState,
-                              context,
-                            );
-                          }
-                        },
+                        onPressed: () => _onSaveQuantityPressed(
+                          quantity: quantity,
+                          controllers: controllers,
+                          buildContext: buildContext,
+                          model: model,
+                          isEdit: isEdit,
+                          notes: notes,
+                          setState: setState,
+                          context: context,
+                        ),
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                           backgroundColor:
-                              _isQuantityFormValid(quantity, controllers)
-                                  ? AppTheme.colorPrimary
-                                  : AppTheme.paleGray,
+                              getSaveButtonColor(quantity, controllers),
                           minimumSize: const Size.fromHeight(50),
                         ),
                         child: CText(
@@ -2241,6 +2235,61 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       setState(() {
         // productTab = 3;
       });
+    });
+  }
+
+  Color getSaveButtonColor(
+      int quantity, List<TextEditingController> controllers) {
+    return _isQuantityFormValid(quantity, controllers)
+        ? AppTheme.colorPrimary
+        : AppTheme.paleGray;
+  }
+
+  void _onSaveQuantityPressed({
+    required int quantity,
+    required List<TextEditingController> controllers,
+    required BuildContext buildContext,
+    required ProductDetail model,
+    required bool isEdit,
+    required TextEditingController notes,
+    required void Function(void Function()) setState,
+    required BuildContext context,
+  }) {
+    final errorMessage =
+        _validateQuantityForm(quantity, controllers, buildContext);
+
+    if (errorMessage != null) {
+      Utils().showAlert(
+        buildContext: buildContext,
+        message: errorMessage,
+        onPressed: () => Navigator.of(context).pop(),
+      );
+      return;
+    }
+
+    _saveQuantitySheet(
+      model,
+      isEdit,
+      quantity,
+      controllers,
+      notes,
+      setState,
+      context,
+    );
+  }
+
+  void _onQuantitySelected(
+    int? value,
+    void Function(void Function()) myState,
+    List<TextEditingController> controllers,
+    List<FocusNode> focusNodes,
+    void Function(int) updateQuantity,
+  ) {
+    if (value == null) return;
+
+    myState(() {
+      updateQuantity(value);
+      _handleQuantityChangeForSheet(value, controllers, focusNodes);
     });
   }
 
@@ -2511,9 +2560,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildSizeListItem(
-      BuildContext context, int index, List<AreaData?>? size, int position,
-      StateSetter setState) {
+  Widget _buildSizeListItem(BuildContext context, int index,
+      List<AreaData?>? size, int position, StateSetter setState) {
     return Card(
       color: AppTheme.white,
       margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
@@ -2572,8 +2620,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),
                     itemCount: sizeList.length,
-                    itemBuilder: (context, index) =>
-                        _buildSizeListItem(context, index, size, position, setState)),
+                    itemBuilder: (context, index) => _buildSizeListItem(
+                        context, index, size, position, setState)),
                 Utils().sizeBoxHeight()
               ],
             ),
@@ -2692,8 +2740,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                             _searchKnownProduct.clear();
                             knownProductList.clear();
                             Navigator.of(context).pop();
-
-                            // showQuantitySheet(data, false, null);
                           },
                           child: Card(
                             color: AppTheme.white,
@@ -2707,22 +2753,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  /*  CText(
-                                    textAlign: TextAlign.start,
-                                    padding: const EdgeInsets.only(
-                                        right: 10, top: 20, bottom: 5),
-                                    text: productCategoryList
-                                        .firstWhere((element) =>
-                                            element.productCategoryId ==
-                                            knownProductList[index].categoryId)
-                                        .name,
-                                    textColor: AppTheme.colorPrimary,
-                                    fontFamily: AppTheme.Urbanist,
-                                    fontSize: AppTheme.large,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontWeight: FontWeight.w700,
-                                  ),*/
                                   CText(
                                     textAlign: TextAlign.start,
                                     padding: const EdgeInsets.only(
@@ -2906,8 +2936,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     if (!mounted) return;
 
     LoadingIndicatorDialog().show(context);
-    final endpoint = "Department/Task/GetAssignedTaskInspectors?mainTaskId=${widget.mainTaskId}";
-    
+    final endpoint =
+        "Department/Task/GetAssignedTaskInspectors?mainTaskId=${widget.mainTaskId}";
+
     Api().getAPI(context, endpoint).then((value) async {
       await _handleGetAllUsersResponse(value);
     });
@@ -2915,7 +2946,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Future<void> _handleGetAllUsersResponse(String? value) async {
     LoadingIndicatorDialog().dismiss();
-    
+
     try {
       final data = allUsersFromJson(value!);
       if (data.data.isNotEmpty) {
@@ -3166,8 +3197,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.colorPrimary),
                   onPressed: () {
-                    if (inspectorId == storeUserData.getInt(USER_ID) ||
-                        widget.primary == true) {
+                    if (canEdit) {
                       showAddManagerSheet(null, 1);
                     }
                   },
@@ -3205,8 +3235,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.colorPrimary),
                   onPressed: () {
-                    if (inspectorId == storeUserData.getInt(USER_ID) ||
-                        widget.primary == true) {
+                    if (canEdit) {
                       showAddManagerSheet(null, 2);
                     }
                   },
@@ -3244,8 +3273,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 const EdgeInsets.only(top: 30, right: 20, left: 20, bottom: 30),
             child: ElevatedButton(
               onPressed: () {
-                if (inspectorId == storeUserData.getInt(USER_ID) ||
-                    widget.primary == true) {
+                if (canEdit) {
                   if (validateNext()) {
                     concludeFocusNode.unfocus();
                     FocusScope.of(context).unfocus();
@@ -3288,16 +3316,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               ),
             ),
           ),
-          /*    Visibility(
-              visible: inspectorId != storeUserData.getInt(USER_ID),
-              child: CText(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                text: "*Note : Only Primary Inspector is allowed to update .",
-                textColor: AppTheme.red,
-                fontFamily: AppTheme.Urbanist,
-                fontSize: AppTheme.large,
-                fontWeight: FontWeight.w600,
-              )),*/
         ],
       ),
     );
@@ -3395,7 +3413,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   void showAEMMISheet(List<WitnessData> list) {
     final agent1 = List<WitnessData>.from(selectedAEList);
     final agent2 = List<WitnessData>.from(selectedMMIList);
-    
+
     showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: AppTheme.mainBackground,
@@ -4133,8 +4151,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (inspectorId == storeUserData.getInt(USER_ID) ||
-                          widget.primary == true) {
+                      if (canEdit) {
                         Get.to(SignRepresentative(
                           model: list[index],
                           type: type,
@@ -4208,8 +4225,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    if (inspectorId == storeUserData.getInt(USER_ID) ||
-                        widget.primary == true) {
+                    if (canEdit) {
                       showAddManagerSheet(list[index], type);
                     }
                   },
@@ -4233,8 +4249,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 ),
                 IconButton(
                     onPressed: () {
-                      if (inspectorId == storeUserData.getInt(USER_ID) ||
-                          widget.primary == true) {
+                      if (canEdit) {
                         Utils().showYesNoAlert(
                             context: context,
                             message:
