@@ -3780,6 +3780,258 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     return controllers;
   }
 
+  bool _isManagerFormValid(Controllers c) {
+    return c.name.text.isNotEmpty &&
+        c.emiratesId.text.length == 18 &&
+        c.mobile.text.length == 8 &&
+        c.role.text.isNotEmpty;
+  }
+
+  void _handleManagerSubmit({
+    required BuildContext context,
+    required RepresentativeData? model,
+    required int type,
+    required Controllers c,
+  }) {
+    final isValid = validateForm(
+      context: context,
+      name: c.name,
+      emiratesId: c.emiratesId,
+      mobileNumber: c.mobile,
+      roleName: c.role,
+    );
+
+    if (!isValid) return;
+
+    submitRepresentative(
+      model: model,
+      type: type,
+      name: c.name,
+      emiratesId: c.emiratesId,
+      mobileNumber: c.mobile,
+      roleName: c.role,
+      notes: c.notes,
+    );
+  }
+
+  Widget _buildManagerForm(
+    BuildContext context,
+    StateSetter myState,
+    Controllers controllers,
+    RepresentativeData? model,
+    int type,
+    MaskTextInputFormatter maskFormatter,
+    TextEditingController name,
+    TextEditingController emiratesId,
+    TextEditingController mobileNumber,
+    TextEditingController roleName,
+    TextEditingController notes,
+    FocusNode node1,
+    FocusNode node2,
+    FocusNode node3,
+    FocusNode node4,
+    FocusNode node5,
+  ) {
+    final isValid = _isManagerFormValid(controllers);
+    final buttonText = model == null ? "Add" : "Update";
+    final cameraType = type == 1 ? 4 : 5;
+
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: const BoxDecoration(
+            color: AppTheme.mainBackground,
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(15),
+                topLeft: Radius.circular(15))),
+        height: currentHeight - 50,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context)
+                .viewInsets
+                .bottom, // Adjust padding based on keyboard
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          size: 20,
+                          color: AppTheme.black,
+                        )),
+                  ),
+                ],
+              ),
+              FormTextField(
+                onChange: (value) {
+                  myState(() {});
+                },
+                focusNode: node1,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                      // ignore: deprecated_member_use
+                      RegExp(r'^[a-zA-Z\u0600-\u06FF\s]+$')),
+                ],
+                controller: name,
+                hint: "",
+                value: name.text,
+                title: 'Name :',
+                inputBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                textColor: AppTheme.grayAsparagus,
+                inputType: TextInputType.text,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              FormTextField(
+                onChange: (value) {
+                  myState(() {
+                    LogPrint().log(emiratesId.text);
+                  });
+                },
+                inputFormatters: [
+                  maskFormatter,
+                ],
+                controller: emiratesId,
+                focusNode: node2,
+                hint: "XXX-XXXX-XXXXXXX-X",
+                value: emiratesId.text,
+                title: 'Emirates ID :',
+                inputBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                textColor: AppTheme.grayAsparagus,
+                inputType: TextInputType.number,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              FormMobileTextField(
+                onChange: (value) {
+                  myState(() {});
+                },
+                controller: mobileNumber,
+                focusNode: node3,
+                hint: "",
+                value: mobileNumber.text,
+                title: 'Mobile Number :',
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(8),
+                ],
+                inputBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                textColor: AppTheme.grayAsparagus,
+                inputType: TextInputType.phone,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              FormTextField(
+                controller: roleName,
+                onChange: (value) {
+                  myState(() {});
+                },
+                hint: "",
+                focusNode: node4,
+                value: roleName.text,
+                title: 'Role :',
+                inputBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                textColor: AppTheme.grayAsparagus,
+                inputType: TextInputType.text,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              FormTextField(
+                controller: notes,
+                onChange: (value) {
+                  myState(() {});
+                },
+                hint: "",
+                focusNode: node5,
+                value: notes.text,
+                title: notesTitle,
+                minLines: 2,
+                maxLines: 5,
+                inputBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                textColor: AppTheme.grayAsparagus,
+                inputType: TextInputType.text,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              FormTextField(
+                hint: "",
+                value: "Attach",
+                hideIcon: true,
+                title: 'Upload EmiratesId Photo',
+                minLines: 2,
+                maxLines: 5,
+                inputBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                textColor: AppTheme.colorPrimary,
+                inputType: TextInputType.text,
+                onTap: () {
+                  node1.unfocus();
+                  node2.unfocus();
+                  node3.unfocus();
+                  node4.unfocus();
+                  node5.unfocus();
+                  requestCameraPermissions("image", null, cameraType, myState);
+                },
+              ),
+              buildImageAttachmentPreview(),
+              const SizedBox(
+                height: 10,
+              ),
+              Center(
+                child: Container(
+                  width: 200,
+                  margin: const EdgeInsets.symmetric(vertical: 20),
+                  child: ElevatedButton(
+                    onPressed: isValid
+                        ? () => _handleManagerSubmit(
+                              context: context,
+                              model: model,
+                              type: type,
+                              c: controllers,
+                            )
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      backgroundColor: isValid
+                          ? AppTheme.colorPrimary
+                          : AppTheme.paleGray,
+                      minimumSize: const Size.fromHeight(50),
+                    ),
+                    child: CText(
+                      text: buttonText,
+                      textColor: AppTheme.textPrimary,
+                      fontSize: AppTheme.large,
+                      fontFamily: AppTheme.urbanist,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+              Utils().sizeBoxHeight(height: 250)
+            ],
+          ),
+        ));
+  }
+
   void showAddManagerSheet(RepresentativeData? model, int type) {
     imageAttach = "";
     var maskFormatter = MaskTextInputFormatter(
@@ -3806,239 +4058,26 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         backgroundColor: AppTheme.mainBackground,
         isScrollControlled: true,
         builder: (BuildContext buildContext) {
-          bool isFormValid(Controllers c) {
-            return c.name.text.isNotEmpty &&
-                c.emiratesId.text.length == 18 &&
-                c.mobile.text.length == 8 &&
-                c.role.text.isNotEmpty;
-          }
-
-          void onSubmit({
-            required BuildContext context,
-            required RepresentativeData? model,
-            required int type,
-            required Controllers c,
-          }) {
-            final isValid = validateForm(
-              context: context,
-              name: c.name,
-              emiratesId: c.emiratesId,
-              mobileNumber: c.mobile,
-              roleName: c.role,
-            );
-
-            if (!isValid) return;
-
-            submitRepresentative(
-              model: model,
-              type: type,
-              name: c.name,
-              emiratesId: c.emiratesId,
-              mobileNumber: c.mobile,
-              roleName: c.role,
-              notes: c.notes,
-            );
-          }
-
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter myState) {
-            final isValid = isFormValid(controllers);
-
-            return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: const BoxDecoration(
-                    color: AppTheme.mainBackground,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15))),
-                height: currentHeight - 50,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context)
-                        .viewInsets
-                        .bottom, // Adjust padding based on keyboard
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Stack(
-                        children: [
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                icon: const Icon(
-                                  Icons.close,
-                                  size: 20,
-                                  color: AppTheme.black,
-                                )),
-                          ),
-                        ],
-                      ),
-                      FormTextField(
-                        onChange: (value) {
-                          myState(() {});
-                        },
-                        focusNode: node1,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              // ignore: deprecated_member_use
-                              RegExp(r'^[a-zA-Z\u0600-\u06FF\s]+$')),
-                        ],
-                        controller: name,
-                        hint: "",
-                        value: name.text,
-                        title: 'Name :',
-                        inputBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        textColor: AppTheme.grayAsparagus,
-                        inputType: TextInputType.text,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      FormTextField(
-                        onChange: (value) {
-                          myState(() {
-                            LogPrint().log(emiratesId.text);
-                          });
-                        },
-                        inputFormatters: [
-                          maskFormatter,
-                        ],
-                        controller: emiratesId,
-                        focusNode: node2,
-                        hint: "XXX-XXXX-XXXXXXX-X",
-                        value: emiratesId.text,
-                        title: 'Emirates ID :',
-                        inputBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        textColor: AppTheme.grayAsparagus,
-                        inputType: TextInputType.number,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      FormMobileTextField(
-                        onChange: (value) {
-                          myState(() {});
-                        },
-                        controller: mobileNumber,
-                        focusNode: node3,
-                        hint: "",
-                        value: mobileNumber.text,
-                        title: 'Mobile Number :',
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(8),
-                        ],
-                        inputBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        textColor: AppTheme.grayAsparagus,
-                        inputType: TextInputType.phone,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      FormTextField(
-                        controller: roleName,
-                        onChange: (value) {
-                          myState(() {});
-                        },
-                        hint: "",
-                        focusNode: node4,
-                        value: roleName.text,
-                        title: 'Role :',
-                        inputBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        textColor: AppTheme.grayAsparagus,
-                        inputType: TextInputType.text,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      FormTextField(
-                        controller: notes,
-                        onChange: (value) {
-                          myState(() {});
-                        },
-                        hint: "",
-                        focusNode: node5,
-                        value: notes.text,
-                        title: notesTitle,
-                        minLines: 2,
-                        maxLines: 5,
-                        inputBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        textColor: AppTheme.grayAsparagus,
-                        inputType: TextInputType.text,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      FormTextField(
-                        hint: "",
-                        value: "Attach",
-                        hideIcon: true,
-                        title: 'Upload EmiratesId Photo',
-                        minLines: 2,
-                        maxLines: 5,
-                        inputBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        textColor: AppTheme.colorPrimary,
-                        inputType: TextInputType.text,
-                        onTap: () {
-                          node1.unfocus();
-                          node2.unfocus();
-                          node3.unfocus();
-                          node4.unfocus();
-                          node5.unfocus();
-                          requestCameraPermissions(
-                              "image", null, type == 1 ? 4 : 5, myState);
-                        },
-                      ),
-                      buildImageAttachmentPreview(),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Center(
-                        child: Container(
-                          width: 200,
-                          margin: const EdgeInsets.symmetric(vertical: 20),
-                          child: ElevatedButton(
-                            onPressed: isValid
-                                ? () => onSubmit(
-                                      context: context,
-                                      model: model,
-                                      type: type,
-                                      c: controllers,
-                                    )
-                                : null,
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              backgroundColor: isValid
-                                  ? AppTheme.colorPrimary
-                                  : AppTheme.paleGray,
-                              minimumSize: const Size.fromHeight(50),
-                            ),
-                            child: CText(
-                              text: model == null ? "Add" : "Update",
-                              textColor: AppTheme.textPrimary,
-                              fontSize: AppTheme.large,
-                              fontFamily: AppTheme.urbanist,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Utils().sizeBoxHeight(height: 250)
-                    ],
-                  ),
-                ));
+            return _buildManagerForm(
+              context,
+              myState,
+              controllers,
+              model,
+              type,
+              maskFormatter,
+              name,
+              emiratesId,
+              mobileNumber,
+              roleName,
+              notes,
+              node1,
+              node2,
+              node3,
+              node4,
+              node5,
+            );
           });
         }).whenComplete(() {
       setState(() {
