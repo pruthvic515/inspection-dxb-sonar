@@ -4358,32 +4358,49 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       String type, int? productId, int? categoryId, StateSetter myState) async {
     if (Platform.isIOS) {
       cameraUpload(type, productId, categoryId, myState);
-    } else {
-      bool permissionStatus = false;
-      var cameraPermission = await Permission.camera.request();
-      LogPrint().log("camera permission is $cameraPermission");
-      if (cameraPermission.isGranted || cameraPermission.isProvisional) {
-        var microphone = await Permission.microphone.request();
-        LogPrint().log("microphone permission is $microphone");
-        if (microphone.isGranted || microphone.isProvisional) {
-          if (Platform.isIOS) {
-            permissionStatus = true;
-            cameraUpload(type, productId, categoryId, myState);
-          } else {
-            DeviceInfoPlugin().androidInfo.then((value) async {
-              LogPrint().log("sdk level ${value.version.sdkInt}");
-              if (value.version.sdkInt > 32) {
-                permissionStatus = true;
-              } else {
-                permissionStatus = await Permission.storage.request().isGranted;
-              }
-              LogPrint().log("permission : camera $permissionStatus");
-              cameraUpload(type, productId, categoryId, myState);
-            });
-          }
-        }
-      }
+      return;
     }
+    
+    await _requestAndroidCameraPermissions(type, productId, categoryId, myState);
+  }
+
+  Future<void> _requestAndroidCameraPermissions(
+      String type, int? productId, int? categoryId, StateSetter myState) async {
+    final cameraPermission = await Permission.camera.request();
+    LogPrint().log("camera permission is $cameraPermission");
+    
+    if (!_isPermissionGranted(cameraPermission)) {
+      return;
+    }
+
+    final microphone = await Permission.microphone.request();
+    LogPrint().log("microphone permission is $microphone");
+    
+    if (!_isPermissionGranted(microphone)) {
+      return;
+    }
+
+    await _handleAndroidStoragePermission(type, productId, categoryId, myState);
+  }
+
+  bool _isPermissionGranted(PermissionStatus status) {
+    return status.isGranted || status.isProvisional;
+  }
+
+  Future<void> _handleAndroidStoragePermission(
+      String type, int? productId, int? categoryId, StateSetter myState) async {
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    LogPrint().log("sdk level ${androidInfo.version.sdkInt}");
+    
+    final bool permissionStatus;
+    if (androidInfo.version.sdkInt > 32) {
+      permissionStatus = true;
+    } else {
+      permissionStatus = await Permission.storage.request().isGranted;
+    }
+    
+    LogPrint().log("permission : camera $permissionStatus");
+    cameraUpload(type, productId, categoryId, myState);
   }
 
   Future<void> cameraUpload(

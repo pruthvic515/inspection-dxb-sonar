@@ -444,6 +444,18 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  String _getStatusText(int statusId) {
+    if (statusId == 2) {
+      return "Accepted";
+    } else if (statusId == 3) {
+      return "Not Accepted";
+    } else {
+      return taskStatus
+          .firstWhere((item) => item.id == statusId)
+          .text;
+    }
+  }
+
   Widget _buildAgentTasksView() {
     return SingleChildScrollView(
       controller: _scrollController,
@@ -1201,19 +1213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           child: CText(
                                                             textAlign:
                                                                 TextAlign.start,
-                                                            text: list[index]
-                                                                        .statusId ==
-                                                                    2
-                                                                ? "Accepted"
-                                                                : list[index]
-                                                                            .statusId ==
-                                                                        3
-                                                                    ? "Not Accepted"
-                                                                    : taskStatus
-                                                                        .firstWhere((item) =>
-                                                                            item.id ==
-                                                                            list[index].statusId)
-                                                                        .text,
+                                                            text: _getStatusText(list[index].statusId),
                                                             textColor:
                                                                 AppTheme.white,
                                                             fontFamily: AppTheme
