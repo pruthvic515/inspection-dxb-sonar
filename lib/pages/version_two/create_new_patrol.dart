@@ -2197,14 +2197,16 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                       margin: const EdgeInsets.symmetric(vertical: 20),
                       child: ElevatedButton(
                         onPressed: () => _onSaveQuantityPressed(
-                          quantity: quantity,
-                          controllers: controllers,
-                          buildContext: buildContext,
-                          model: model,
-                          isEdit: isEdit,
-                          notes: notes,
-                          setState: setState,
-                          context: context,
+                          QuantitySaveParams(
+                            quantity: quantity,
+                            controllers: controllers,
+                            buildContext: buildContext,
+                            model: model,
+                            isEdit: isEdit,
+                            notes: notes,
+                            setState: setState,
+                            context: context,
+                          ),
                         ),
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -2245,36 +2247,30 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         : AppTheme.paleGray;
   }
 
-  void _onSaveQuantityPressed({
-    required int quantity,
-    required List<TextEditingController> controllers,
-    required BuildContext buildContext,
-    required ProductDetail model,
-    required bool isEdit,
-    required TextEditingController notes,
-    required void Function(void Function()) setState,
-    required BuildContext context,
-  }) {
-    final errorMessage =
-        _validateQuantityForm(quantity, controllers, buildContext);
+  void _onSaveQuantityPressed(QuantitySaveParams params) {
+    final errorMessage = _validateQuantityForm(
+      params.quantity,
+      params.controllers,
+      params.buildContext,
+    );
 
     if (errorMessage != null) {
       Utils().showAlert(
-        buildContext: buildContext,
+        buildContext: params.buildContext,
         message: errorMessage,
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: () => Navigator.of(params.context).pop(),
       );
       return;
     }
 
     _saveQuantitySheet(
-      model,
-      isEdit,
-      quantity,
-      controllers,
-      notes,
-      setState,
-      context,
+      params.model,
+      params.isEdit,
+      params.quantity,
+      params.controllers,
+      params.notes,
+      params.setState,
+      params.context,
     );
   }
 
@@ -4891,4 +4887,26 @@ class CustomRangeTextInputFormatter extends TextInputFormatter {
     }
     return newValue;
   }
+}
+
+class QuantitySaveParams {
+  final int quantity;
+  final List<TextEditingController> controllers;
+  final BuildContext buildContext;
+  final ProductDetail model;
+  final bool isEdit;
+  final TextEditingController notes;
+  final StateSetter setState;
+  final BuildContext context;
+
+  QuantitySaveParams({
+    required this.quantity,
+    required this.controllers,
+    required this.buildContext,
+    required this.model,
+    required this.isEdit,
+    required this.notes,
+    required this.setState,
+    required this.context,
+  });
 }
