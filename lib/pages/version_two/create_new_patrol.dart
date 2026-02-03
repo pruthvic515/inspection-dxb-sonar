@@ -2443,6 +2443,107 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
+  void _filterSizeList(String searchText, StateSetter myState) {
+    sizeList.clear();
+    myState(() {
+      if (searchText.isEmpty) {
+        sizeList.addAll(searchSizeList);
+      } else {
+        final lowerSearchText = searchText.toLowerCase();
+        for (var item in searchSizeList) {
+          if (item.text.toLowerCase().contains(lowerSearchText)) {
+            sizeList.add(item);
+          }
+        }
+      }
+    });
+  }
+
+  Widget _buildSizeSheetHeader(BuildContext context) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+        child: CText(
+          padding: const EdgeInsets.all(10),
+          textAlign: TextAlign.center,
+          text: "DONE",
+          textColor: AppTheme.black,
+          fontFamily: AppTheme.urbanist,
+          fontSize: AppTheme.medium,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSizeSearchField(StateSetter myState) {
+    return Container(
+      margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      height: 45,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        color: AppTheme.white,
+      ),
+      child: TextFormField(
+        controller: _searchSize,
+        onChanged: (searchText) => _filterSizeList(searchText, myState),
+        maxLines: 1,
+        cursorColor: AppTheme.colorPrimary,
+        cursorWidth: 2,
+        decoration: const InputDecoration(
+            contentPadding: EdgeInsets.all(5),
+            hintText: searchHint,
+            border: InputBorder.none,
+            prefixIcon: Icon(
+              Icons.search,
+              color: AppTheme.grey,
+            ),
+            hintStyle: TextStyle(
+                fontFamily: AppTheme.urbanist,
+                fontWeight: FontWeight.w400,
+                color: AppTheme.black,
+                fontSize: AppTheme.large)),
+      ),
+    );
+  }
+
+  Widget _buildSizeListItem(
+      BuildContext context, int index, List<AreaData?>? size, int position,
+      StateSetter setState) {
+    return Card(
+      color: AppTheme.white,
+      margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+      surfaceTintColor: AppTheme.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            size![position] = sizeList[index];
+          });
+          Navigator.of(context).pop();
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(left: 15.0),
+          child: CText(
+            textAlign: TextAlign.start,
+            padding: const EdgeInsets.only(right: 10, top: 10, bottom: 10),
+            text: sizeList[index].text,
+            textColor: AppTheme.grayAsparagus,
+            fontFamily: AppTheme.urbanist,
+            fontSize: AppTheme.large,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+
   void showSizeSheet(FocusNode focusNode, List<AreaData?>? size, position,
       StateSetter myState) {
     showModalBottomSheet(
@@ -2464,105 +2565,15 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Align(
-                  alignment: Alignment.topRight,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: CText(
-                      padding: const EdgeInsets.all(10),
-                      textAlign: TextAlign.center,
-                      text: "DONE",
-                      textColor: AppTheme.black,
-                      fontFamily: AppTheme.urbanist,
-                      fontSize: AppTheme.medium,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                  height: 45,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.0),
-                    color: AppTheme.white,
-                  ),
-                  child: TextFormField(
-                    controller: _searchSize,
-                    onChanged: (searchText) {
-                      sizeList.clear();
-                      myState(() {
-                        if (searchText.isEmpty) {
-                          sizeList.addAll(searchSizeList);
-                        } else {
-                          for (var item in searchSizeList) {
-                            if (item.text
-                                .toLowerCase()
-                                .contains(searchText.toLowerCase())) {
-                              sizeList.add(item);
-                            }
-                          }
-                        }
-                      });
-                    },
-                    maxLines: 1,
-                    cursorColor: AppTheme.colorPrimary,
-                    cursorWidth: 2,
-                    decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(5),
-                        hintText: searchHint,
-                        border: InputBorder.none,
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: AppTheme.grey,
-                        ),
-                        hintStyle: TextStyle(
-                            fontFamily: AppTheme.urbanist,
-                            fontWeight: FontWeight.w400,
-                            color: AppTheme.black,
-                            fontSize: AppTheme.large)),
-                  ),
-                ),
+                _buildSizeSheetHeader(context),
+                _buildSizeSearchField(myState),
                 ListView.builder(
                     padding: const EdgeInsets.only(top: 10),
                     shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),
                     itemCount: sizeList.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        color: AppTheme.white,
-                        margin: const EdgeInsets.only(
-                            left: 20, right: 20, bottom: 10),
-                        surfaceTintColor: AppTheme.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              size![position] = sizeList[index];
-                            });
-                            Navigator.of(context).pop();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 15.0),
-                            child: CText(
-                              textAlign: TextAlign.start,
-                              padding: const EdgeInsets.only(
-                                  right: 10, top: 10, bottom: 10),
-                              text: sizeList[index].text,
-                              textColor: AppTheme.grayAsparagus,
-                              fontFamily: AppTheme.urbanist,
-                              fontSize: AppTheme.large,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
+                    itemBuilder: (context, index) =>
+                        _buildSizeListItem(context, index, size, position, setState)),
                 Utils().sizeBoxHeight()
               ],
             ),

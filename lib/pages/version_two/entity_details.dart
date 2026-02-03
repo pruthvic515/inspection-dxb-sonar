@@ -56,17 +56,17 @@ class EntityDetails extends StatefulWidget {
 
   EntityDetails(
       {super.key,
-      required this.entityId,
-      this.taskId,
-      required this.statusId,
-      required this.inspectionId,
-      required this.category,
-      required this.fromActive,
-      required this.isAgentEmployees,
-      // required this.isDXBTask,
-      required this.completeStatus,
-      // required this.taskType,
-      this.task});
+        required this.entityId,
+        this.taskId,
+        required this.statusId,
+        required this.inspectionId,
+        required this.category,
+        required this.fromActive,
+        required this.isAgentEmployees,
+        // required this.isDXBTask,
+        required this.completeStatus,
+        // required this.taskType,
+        this.task});
 
   @override
   State<EntityDetails> createState() => _EntityDetailsState();
@@ -234,7 +234,7 @@ class _EntityDetailsState extends State<EntityDetails> {
   bool _isOutletNotInEntity(OutletData outlet) {
     return entity!.outletModels.firstWhereOrNull(
           (element) => element.outletId == outlet.outletId,
-        ) == null;
+    ) == null;
   }
 
   void _buildOutletList() {
@@ -325,7 +325,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                         child: Card(
                           shape: const RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
+                              BorderRadius.all(Radius.circular(12))),
                           elevation: 0,
                           surfaceTintColor: AppTheme.white.withValues(alpha: 0),
                           color: AppTheme.white.withValues(alpha: 0),
@@ -381,128 +381,128 @@ class _EntityDetailsState extends State<EntityDetails> {
                               ),
                               // if (widget.taskId == null)
                               !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
-                                      widget.taskId == null
+                                  widget.taskId == null
                                   ? GestureDetector(
-                                      onTap: () {
-                                        showAddTaskSheet(false);
-                                      },
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          border: Border(
-                                            top: BorderSide(
-                                              color: Colors.transparent,
-                                              width: 0,
-                                            ),
-                                            left: BorderSide(
-                                              color: Colors.transparent,
-                                              width: 0,
-                                            ),
-                                            right: BorderSide(
-                                              color: Colors.transparent,
-                                              width: 0,
-                                            ),
-                                            bottom: BorderSide(
-                                              color: AppTheme.textPrimary,
-                                              width: 2,
-                                            ),
-                                          ),
-                                        ),
-                                        alignment: Alignment.center,
-                                        padding: EdgeInsets.zero,
-                                        child: CText(
-                                          padding: EdgeInsets.zero,
-                                          text: "Add DXB Task",
-                                          fontSize: AppTheme.medium - 1,
-                                          textColor: AppTheme.textPrimary,
-                                          fontFamily: AppTheme.poppins,
-                                          fontWeight: FontWeight.w800,
-                                        ),
+                                onTap: () {
+                                  showAddTaskSheet(false);
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                      top: BorderSide(
+                                        color: Colors.transparent,
+                                        width: 0,
                                       ),
-                                    )
+                                      left: BorderSide(
+                                        color: Colors.transparent,
+                                        width: 0,
+                                      ),
+                                      right: BorderSide(
+                                        color: Colors.transparent,
+                                        width: 0,
+                                      ),
+                                      bottom: BorderSide(
+                                        color: AppTheme.textPrimary,
+                                        width: 2,
+                                      ),
+                                    ),
+                                  ),
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.zero,
+                                  child: CText(
+                                    padding: EdgeInsets.zero,
+                                    text: "Add DXB Task",
+                                    fontSize: AppTheme.medium - 1,
+                                    textColor: AppTheme.textPrimary,
+                                    fontFamily: AppTheme.poppins,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              )
                                   : Container(),
 
                               // Expanded(flex: 1, child: Container()),
                               !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
-                                      !widget.completeStatus &&
-                                      widget.fromActive &&
-                                      widget.taskId != null &&
-                                      widget.category != 1 &&
-                                      restaurantInspectionStatusId > 5 &&
-                                      widget.task?.primary == true
+                                  !widget.completeStatus &&
+                                  widget.fromActive &&
+                                  widget.taskId != null &&
+                                  widget.category != 1 &&
+                                  restaurantInspectionStatusId > 5 &&
+                                  widget.task?.primary == true
                                   ? ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppTheme.white),
-                                      onPressed: () {
-                                        showCompleteSheet();
-                                      },
-                                      child: CText(
-                                        text: "Complete task",
-                                        fontSize: 12,
-                                        textColor: AppTheme.colorPrimary,
-                                        fontFamily: AppTheme.poppins,
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    )
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppTheme.white),
+                                onPressed: () {
+                                  showCompleteSheet();
+                                },
+                                child: CText(
+                                  text: "Complete task",
+                                  fontSize: 12,
+                                  textColor: AppTheme.colorPrimary,
+                                  fontFamily: AppTheme.poppins,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              )
                                   : Container(),
                               !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
-                                          widget.fromActive &&
-                                          widget.category == 1 &&
-                                          searchOutletList.isNotEmpty &&
-                                          widget.taskId != null &&
-                                          (widget.task?.primary == true &&
-                                              searchOutletList
-                                                  .where((element) =>
-                                                      element.inspectionStatusId ==
-                                                          6 ||
-                                                      element.inspectionStatusId ==
-                                                          7)
-                                                  .isNotEmpty &&
-                                              searchOutletList
-                                                  .where((element) =>
-                                                      element
-                                                          .inspectionStatusId ==
-                                                      5)
-                                                  .isEmpty) ||
+                                  widget.fromActive &&
+                                  widget.category == 1 &&
+                                  searchOutletList.isNotEmpty &&
+                                  widget.taskId != null &&
+                                  (widget.task?.primary == true &&
                                       searchOutletList
                                           .where((element) =>
-                                              element.inspectionStatusId != 6 &&
-                                              element.inspectionStatusId != 7)
-                                          .isEmpty
+                                      element.inspectionStatusId ==
+                                          6 ||
+                                          element.inspectionStatusId ==
+                                              7)
+                                          .isNotEmpty &&
+                                      searchOutletList
+                                          .where((element) =>
+                                      element
+                                          .inspectionStatusId ==
+                                          5)
+                                          .isEmpty) ||
+                                  searchOutletList
+                                      .where((element) =>
+                                  element.inspectionStatusId != 6 &&
+                                      element.inspectionStatusId != 7)
+                                      .isEmpty
                                   ? Visibility(
-                                      visible: widget.category == 1 &&
-                                          !widget.completeStatus &&
-                                          searchOutletList.isNotEmpty,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: AppTheme.white),
-                                        onPressed: () {
-                                          showCompleteSheet();
-                                        },
-                                        child: CText(
-                                          text: "Complete task",
-                                          textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.poppins,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ))
+                                  visible: widget.category == 1 &&
+                                      !widget.completeStatus &&
+                                      searchOutletList.isNotEmpty,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppTheme.white),
+                                    onPressed: () {
+                                      showCompleteSheet();
+                                    },
+                                    child: CText(
+                                      text: "Complete task",
+                                      textColor: AppTheme.colorPrimary,
+                                      fontFamily: AppTheme.poppins,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ))
                                   : Container(),
 
                               !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
-                                      !widget.completeStatus &&
-                                      widget.fromActive &&
-                                      widget.task?.primary == true &&
-                                      widget.taskId != null &&
-                                      widget.statusId == 2
+                                  !widget.completeStatus &&
+                                  widget.fromActive &&
+                                  widget.task?.primary == true &&
+                                  widget.taskId != null &&
+                                  widget.statusId == 2
                                   ? Visibility(
-                                      visible: !widget.completeStatus &&
-                                          widget.fromActive &&
-                                          widget.taskId != null &&
-                                          widget.statusId == 2,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: AppTheme.white),
-                                        onPressed: () {
-                                          /*    Utils().showYesNoAlert(
+                                  visible: !widget.completeStatus &&
+                                      widget.fromActive &&
+                                      widget.taskId != null &&
+                                      widget.statusId == 2,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppTheme.white),
+                                    onPressed: () {
+                                      /*    Utils().showYesNoAlert(
                                               context: context,
                                               message: "Note",
                                               onYesPressed: () {
@@ -512,73 +512,73 @@ class _EntityDetailsState extends State<EntityDetails> {
                                               onNoPressed: () {
 
                                               });*/
-                                          createInspection();
-                                        },
-                                        child: CText(
-                                          text: "Finish Inspection",
-                                          textColor: AppTheme.colorPrimary,
-                                          fontFamily: AppTheme.poppins,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ))
+                                      createInspection();
+                                    },
+                                    child: CText(
+                                      text: "Finish Inspection",
+                                      textColor: AppTheme.colorPrimary,
+                                      fontFamily: AppTheme.poppins,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ))
                                   : Container(),
 
                               !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
-                                      widget.taskId == null
+                                  widget.taskId == null
                                   ? GestureDetector(
-                                      onTap: () {
-                                        showAddTaskSheet(true);
-                                      },
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          border: Border(
-                                            top: BorderSide(
-                                              color: Colors.transparent,
-                                              width: 0,
-                                            ),
-                                            left: BorderSide(
-                                              color: Colors.transparent,
-                                              width: 0,
-                                            ),
-                                            right: BorderSide(
-                                              color: Colors.transparent,
-                                              width: 0,
-                                            ),
-                                            bottom: BorderSide(
-                                              color: AppTheme.textPrimary,
-                                              width: 2,
-                                            ),
-                                          ),
-                                        ),
-                                        alignment: Alignment.center,
-                                        padding: EdgeInsets.zero,
-                                        child: CText(
-                                          text: "Add Liquor Task",
-                                          fontSize: AppTheme.medium - 1,
-                                          textColor: AppTheme.textPrimary,
-                                          fontFamily: AppTheme.poppins,
-                                          fontWeight: FontWeight.w800,
-                                        ),
+                                onTap: () {
+                                  showAddTaskSheet(true);
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                      top: BorderSide(
+                                        color: Colors.transparent,
+                                        width: 0,
                                       ),
-                                    )
+                                      left: BorderSide(
+                                        color: Colors.transparent,
+                                        width: 0,
+                                      ),
+                                      right: BorderSide(
+                                        color: Colors.transparent,
+                                        width: 0,
+                                      ),
+                                      bottom: BorderSide(
+                                        color: AppTheme.textPrimary,
+                                        width: 2,
+                                      ),
+                                    ),
+                                  ),
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.zero,
+                                  child: CText(
+                                    text: "Add Liquor Task",
+                                    fontSize: AppTheme.medium - 1,
+                                    textColor: AppTheme.textPrimary,
+                                    fontFamily: AppTheme.poppins,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              )
                                   : Container(),
 
                               !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
-                                      widget.completeStatus &&
-                                      widget.category == 1
+                                  widget.completeStatus &&
+                                  widget.category == 1
                                   ? ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppTheme.white),
-                                      onPressed: () {
-                                        getDownloadReport();
-                                      },
-                                      child: CText(
-                                        text: "Download Report",
-                                        textColor: AppTheme.colorPrimary,
-                                        fontFamily: AppTheme.poppins,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    )
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppTheme.white),
+                                onPressed: () {
+                                  getDownloadReport();
+                                },
+                                child: CText(
+                                  text: "Download Report",
+                                  textColor: AppTheme.colorPrimary,
+                                  fontFamily: AppTheme.poppins,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              )
                                   : Container(),
                               const SizedBox(
                                 width: 20,
@@ -592,557 +592,574 @@ class _EntityDetailsState extends State<EntityDetails> {
                 )),
             Expanded(
                 child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  CText(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    text: "Entity Details :",
-                    textColor: AppTheme.black,
-                    fontFamily: AppTheme.urbanist,
-                    fontSize: AppTheme.big_20,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 10),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppTheme.border, width: 1),
-                      color: AppTheme.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        entity?.logoUrl != null
-                            ? Center(
-                                child: Image.network(
-                                  entity?.logoUrl ?? "",
-                                  height: 40,
-                                  width: 40,
-                                ),
-                              )
-                            : Container(),
-                        const SizedBox(
-                          height: 10,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      CText(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        text: "Entity Details :",
+                        textColor: AppTheme.black,
+                        fontFamily: AppTheme.urbanist,
+                        fontSize: AppTheme.big_20,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 10),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppTheme.border, width: 1),
+                          color: AppTheme.white,
+                          borderRadius: const BorderRadius.all(Radius.circular(20)),
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Expanded(
-                                child: Column(
+                            entity?.logoUrl != null
+                                ? Center(
+                              child: Image.network(
+                                entity?.logoUrl ?? "",
+                                height: 40,
+                                width: 40,
+                              ),
+                            )
+                                : Container(),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CText(
+                                          textAlign: TextAlign.center,
+                                          text: "Status",
+                                          textColor: AppTheme.titleGray,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.medium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        CText(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          textAlign: TextAlign.center,
+                                          text: entity?.licenseStatus ?? "",
+                                          textColor: AppTheme.colorPrimary,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.large,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ],
+                                    )),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CText(
+                                          textAlign: TextAlign.center,
+                                          text: "License No :",
+                                          textColor: AppTheme.titleGray,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.medium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        CText(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          textAlign: TextAlign.center,
+                                          text: entity?.licenseNumber ?? "",
+                                          textColor: AppTheme.textBlack,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.large,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ],
+                                    )),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CText(
+                                          textAlign: TextAlign.center,
+                                          text: "Monthly Limit",
+                                          textColor: AppTheme.titleGray,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.medium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        CText(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          textAlign: TextAlign.center,
+                                          text: entity?.monthlyLimit.toString() ?? "",
+                                          textColor: AppTheme.textBlack,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.large,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ],
+                                    )),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CText(
+                                          textAlign: TextAlign.center,
+                                          text: "Expiry Date :",
+                                          textColor: AppTheme.titleGray,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.medium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        CText(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          textAlign: TextAlign.center,
+                                          text: entity != null
+                                              ? DateFormat(dateFormat)
+                                              .format(entity!.licenseExpiryDate)
+                                              : "",
+                                          textColor: AppTheme.textBlack,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.large,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ],
+                                    )),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CText(
+                                          textAlign: TextAlign.center,
+                                          text: "Opening Hours",
+                                          textColor: AppTheme.titleGray,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.medium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        CText(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          textAlign: TextAlign.center,
+                                          text: entity?.openingTime ?? "-",
+                                          textColor: AppTheme.textBlack,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.large,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ],
+                                    )),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CText(
+                                          textAlign: TextAlign.center,
+                                          text: "Closing Hours",
+                                          textColor: AppTheme.titleGray,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.medium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        CText(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          textAlign: TextAlign.center,
+                                          text: entity?.closingTime ?? "-",
+                                          textColor: AppTheme.textBlack,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.large,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ],
+                                    )),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CText(
+                                          textAlign: TextAlign.center,
+                                          text: "Classification : ",
+                                          textColor: AppTheme.titleGray,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.medium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        CText(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          textAlign: TextAlign.center,
+                                          text: entity?.classification ?? "-",
+                                          textColor: AppTheme.textBlack,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.large,
+                                          maxLines: 2,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ],
+                                    )),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CText(
+                                          textAlign: TextAlign.center,
+                                          text: "Ownership Type : ",
+                                          textColor: AppTheme.titleGray,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.medium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        CText(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          textAlign: TextAlign.center,
+                                          text: entity?.ownerShipType ?? "-",
+                                          textColor: AppTheme.textBlack,
+                                          fontFamily: AppTheme.urbanist,
+                                          maxLines: 2,
+                                          fontSize: AppTheme.large,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ],
+                                    )),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CText(
+                                          textAlign: TextAlign.center,
+                                          text: "Manager Name : ",
+                                          textColor: AppTheme.titleGray,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.medium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        CText(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          textAlign: TextAlign.center,
+                                          text: entity?.managerName ?? "-",
+                                          textColor: AppTheme.textBlack,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.large,
+                                          maxLines: 2,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ],
+                                    )),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CText(
+                                          textAlign: TextAlign.center,
+                                          text: "Manager Contact : ",
+                                          textColor: AppTheme.titleGray,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.medium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        CText(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          textAlign: TextAlign.center,
+                                          text: entity?.managerContactNumber ?? "-",
+                                          textColor: AppTheme.textBlack,
+                                          fontFamily: AppTheme.urbanist,
+                                          maxLines: 2,
+                                          fontSize: AppTheme.large,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ],
+                                    )),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CText(
+                                          textAlign: TextAlign.center,
+                                          text: "Role Name : ",
+                                          textColor: AppTheme.titleGray,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.medium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        CText(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          textAlign: TextAlign.center,
+                                          text: entity?.roleName ?? "-",
+                                          textColor: AppTheme.textBlack,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.large,
+                                          maxLines: 2,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ],
+                                    )),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        CText(
+                                          textAlign: TextAlign.center,
+                                          text: "Last Inspection Date : ",
+                                          textColor: AppTheme.titleGray,
+                                          fontFamily: AppTheme.urbanist,
+                                          fontSize: AppTheme.medium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        CText(
+                                          padding: const EdgeInsets.only(top: 2),
+                                          textAlign: TextAlign.center,
+                                          text: entity?.lastVisitedDate == null
+                                              ? "-"
+                                              : "${DateFormat(dateFormat).format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))} \n${DateFormat("hh:mm:ss aa").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))}",
+                                          textColor: AppTheme.textBlack,
+                                          fontFamily: AppTheme.urbanist,
+                                          maxLines: 2,
+                                          fontSize: AppTheme.large,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ],
+                                    )),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      widget.category == 1
+                          ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
                               children: [
                                 CText(
-                                  textAlign: TextAlign.center,
-                                  text: "Status",
-                                  textColor: AppTheme.titleGray,
+                                  text: "Entity Outlets :",
+                                  textColor: AppTheme.black,
                                   fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                CText(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  textAlign: TextAlign.center,
-                                  text: entity?.licenseStatus ?? "",
-                                  textColor: AppTheme.colorPrimary,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.large,
+                                  fontSize: AppTheme.big_20,
                                   fontWeight: FontWeight.w700,
                                 ),
-                              ],
-                            )),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CText(
-                                  textAlign: TextAlign.center,
-                                  text: "License No :",
-                                  textColor: AppTheme.titleGray,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                CText(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  textAlign: TextAlign.center,
-                                  text: entity?.licenseNumber ?? "",
-                                  textColor: AppTheme.textBlack,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.large,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            )),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CText(
-                                  textAlign: TextAlign.center,
-                                  text: "Monthly Limit",
-                                  textColor: AppTheme.titleGray,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                CText(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  textAlign: TextAlign.center,
-                                  text: entity?.monthlyLimit.toString() ?? "",
-                                  textColor: AppTheme.textBlack,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.large,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            )),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CText(
-                                  textAlign: TextAlign.center,
-                                  text: "Expiry Date :",
-                                  textColor: AppTheme.titleGray,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                CText(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  textAlign: TextAlign.center,
-                                  text: entity != null
-                                      ? DateFormat(dateFormat)
-                                          .format(entity!.licenseExpiryDate)
-                                      : "",
-                                  textColor: AppTheme.textBlack,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.large,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            )),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CText(
-                                  textAlign: TextAlign.center,
-                                  text: "Opening Hours",
-                                  textColor: AppTheme.titleGray,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                CText(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  textAlign: TextAlign.center,
-                                  text: entity?.openingTime ?? "-",
-                                  textColor: AppTheme.textBlack,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.large,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            )),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CText(
-                                  textAlign: TextAlign.center,
-                                  text: "Closing Hours",
-                                  textColor: AppTheme.titleGray,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                CText(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  textAlign: TextAlign.center,
-                                  text: entity?.closingTime ?? "-",
-                                  textColor: AppTheme.textBlack,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.large,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            )),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CText(
-                                  textAlign: TextAlign.center,
-                                  text: "Classification : ",
-                                  textColor: AppTheme.titleGray,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                CText(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  textAlign: TextAlign.center,
-                                  text: entity?.classification ?? "-",
-                                  textColor: AppTheme.textBlack,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.large,
-                                  maxLines: 2,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            )),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CText(
-                                  textAlign: TextAlign.center,
-                                  text: "Ownership Type : ",
-                                  textColor: AppTheme.titleGray,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                CText(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  textAlign: TextAlign.center,
-                                  text: entity?.ownerShipType ?? "-",
-                                  textColor: AppTheme.textBlack,
-                                  fontFamily: AppTheme.urbanist,
-                                  maxLines: 2,
-                                  fontSize: AppTheme.large,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            )),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CText(
-                                  textAlign: TextAlign.center,
-                                  text: "Manager Name : ",
-                                  textColor: AppTheme.titleGray,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                CText(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  textAlign: TextAlign.center,
-                                  text: entity?.managerName ?? "-",
-                                  textColor: AppTheme.textBlack,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.large,
-                                  maxLines: 2,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            )),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CText(
-                                  textAlign: TextAlign.center,
-                                  text: "Manager Contact : ",
-                                  textColor: AppTheme.titleGray,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                CText(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  textAlign: TextAlign.center,
-                                  text: entity?.managerContactNumber ?? "-",
-                                  textColor: AppTheme.textBlack,
-                                  fontFamily: AppTheme.urbanist,
-                                  maxLines: 2,
-                                  fontSize: AppTheme.large,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            )),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CText(
-                                  textAlign: TextAlign.center,
-                                  text: "Role Name : ",
-                                  textColor: AppTheme.titleGray,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                CText(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  textAlign: TextAlign.center,
-                                  text: entity?.roleName ?? "-",
-                                  textColor: AppTheme.textBlack,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.large,
-                                  maxLines: 2,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            )),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CText(
-                                  textAlign: TextAlign.center,
-                                  text: "Last Inspection Date : ",
-                                  textColor: AppTheme.titleGray,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.medium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                CText(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  textAlign: TextAlign.center,
-                                  text: entity?.lastVisitedDate == null
-                                      ? "-"
-                                      : "${DateFormat(dateFormat).format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))} \n${DateFormat("hh:mm:ss aa").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))}",
-                                  textColor: AppTheme.textBlack,
-                                  fontFamily: AppTheme.urbanist,
-                                  maxLines: 2,
-                                  fontSize: AppTheme.large,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ],
-                            )),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  widget.category == 1
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CText(
-                                    text: "Entity Outlets :",
-                                    textColor: AppTheme.black,
-                                    fontFamily: AppTheme.urbanist,
-                                    fontSize: AppTheme.big_20,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                  if (!storeUserData.getBoolean(IS_AGENT_LOGIN) &&
-                                      widget.fromActive &&
-                                      widget.statusId != 6 &&
-                                      widget.statusId != 7)
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              AppTheme.colorPrimary),
-                                      onPressed: () {
-                                        showAddOutletSheet(null);
-                                      },
-                                      child: CText(
-                                        text: "Add Outlet",
-                                        textColor: AppTheme.white,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                                if (!storeUserData.getBoolean(IS_AGENT_LOGIN) &&
+                                    widget.fromActive &&
+                                    widget.statusId != 6 &&
+                                    widget.statusId != 7)
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                        AppTheme.colorPrimary),
+                                    onPressed: () {
+                                      showAddOutletSheet(null);
+                                    },
+                                    child: CText(
+                                      text: "Add Outlet",
+                                      textColor: AppTheme.white,
+                                      fontWeight: FontWeight.w700,
                                     ),
-                                ],
-                              ),
+                                  ),
+                              ],
                             ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 5, bottom: 10),
-                              width: MediaQuery.of(context).size.width,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                      flex: 1,
-                                      child: GestureDetector(
-                                          behavior: HitTestBehavior.translucent,
-                                          onTap: () {
-                                            setState(() {
-                                              tabType = 1;
-                                              outletList.clear();
-                                              for (var item
-                                                  in searchOutletList) {
-                                                if (tabType == 2 &&
-                                                    item.newAdded == true) {
-                                                  outletList.add(item);
-                                                } else if (tabType == 1 &&
-                                                    item.newAdded == false) {
-                                                  outletList.add(item);
-                                                }
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 5, bottom: 10),
+                            width: MediaQuery.of(context).size.width,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    flex: 1,
+                                    child: GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () {
+                                          setState(() {
+                                            tabType = 1;
+                                            outletList.clear();
+                                            for (var item
+                                            in searchOutletList) {
+                                              if (tabType == 2 &&
+                                                  item.newAdded == true) {
+                                                outletList.add(item);
+                                              } else if (tabType == 1 &&
+                                                  item.newAdded == false) {
+                                                outletList.add(item);
                                               }
-                                            });
-                                          },
-                                          child: Container(
-                                            padding:
-                                                const EdgeInsets.only(top: 20),
-                                            child: Column(
-                                              children: [
-                                                CText(
-                                                    text: "Active Outlets",
-                                                    textColor: tabType == 1
-                                                        ? AppTheme.black
-                                                        : AppTheme
-                                                            .textColorGray,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily:
-                                                        AppTheme.urbanist,
-                                                    fontSize: AppTheme.medium),
-                                                Container(
-                                                  height: 3,
-                                                  margin: const EdgeInsets.only(
-                                                      top: 8),
-                                                  color: tabType == 1
-                                                      ? AppTheme.colorPrimary
-                                                      : AppTheme.mainBackground,
-                                                )
-                                              ],
-                                            ),
-                                          ))),
-                                  Expanded(
-                                      flex: 1,
-                                      child: GestureDetector(
-                                          behavior: HitTestBehavior.translucent,
-                                          onTap: () {
-                                            setState(() {
-                                              outletList.clear();
-                                              tabType = 2;
-                                              for (var item
-                                                  in searchOutletList) {
-                                                print(jsonEncode(item));
-                                                if (tabType == 2 &&
-                                                    item.newAdded == true) {
-                                                  outletList.add(item);
-                                                } else if (tabType == 1 &&
-                                                    item.newAdded == false) {
-                                                  outletList.add(item);
-                                                }
+                                            }
+                                          });
+                                        },
+                                        child: Container(
+                                          padding:
+                                          const EdgeInsets.only(top: 20),
+                                          child: Column(
+                                            children: [
+                                              CText(
+                                                  text: "Active Outlets",
+                                                  textColor: tabType == 1
+                                                      ? AppTheme.black
+                                                      : AppTheme
+                                                      .textColorGray,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontFamily:
+                                                  AppTheme.urbanist,
+                                                  fontSize: AppTheme.medium),
+                                              Container(
+                                                height: 3,
+                                                margin: const EdgeInsets.only(
+                                                    top: 8),
+                                                color: tabType == 1
+                                                    ? AppTheme.colorPrimary
+                                                    : AppTheme.mainBackground,
+                                              )
+                                            ],
+                                          ),
+                                        ))),
+                                Expanded(
+                                    flex: 1,
+                                    child: GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () {
+                                          setState(() {
+                                            outletList.clear();
+                                            tabType = 2;
+                                            for (var item
+                                            in searchOutletList) {
+                                              print(jsonEncode(item));
+                                              if (tabType == 2 &&
+                                                  item.newAdded == true) {
+                                                outletList.add(item);
+                                              } else if (tabType == 1 &&
+                                                  item.newAdded == false) {
+                                                outletList.add(item);
                                               }
-                                            });
-                                          },
-                                          child: Container(
-                                            padding:
-                                                const EdgeInsets.only(top: 20),
-                                            child: Column(
-                                              children: [
-                                                CText(
-                                                    text: "Inactive Outlets",
-                                                    textColor: tabType == 2
-                                                        ? AppTheme.black
-                                                        : AppTheme
-                                                            .textColorGray,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily:
-                                                        AppTheme.urbanist,
-                                                    fontSize: AppTheme.medium),
-                                                Container(
-                                                  height: 3,
-                                                  margin: const EdgeInsets.only(
-                                                      top: 8),
-                                                  color: tabType == 2
-                                                      ? AppTheme.colorPrimary
-                                                      : AppTheme.mainBackground,
-                                                )
-                                              ],
-                                            ),
-                                          ))),
-                                ],
-                              ),
+                                            }
+                                          });
+                                        },
+                                        child: Container(
+                                          padding:
+                                          const EdgeInsets.only(top: 20),
+                                          child: Column(
+                                            children: [
+                                              CText(
+                                                  text: "Inactive Outlets",
+                                                  textColor: tabType == 2
+                                                      ? AppTheme.black
+                                                      : AppTheme
+                                                      .textColorGray,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontFamily:
+                                                  AppTheme.urbanist,
+                                                  fontSize: AppTheme.medium),
+                                              Container(
+                                                height: 3,
+                                                margin: const EdgeInsets.only(
+                                                    top: 8),
+                                                color: tabType == 2
+                                                    ? AppTheme.colorPrimary
+                                                    : AppTheme.mainBackground,
+                                              )
+                                            ],
+                                          ),
+                                        ))),
+                              ],
                             ),
-                            Container(
-                              margin: const EdgeInsets.only(
-                                  left: 20, right: 20, top: 20, bottom: 20),
-                              height: 45,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12.0),
-                                color: AppTheme.white,
-                              ),
-                              child: TextFormField(
-                                controller: _searchOutlet,
-                                onChanged: (searchText) {
-                                  outletList.clear();
-                                  setState(() {
-                                    if (searchText.isEmpty) {
-                                      for (var item in searchOutletList) {
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(
+                                left: 20, right: 20, top: 20, bottom: 20),
+                            height: 45,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.0),
+                              color: AppTheme.white,
+                            ),
+                            child: TextFormField(
+                              controller: _searchOutlet,
+                              onChanged: (searchText) {
+                                outletList.clear();
+                                setState(() {
+                                  if (searchText.isEmpty) {
+                                    for (var item in searchOutletList) {
+                                      if (item.outletStatus == null) {
+                                        item.newAdded = true;
+                                      }
+                                      if (tabType == 2 &&
+                                          item.newAdded == true) {
+                                        outletList.add(item);
+                                      } else if (tabType == 1 &&
+                                          item.newAdded == false) {
+                                        outletList.add(item);
+                                      }
+                                    }
+                                  } else {
+                                    for (var item in searchOutletList) {
+                                      if (item.outletName
+                                          .toLowerCase()
+                                          .contains(
+                                          searchText.toLowerCase())) {
                                         if (item.outletStatus == null) {
                                           item.newAdded = true;
                                         }
@@ -1154,746 +1171,734 @@ class _EntityDetailsState extends State<EntityDetails> {
                                           outletList.add(item);
                                         }
                                       }
-                                    } else {
-                                      for (var item in searchOutletList) {
-                                        if (item.outletName
-                                            .toLowerCase()
-                                            .contains(
-                                                searchText.toLowerCase())) {
-                                          if (item.outletStatus == null) {
-                                            item.newAdded = true;
-                                          }
-                                          if (tabType == 2 &&
-                                              item.newAdded == true) {
-                                            outletList.add(item);
-                                          } else if (tabType == 1 &&
-                                              item.newAdded == false) {
-                                            outletList.add(item);
-                                          }
-                                        }
-                                      }
                                     }
-                                  });
-                                },
-                                maxLines: 1,
-                                cursorColor: AppTheme.colorPrimary,
-                                cursorWidth: 2,
-                                decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.all(5),
-                                    hintText: searchHint,
-                                    border: InputBorder.none,
-                                    prefixIcon: Icon(
-                                      Icons.search,
-                                      color: AppTheme.grey,
-                                    ),
-                                    hintStyle: TextStyle(
-                                        fontFamily: AppTheme.urbanist,
-                                        fontWeight: FontWeight.w400,
-                                        color: AppTheme.black,
-                                        fontSize: AppTheme.large)),
-                              ),
+                                  }
+                                });
+                              },
+                              maxLines: 1,
+                              cursorColor: AppTheme.colorPrimary,
+                              cursorWidth: 2,
+                              decoration: const InputDecoration(
+                                  contentPadding: EdgeInsets.all(5),
+                                  hintText: searchHint,
+                                  border: InputBorder.none,
+                                  prefixIcon: Icon(
+                                    Icons.search,
+                                    color: AppTheme.grey,
+                                  ),
+                                  hintStyle: TextStyle(
+                                      fontFamily: AppTheme.urbanist,
+                                      fontWeight: FontWeight.w400,
+                                      color: AppTheme.black,
+                                      fontSize: AppTheme.large)),
                             ),
-                            outletList.isNotEmpty &&
-                                    ownerShipList.isNotEmpty &&
-                                    outletServiceList.isNotEmpty
-                                ? ListView.builder(
-                                    padding: const EdgeInsets.only(top: 20),
-                                    shrinkWrap: true,
-                                    physics: const ClampingScrollPhysics(),
-                                    itemCount: outletList.length,
-                                    itemBuilder: (context, index) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          debugPrint(outletList[index]
-                                              .inspectorId
-                                              .toString());
-                                          debugPrint(storeUserData
-                                              .getInt(USER_ID)
-                                              .toString());
+                          ),
+                          outletList.isNotEmpty &&
+                              ownerShipList.isNotEmpty &&
+                              outletServiceList.isNotEmpty
+                              ? ListView.builder(
+                              padding: const EdgeInsets.only(top: 20),
+                              shrinkWrap: true,
+                              physics: const ClampingScrollPhysics(),
+                              itemCount: outletList.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    debugPrint(outletList[index]
+                                        .inspectorId
+                                        .toString());
+                                    debugPrint(storeUserData
+                                        .getInt(USER_ID)
+                                        .toString());
 
-                                          if (outletList[index].inspectorId ==
-                                                  0 ||
-                                              (outletList[index].inspectorId ==
-                                                      storeUserData
-                                                          .getInt(USER_ID) &&
-                                                  widget.task?.primary ==
-                                                      true)) {
-                                            if (outletList[index]
-                                                    .inspectionStatusId <=
-                                                5) {
-                                              Get.to(
-                                                      transition: Transition
-                                                          .rightToLeft,
-                                                      OutletDetailScreen(
-                                                          entity: entity!,
-                                                          fromInactive: tabType != 2 &&
-                                                              outletList[index]
-                                                                  .newAdded,
-                                                          statusId: outletList[index]
-                                                              .inspectionStatusId,
-                                                          inspectionId:
-                                                              outletList[index]
-                                                                  .inspectionId,
-                                                          outlet:
-                                                              outletList[index],
-                                                          isNew:
-                                                              outletList[index]
-                                                                  .newAdded,
-                                                          taskId: widget.taskId,
-                                                          primary: widget.task
-                                                                  ?.primary ??
-                                                              false,
-                                                          mainTaskId: widget
-                                                                  .task
-                                                                  ?.mainTaskId ??
-                                                              0,
-                                                          isAgentEmployees: widget
-                                                              .isAgentEmployees,
-                                                          taskType: widget.task
-                                                                  ?.taskType ??
-                                                              0))
-                                                  ?.whenComplete(() {
-                                                getEntityDetail();
-                                              });
-                                            } else {
-                                              Get.to(
-                                                  transition:
-                                                      Transition.rightToLeft,
-                                                  InspectionDetailScreen(
-                                                    task: widget.task!,
-                                                    inspectionId:
-                                                        outletList[index]
-                                                            .inspectionId,
-                                                    completeStatus: widget
-                                                            .completeStatus &&
-                                                        widget.category == 0,
-                                                  ));
-                                            }
-                                          } else if (storeUserData
-                                              .getBoolean(IS_AGENT_LOGIN)) {
-                                            Get.to(
-                                                transition:
-                                                    Transition.rightToLeft,
-                                                InspectionDetailScreen(
-                                                  task: widget.task!,
-                                                  inspectionId:
-                                                      outletList[index]
-                                                          .inspectionId,
-                                                  completeStatus:
-                                                      widget.completeStatus &&
-                                                          widget.category == 0,
-                                                ));
-                                          }
-                                        },
-                                        child: Card(
-                                          color: AppTheme.white,
-                                          margin: const EdgeInsets.only(
-                                              left: 20, right: 20, bottom: 10),
-                                          surfaceTintColor: AppTheme.white,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12)),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 15.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Expanded(
-                                                        child: CText(
+                                    if (outletList[index].inspectorId ==
+                                        0 ||
+                                        (outletList[index].inspectorId ==
+                                            storeUserData
+                                                .getInt(USER_ID) &&
+                                            widget.task?.primary ==
+                                                true)) {
+                                      if (outletList[index]
+                                          .inspectionStatusId <=
+                                          5) {
+                                        Get.to(
+                                            transition: Transition
+                                                .rightToLeft,
+                                            OutletDetailScreen(
+                                                entity: entity!,
+                                                fromInactive: tabType != 2 &&
+                                                    outletList[index]
+                                                        .newAdded,
+                                                statusId: outletList[index]
+                                                    .inspectionStatusId,
+                                                inspectionId:
+                                                outletList[index]
+                                                    .inspectionId,
+                                                outlet:
+                                                outletList[index],
+                                                isNew:
+                                                outletList[index]
+                                                    .newAdded,
+                                                taskId: widget.taskId,
+                                                primary: widget.task
+                                                    ?.primary ??
+                                                    false,
+                                                mainTaskId: widget
+                                                    .task
+                                                    ?.mainTaskId ??
+                                                    0,
+                                                isAgentEmployees: widget
+                                                    .isAgentEmployees,
+                                                taskType: widget.task
+                                                    ?.taskType ??
+                                                    0))
+                                            ?.whenComplete(() {
+                                          getEntityDetail();
+                                        });
+                                      } else {
+                                        Get.to(
+                                            transition:
+                                            Transition.rightToLeft,
+                                            InspectionDetailScreen(
+                                              task: widget.task!,
+                                              inspectionId:
+                                              outletList[index]
+                                                  .inspectionId,
+                                              completeStatus: widget
+                                                  .completeStatus &&
+                                                  widget.category == 0,
+                                            ));
+                                      }
+                                    } else if (storeUserData
+                                        .getBoolean(IS_AGENT_LOGIN)) {
+                                      Get.to(
+                                          transition:
+                                          Transition.rightToLeft,
+                                          InspectionDetailScreen(
+                                            task: widget.task!,
+                                            inspectionId:
+                                            outletList[index]
+                                                .inspectionId,
+                                            completeStatus:
+                                            widget.completeStatus &&
+                                                widget.category == 0,
+                                          ));
+                                    }
+                                  },
+                                  child: Card(
+                                    color: AppTheme.white,
+                                    margin: const EdgeInsets.only(
+                                        left: 20, right: 20, bottom: 10),
+                                    surfaceTintColor: AppTheme.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(12)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 15.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                  child: CText(
+                                                    textAlign:
+                                                    TextAlign.start,
+                                                    padding:
+                                                    const EdgeInsets.only(
+                                                        right: 10,
+                                                        top: 10,
+                                                        bottom: 5),
+                                                    text: outletList[index]
+                                                        .outletName,
+                                                    textColor:
+                                                    AppTheme.colorPrimary,
+                                                    fontFamily:
+                                                    AppTheme.urbanist,
+                                                    fontSize: AppTheme.large,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                    TextOverflow.ellipsis,
+                                                    fontWeight:
+                                                    FontWeight.w700,
+                                                  )),
+                                              outletList[index]
+                                                  .inspectionStatusId !=
+                                                  0
+                                                  ? Expanded(
+                                                  flex: 0,
+                                                  child: Container(
+                                                    padding:
+                                                    const EdgeInsets
+                                                        .all(5),
+                                                    margin:
+                                                    const EdgeInsets
+                                                        .only(
+                                                        right: 10,
+                                                        top: 5,
+                                                        bottom:
+                                                        5),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                        const BorderRadius
+                                                            .all(
+                                                            Radius.circular(
+                                                                5)),
+                                                        color: AppTheme.getStatusColor(
+                                                            outletList[
+                                                            index]
+                                                                .inspectionStatusId)),
+                                                    child: CText(
                                                       textAlign:
-                                                          TextAlign.start,
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 10,
-                                                              top: 10,
-                                                              bottom: 5),
-                                                      text: outletList[index]
-                                                          .outletName,
+                                                      TextAlign
+                                                          .start,
+                                                      text: _getOutletStatusText(outletList[index].inspectionStatusId),
                                                       textColor:
-                                                          AppTheme.colorPrimary,
+                                                      AppTheme
+                                                          .white,
                                                       fontFamily:
-                                                          AppTheme.urbanist,
-                                                      fontSize: AppTheme.large,
+                                                      AppTheme
+                                                          .urbanist,
+                                                      fontSize:
+                                                      AppTheme
+                                                          .small,
                                                       maxLines: 1,
                                                       overflow:
-                                                          TextOverflow.ellipsis,
+                                                      TextOverflow
+                                                          .ellipsis,
                                                       fontWeight:
-                                                          FontWeight.w700,
-                                                    )),
-                                                    outletList[index]
-                                                                .inspectionStatusId !=
-                                                            0
-                                                        ? Expanded(
-                                                            flex: 0,
-                                                            child: Container(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(5),
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      right: 10,
-                                                                      top: 5,
-                                                                      bottom:
-                                                                          5),
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius:
-                                                                      const BorderRadius
-                                                                          .all(
-                                                                          Radius.circular(
-                                                                              5)),
-                                                                  color: AppTheme.getStatusColor(
-                                                                      outletList[
-                                                                              index]
-                                                                          .inspectionStatusId)),
-                                                              child: CText(
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .start,
-                                                                text: _getOutletStatusText(outletList[index].inspectionStatusId),
-                                                                textColor:
-                                                                    AppTheme
-                                                                        .white,
-                                                                fontFamily:
-                                                                    AppTheme
-                                                                        .urbanist,
-                                                                fontSize:
-                                                                    AppTheme
-                                                                        .small,
-                                                                maxLines: 1,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                              ),
-                                                            ))
-                                                        : Container()
-                                                  ],
-                                                ),
-                                                CText(
-                                                  textAlign: TextAlign.start,
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 10),
-                                                  text: outletList[index]
-                                                      .ownerShipType,
-                                                  textColor:
-                                                      AppTheme.grayAsparagus,
-                                                  fontFamily: AppTheme.urbanist,
-                                                  fontSize: AppTheme.large,
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                                outletList[index].newAdded &&
-                                                        outletList[index]
-                                                                .inspectionStatusId <
-                                                            2
-                                                    ? Row(
-                                                        children: [
-                                                          Expanded(
-                                                              child: CText(
-                                                            textAlign:
-                                                                TextAlign.start,
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    right: 10,
-                                                                    top: 0,
-                                                                    bottom: 5),
-                                                            text: outletList[
-                                                                    index]
-                                                                .serviceType,
-                                                            textColor: AppTheme
-                                                                .grayAsparagus,
-                                                            fontFamily: AppTheme
-                                                                .urbanist,
-                                                            fontSize:
-                                                                AppTheme.large,
-                                                            maxLines: 2,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          )),
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              showAddOutletSheet(
-                                                                  outletList[
-                                                                      index]);
-                                                            },
-                                                            behavior:
-                                                                HitTestBehavior
-                                                                    .translucent,
-                                                            child: CText(
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start,
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      right: 10,
-                                                                      top: 5,
-                                                                      bottom:
-                                                                          5),
-                                                              text: "EDIT",
-                                                              textColor: AppTheme
-                                                                  .colorPrimary,
-                                                              fontFamily:
-                                                                  AppTheme
-                                                                      .urbanist,
-                                                              fontSize: AppTheme
-                                                                  .large,
-                                                              maxLines: 1,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700,
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            margin:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    left: 10),
-                                                            width: 0.5,
-                                                            height:
-                                                                AppTheme.big_20,
-                                                            color:
-                                                                AppTheme.grey,
-                                                          ),
-                                                          IconButton(
-                                                              onPressed: () {
-                                                                Utils()
-                                                                    .showYesNoAlert(
-                                                                        context:
-                                                                            context,
-                                                                        message:
-                                                                            "Are you sure you want to delete the outlet?",
-                                                                        onYesPressed:
-                                                                            () {
-                                                                          Navigator.of(context)
-                                                                              .pop();
-
-                                                                          deleteOutlet(
-                                                                              outletList[index].outletId);
-                                                                        },
-                                                                        onNoPressed:
-                                                                            () {
-                                                                          Navigator.of(context)
-                                                                              .pop();
-                                                                        });
-                                                              },
-                                                              icon: const Icon(
-                                                                Icons
-                                                                    .delete_outline,
-                                                                color: AppTheme
-                                                                    .red,
-                                                                size: 20,
-                                                              ))
-                                                        ],
-                                                      )
-                                                    : CText(
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                right: 10,
-                                                                top: 0,
-                                                                bottom: 5),
-                                                        text: outletList[index]
-                                                            .serviceType,
-                                                        textColor: AppTheme
-                                                            .grayAsparagus,
-                                                        fontFamily:
-                                                            AppTheme.urbanist,
-                                                        fontSize:
-                                                            AppTheme.large,
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                              ],
-                                            ),
+                                                      FontWeight
+                                                          .w600,
+                                                    ),
+                                                  ))
+                                                  : Container()
+                                            ],
                                           ),
-                                        ),
-                                      );
-                                    })
-                                : Container()
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            list.isNotEmpty
-                                ? Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      CText(
-                                        padding: const EdgeInsets.only(
-                                            left: 20, right: 20),
-                                        text: "Recent Inspection Logs",
-                                        textColor: AppTheme.black,
-                                        fontFamily: AppTheme.urbanist,
-                                        fontSize: AppTheme.big_20,
-                                        fontWeight: FontWeight.w700,
+                                          CText(
+                                            textAlign: TextAlign.start,
+                                            padding:
+                                            const EdgeInsets.only(
+                                                right: 10),
+                                            text: outletList[index]
+                                                .ownerShipType,
+                                            textColor:
+                                            AppTheme.grayAsparagus,
+                                            fontFamily: AppTheme.urbanist,
+                                            fontSize: AppTheme.large,
+                                            maxLines: 2,
+                                            overflow:
+                                            TextOverflow.ellipsis,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          outletList[index].newAdded &&
+                                              outletList[index]
+                                                  .inspectionStatusId <
+                                                  2
+                                              ? Row(
+                                            children: [
+                                              Expanded(
+                                                  child: CText(
+                                                    textAlign:
+                                                    TextAlign.start,
+                                                    padding:
+                                                    const EdgeInsets
+                                                        .only(
+                                                        right: 10,
+                                                        top: 0,
+                                                        bottom: 5),
+                                                    text: outletList[
+                                                    index]
+                                                        .serviceType,
+                                                    textColor: AppTheme
+                                                        .grayAsparagus,
+                                                    fontFamily: AppTheme
+                                                        .urbanist,
+                                                    fontSize:
+                                                    AppTheme.large,
+                                                    maxLines: 2,
+                                                    overflow:
+                                                    TextOverflow
+                                                        .ellipsis,
+                                                    fontWeight:
+                                                    FontWeight.w600,
+                                                  )),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  showAddOutletSheet(
+                                                      outletList[
+                                                      index]);
+                                                },
+                                                behavior:
+                                                HitTestBehavior
+                                                    .translucent,
+                                                child: CText(
+                                                  textAlign:
+                                                  TextAlign
+                                                      .start,
+                                                  padding:
+                                                  const EdgeInsets
+                                                      .only(
+                                                      right: 10,
+                                                      top: 5,
+                                                      bottom:
+                                                      5),
+                                                  text: "EDIT",
+                                                  textColor: AppTheme
+                                                      .colorPrimary,
+                                                  fontFamily:
+                                                  AppTheme
+                                                      .urbanist,
+                                                  fontSize: AppTheme
+                                                      .large,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                  TextOverflow
+                                                      .ellipsis,
+                                                  fontWeight:
+                                                  FontWeight
+                                                      .w700,
+                                                ),
+                                              ),
+                                              Container(
+                                                margin:
+                                                const EdgeInsets
+                                                    .only(
+                                                    left: 10),
+                                                width: 0.5,
+                                                height:
+                                                AppTheme.big_20,
+                                                color:
+                                                AppTheme.grey,
+                                              ),
+                                              IconButton(
+                                                  onPressed: () {
+                                                    Utils()
+                                                        .showYesNoAlert(
+                                                        context:
+                                                        context,
+                                                        message:
+                                                        "Are you sure you want to delete the outlet?",
+                                                        onYesPressed:
+                                                            () {
+                                                          Navigator.of(context)
+                                                              .pop();
+
+                                                          deleteOutlet(
+                                                              outletList[index].outletId);
+                                                        },
+                                                        onNoPressed:
+                                                            () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        });
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons
+                                                        .delete_outline,
+                                                    color: AppTheme
+                                                        .red,
+                                                    size: 20,
+                                                  ))
+                                            ],
+                                          )
+                                              : CText(
+                                            textAlign:
+                                            TextAlign.start,
+                                            padding:
+                                            const EdgeInsets
+                                                .only(
+                                                right: 10,
+                                                top: 0,
+                                                bottom: 5),
+                                            text: outletList[index]
+                                                .serviceType,
+                                            textColor: AppTheme
+                                                .grayAsparagus,
+                                            fontFamily:
+                                            AppTheme.urbanist,
+                                            fontSize:
+                                            AppTheme.large,
+                                            maxLines: 2,
+                                            overflow: TextOverflow
+                                                .ellipsis,
+                                            fontWeight:
+                                            FontWeight.w600,
+                                          ),
+                                        ],
                                       ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Get.to(
-                                              transition:
-                                                  Transition.rightToLeft,
-                                              PatrolVisitsAll(
-                                                place: entity!,
-                                                list: list,
-                                              ));
-                                        },
-                                        child: CText(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20),
-                                          textAlign: TextAlign.end,
-                                          text: "VIEW ALL LOGS",
-                                          textColor: AppTheme.textColorTwo,
-                                          fontFamily: AppTheme.urbanist,
-                                          fontSize: AppTheme.medium,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                : Container(),
-                            list.isNotEmpty
-                                ? ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    scrollDirection: Axis.vertical,
-                                    itemCount:
-                                        list.length > 4 ? 4 : list.length,
-                                    itemBuilder: (context, index) {
-                                      return GestureDetector(
-                                        onTap: () {},
-                                        child: Card(
-                                            elevation: 2,
-                                            color: AppTheme.white,
-                                            surfaceTintColor: AppTheme.white,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                            ),
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 20, vertical: 10),
-                                            child: Column(
-                                              children: [
-                                                Utils()
-                                                    .sizeBoxHeight(height: 15),
-                                                Row(
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: CText(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 20,
-                                                                right: 10),
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        text: "Visit ID",
-                                                        fontFamily:
-                                                            AppTheme.urbanist,
-                                                        fontSize:
-                                                            AppTheme.large,
-                                                        textColor: AppTheme
-                                                            .grayAsparagus,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      flex: 3,
-                                                      child: CText(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                right: 20,
-                                                                left: 10),
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        text: list[index]
-                                                            .patrolId
-                                                            .toString(),
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        fontFamily:
-                                                            AppTheme.urbanist,
-                                                        fontSize:
-                                                            AppTheme.large,
-                                                        textColor: AppTheme
-                                                            .grayAsparagus,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                  ],
+                                    ),
+                                  ),
+                                );
+                              })
+                              : Container()
+                        ],
+                      )
+                          : Column(
+                        children: [
+                          list.isNotEmpty
+                              ? Row(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.center,
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              CText(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20),
+                                text: "Recent Inspection Logs",
+                                textColor: AppTheme.black,
+                                fontFamily: AppTheme.urbanist,
+                                fontSize: AppTheme.big_20,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Get.to(
+                                      transition:
+                                      Transition.rightToLeft,
+                                      PatrolVisitsAll(
+                                        place: entity!,
+                                        list: list,
+                                      ));
+                                },
+                                child: CText(
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 20),
+                                  textAlign: TextAlign.end,
+                                  text: "VIEW ALL LOGS",
+                                  textColor: AppTheme.textColorTwo,
+                                  fontFamily: AppTheme.urbanist,
+                                  fontSize: AppTheme.medium,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              )
+                            ],
+                          )
+                              : Container(),
+                          list.isNotEmpty
+                              ? ListView.builder(
+                              shrinkWrap: true,
+                              physics:
+                              const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemCount:
+                              list.length > 4 ? 4 : list.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {},
+                                  child: Card(
+                                      elevation: 2,
+                                      color: AppTheme.white,
+                                      surfaceTintColor: AppTheme.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(15),
+                                      ),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 10),
+                                      child: Column(
+                                        children: [
+                                          Utils()
+                                              .sizeBoxHeight(height: 15),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 2,
+                                                child: CText(
+                                                  padding:
+                                                  const EdgeInsets
+                                                      .only(
+                                                      left: 20,
+                                                      right: 10),
+                                                  textAlign:
+                                                  TextAlign.start,
+                                                  text: "Visit ID",
+                                                  fontFamily:
+                                                  AppTheme.urbanist,
+                                                  fontSize:
+                                                  AppTheme.large,
+                                                  textColor: AppTheme
+                                                      .grayAsparagus,
+                                                  fontWeight:
+                                                  FontWeight.w600,
                                                 ),
-                                                Utils()
-                                                    .sizeBoxHeight(height: 5),
-                                                Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: CText(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 20,
-                                                                right: 10),
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        text: "Date & Time",
-                                                        fontFamily:
-                                                            AppTheme.urbanist,
-                                                        fontSize:
-                                                            AppTheme.large,
-                                                        textColor: AppTheme
-                                                            .grayAsparagus,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    // 2024-04-29T18:49:24.103
-                                                    Expanded(
-                                                      flex: 3,
-                                                      child: CText(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                right: 20,
-                                                                left: 10),
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        text:
-                                                            "${DateFormat(dateFormat).format(DateFormat(fullDateTimeFormat).parse(list[index].createdOn))} \n${DateFormat("hh:mm:ss aa").format(DateFormat(fullDateTimeFormat).parse(list[index].createdOn))}",
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        fontFamily:
-                                                            AppTheme.urbanist,
-                                                        fontSize:
-                                                            AppTheme.large,
-                                                        textColor: AppTheme
-                                                            .grayAsparagus,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                  ],
+                                              ),
+                                              Expanded(
+                                                flex: 3,
+                                                child: CText(
+                                                  padding:
+                                                  const EdgeInsets
+                                                      .only(
+                                                      right: 20,
+                                                      left: 10),
+                                                  textAlign:
+                                                  TextAlign.start,
+                                                  text: list[index]
+                                                      .patrolId
+                                                      .toString(),
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow
+                                                      .ellipsis,
+                                                  fontFamily:
+                                                  AppTheme.urbanist,
+                                                  fontSize:
+                                                  AppTheme.large,
+                                                  textColor: AppTheme
+                                                      .grayAsparagus,
+                                                  fontWeight:
+                                                  FontWeight.w600,
                                                 ),
-                                                Utils()
-                                                    .sizeBoxHeight(height: 5),
-                                                Row(
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: CText(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 20,
-                                                                right: 10),
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        text: "Comments",
-                                                        fontFamily:
-                                                            AppTheme.urbanist,
-                                                        fontSize:
-                                                            AppTheme.large,
-                                                        textColor: AppTheme
-                                                            .grayAsparagus,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      flex: 3,
-                                                      child: CText(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                right: 20,
-                                                                left: 10),
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        text: list[index]
-                                                            .comments,
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        textColor: AppTheme
-                                                            .textColorRed,
-                                                        fontFamily:
-                                                            AppTheme.urbanist,
-                                                        fontSize:
-                                                            AppTheme.large,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                  ],
+                                              ),
+                                            ],
+                                          ),
+                                          Utils()
+                                              .sizeBoxHeight(height: 5),
+                                          Row(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                flex: 2,
+                                                child: CText(
+                                                  padding:
+                                                  const EdgeInsets
+                                                      .only(
+                                                      left: 20,
+                                                      right: 10),
+                                                  textAlign:
+                                                  TextAlign.start,
+                                                  text: "Date & Time",
+                                                  fontFamily:
+                                                  AppTheme.urbanist,
+                                                  fontSize:
+                                                  AppTheme.large,
+                                                  textColor: AppTheme
+                                                      .grayAsparagus,
+                                                  fontWeight:
+                                                  FontWeight.w600,
                                                 ),
-                                                Utils()
-                                                    .sizeBoxHeight(height: 15),
-                                              ],
-                                            )),
-                                      );
-                                    })
-                                : Container(),
-                          ],
-                        ),
-                ],
-              ),
-            )),
+                                              ),
+                                              // 2024-04-29T18:49:24.103
+                                              Expanded(
+                                                flex: 3,
+                                                child: CText(
+                                                  padding:
+                                                  const EdgeInsets
+                                                      .only(
+                                                      right: 20,
+                                                      left: 10),
+                                                  textAlign:
+                                                  TextAlign.start,
+                                                  text:
+                                                  "${DateFormat(dateFormat).format(DateFormat(fullDateTimeFormat).parse(list[index].createdOn))} \n${DateFormat("hh:mm:ss aa").format(DateFormat(fullDateTimeFormat).parse(list[index].createdOn))}",
+                                                  maxLines: 2,
+                                                  overflow: TextOverflow
+                                                      .ellipsis,
+                                                  fontFamily:
+                                                  AppTheme.urbanist,
+                                                  fontSize:
+                                                  AppTheme.large,
+                                                  textColor: AppTheme
+                                                      .grayAsparagus,
+                                                  fontWeight:
+                                                  FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Utils()
+                                              .sizeBoxHeight(height: 5),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 2,
+                                                child: CText(
+                                                  padding:
+                                                  const EdgeInsets
+                                                      .only(
+                                                      left: 20,
+                                                      right: 10),
+                                                  textAlign:
+                                                  TextAlign.start,
+                                                  text: "Comments",
+                                                  fontFamily:
+                                                  AppTheme.urbanist,
+                                                  fontSize:
+                                                  AppTheme.large,
+                                                  textColor: AppTheme
+                                                      .grayAsparagus,
+                                                  fontWeight:
+                                                  FontWeight.w600,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 3,
+                                                child: CText(
+                                                  padding:
+                                                  const EdgeInsets
+                                                      .only(
+                                                      right: 20,
+                                                      left: 10),
+                                                  textAlign:
+                                                  TextAlign.start,
+                                                  text: list[index]
+                                                      .comments,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow
+                                                      .ellipsis,
+                                                  textColor: AppTheme
+                                                      .textColorRed,
+                                                  fontFamily:
+                                                  AppTheme.urbanist,
+                                                  fontSize:
+                                                  AppTheme.large,
+                                                  fontWeight:
+                                                  FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Utils()
+                                              .sizeBoxHeight(height: 15),
+                                        ],
+                                      )),
+                                );
+                              })
+                              : Container(),
+                        ],
+                      ),
+                    ],
+                  ),
+                )),
             widget.category != 1 && restaurantInspectionStatusId < 6
                 ? Container(
-                    margin: const EdgeInsets.only(top: 10, bottom: 10),
-                    padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewPadding.bottom),
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      children: [
-                        Visibility(
-                          visible: !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
-                              widget.fromActive,
-                          child: Expanded(
-                              child: Container(
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.symmetric(horizontal: 5),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                debugPrint(widget.taskId.toString());
-                                debugPrint(widget.statusId.toString());
-                                debugPrint(widget.task?.primary.toString());
-                                if (widget.taskId != null) {
-                                  if (widget.statusId == 5 ||
-                                      widget.task?.primary == true) {
-                                    Get.to(
-                                        transition: Transition.rightToLeft,
-                                        CreateNewPatrol(
-                                          entityId: widget.entityId,
-                                          taskId: widget.taskId,
-                                          statusId: widget.statusId,
-                                          inspectionId: widget.inspectionId,
-                                          mainTaskId:
-                                              widget.task?.mainTaskId ?? 0,
-                                          primary:
-                                              widget.task?.primary ?? false,
-                                          newAdded: false,
-                                          isAgentEmployees:
-                                              widget.isAgentEmployees,
-                                          taskType: widget.task?.taskType ?? 0,
-                                        ))?.then((value) {
-                                      if (value != null) {
-                                        if (!mounted) return;
-                                        setState(() {
-                                          widget.statusId = value["statusId"];
-                                          widget.inspectionId =
-                                              value["inspectionId"];
-                                          widget.taskId = value["taskId"];
-                                        });
-                                      }
-                                    });
-                                  }
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                backgroundColor: widget.taskId != null
-                                    ? AppTheme.colorPrimary
-                                    : AppTheme.paleGray,
-                                minimumSize: const Size.fromHeight(50),
-                              ),
-                              child: CText(
-                                textAlign: TextAlign.center,
-                                text: widget.statusId == 5
-                                    ? "Continue Inspection"
-                                    : "Create Inspection",
-                                textColor: AppTheme.textPrimary,
-                                fontSize: AppTheme.large,
-                                fontFamily: AppTheme.urbanist,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          )),
-                        ),
-                        Visibility(
-                            visible:
-                                !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
-                                    widget.taskId != null &&
-                                    widget.inspectionId != 0 &&
-                                    widget.task?.primary == true,
-                            child: Expanded(
-                                child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 5),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Utils().showYesNoAlert(
-                                      context: context,
-                                      message:
-                                          "Are you sure you want to cancel the inspection?",
-                                      onYesPressed: () {
-                                        Navigator.of(context).pop();
-                                        showRejectRemarkSheet(widget.taskId);
-                                      },
-                                      onNoPressed: () {
-                                        Navigator.of(context).pop();
+              margin: const EdgeInsets.only(top: 10, bottom: 10),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewPadding.bottom),
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                children: [
+                  Visibility(
+                    visible: !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
+                        widget.fromActive,
+                    child: Expanded(
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              debugPrint(widget.taskId.toString());
+                              debugPrint(widget.statusId.toString());
+                              debugPrint(widget.task?.primary.toString());
+                              if (widget.taskId != null) {
+                                if (widget.statusId == 5 ||
+                                    widget.task?.primary == true) {
+                                  Get.to(
+                                      transition: Transition.rightToLeft,
+                                      CreateNewPatrol(
+                                        entityId: widget.entityId,
+                                        taskId: widget.taskId,
+                                        statusId: widget.statusId,
+                                        inspectionId: widget.inspectionId,
+                                        mainTaskId:
+                                        widget.task?.mainTaskId ?? 0,
+                                        primary:
+                                        widget.task?.primary ?? false,
+                                        newAdded: false,
+                                        isAgentEmployees:
+                                        widget.isAgentEmployees,
+                                        taskType: widget.task?.taskType ?? 0,
+                                      ))?.then((value) {
+                                    if (value != null) {
+                                      if (!mounted) return;
+                                      setState(() {
+                                        widget.statusId = value["statusId"];
+                                        widget.inspectionId =
+                                        value["inspectionId"];
+                                        widget.taskId = value["taskId"];
                                       });
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  backgroundColor: widget.taskId != null
-                                      ? AppTheme.colorPrimary
-                                      : AppTheme.grey,
-                                  minimumSize: const Size.fromHeight(50),
-                                ),
-                                child: CText(
-                                  text: "Cancel Inspection",
-                                  textColor: AppTheme.textPrimary,
-                                  textAlign: TextAlign.center,
-                                  fontSize: AppTheme.large,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                    }
+                                  });
+                                }
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
                               ),
-                            ))),
-                      ],
-                    ),
-                  )
+                              backgroundColor: widget.taskId != null
+                                  ? AppTheme.colorPrimary
+                                  : AppTheme.paleGray,
+                              minimumSize: const Size.fromHeight(50),
+                            ),
+                            child: CText(
+                              textAlign: TextAlign.center,
+                              text: widget.statusId == 5
+                                  ? "Continue Inspection"
+                                  : "Create Inspection",
+                              textColor: AppTheme.textPrimary,
+                              fontSize: AppTheme.large,
+                              fontFamily: AppTheme.urbanist,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        )),
+                  ),
+                  Visibility(
+                      visible:
+                      !storeUserData.getBoolean(IS_AGENT_LOGIN) &&
+                          widget.taskId != null &&
+                          widget.inspectionId != 0 &&
+                          widget.task?.primary == true,
+                      child: Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Builder(
+                              builder: (context) {
+                                final cancelButtonColor = widget.taskId != null
+                                    ? AppTheme.colorPrimary
+                                    : AppTheme.grey;
+                                return ElevatedButton(
+                                  onPressed: () {
+                                    Utils().showYesNoAlert(
+                                        context: context,
+                                        message:
+                                        "Are you sure you want to cancel the inspection?",
+                                        onYesPressed: () {
+                                          Navigator.of(context).pop();
+                                          showRejectRemarkSheet(widget.taskId);
+                                        },
+                                        onNoPressed: () {
+                                          Navigator.of(context).pop();
+                                        });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    backgroundColor: cancelButtonColor,
+                                    minimumSize: const Size.fromHeight(50),
+                                  ),
+                                  child: CText(
+                                    text: "Cancel Inspection",
+                                    textColor: AppTheme.textPrimary,
+                                    textAlign: TextAlign.center,
+                                    fontSize: AppTheme.large,
+                                    fontFamily: AppTheme.urbanist,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                );
+                              },
+                            ),
+                          ))),
+                ],
+              ),
+            )
                 : Container(),
           ],
         ),
@@ -2012,236 +2017,236 @@ class _EntityDetailsState extends State<EntityDetails> {
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
-          return Container(
-            decoration: const BoxDecoration(
-                color: AppTheme.mainBackground,
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(15),
-                    topLeft: Radius.circular(15))),
-            height: MediaQuery.of(context).size.height - 50,
-            child: SingleChildScrollView(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context)
-                    .viewInsets
-                    .bottom, // Adjust padding based on keyboard
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: CText(
-                        padding:
+              return Container(
+                decoration: const BoxDecoration(
+                    color: AppTheme.mainBackground,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(15),
+                        topLeft: Radius.circular(15))),
+                height: MediaQuery.of(context).size.height - 50,
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context)
+                        .viewInsets
+                        .bottom, // Adjust padding based on keyboard
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: CText(
+                            padding:
                             const EdgeInsets.only(right: 20, left: 10, top: 10),
-                        textAlign: TextAlign.center,
-                        text: "DONE",
-                        textColor: AppTheme.black,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.medium,
-                        fontWeight: FontWeight.w700,
+                            textAlign: TextAlign.center,
+                            text: "DONE",
+                            textColor: AppTheme.black,
+                            fontFamily: AppTheme.urbanist,
+                            fontSize: AppTheme.medium,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    controller: taskName,
-                    hint: "",
-                    focusNode: node,
-                    value: taskName.text,
-                    title: 'Task Name :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  FormTextField(
-                    onTap: () {
-                      Get.to(
+                      FormTextField(
+                        onChange: (value) {
+                          myState(() {});
+                        },
+                        controller: taskName,
+                        hint: "",
+                        focusNode: node,
+                        value: taskName.text,
+                        title: 'Task Name :',
+                        inputBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        textColor: AppTheme.grayAsparagus,
+                        inputType: TextInputType.text,
+                      ),
+                      FormTextField(
+                        onTap: () {
+                          Get.to(
                               SelectInspector(
                                 isPrimary: true,
                                 selectedUsers: selectedUsers,
                                 primaryInspector: selectedPrimaryUsers,
                               ),
                               preventDuplicates: false)
-                          ?.then((value) {
-                        if (value != null) {
-                          myState(() {
-                            primaryUsers.clear();
-                            users.clear();
-                            selectedUsers.clear();
-                            selectedPrimaryUsers = value;
-                            for (var test in selectedPrimaryUsers) {
-                              primaryUsers.add(test.name);
+                              ?.then((value) {
+                            if (value != null) {
+                              myState(() {
+                                primaryUsers.clear();
+                                users.clear();
+                                selectedUsers.clear();
+                                selectedPrimaryUsers = value;
+                                for (var test in selectedPrimaryUsers) {
+                                  primaryUsers.add(test.name);
+                                }
+                                node.unfocus();
+                                notesNode.unfocus();
+                                FocusScope.of(context).unfocus();
+                              });
                             }
-                            node.unfocus();
-                            notesNode.unfocus();
-                            FocusScope.of(context).unfocus();
                           });
-                        }
-                      });
-                    },
-                    hint: "",
-                    value: primaryUsers.isNotEmpty
-                        ? primaryUsers.join(", ").toString()
-                        : "",
-                    title: 'Primary Inspector :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  FormTextField(
-                    onTap: () {
-                      if (primaryUsers.isEmpty) {
-                        Utils().showAlert(
-                            buildContext: buildContext,
-                            message: "Please select primary inspector first.",
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            });
-                      } else {
-                        Get.to(
+                        },
+                        hint: "",
+                        value: primaryUsers.isNotEmpty
+                            ? primaryUsers.join(", ").toString()
+                            : "",
+                        title: 'Primary Inspector :',
+                        inputBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        textColor: AppTheme.grayAsparagus,
+                        inputType: TextInputType.text,
+                      ),
+                      FormTextField(
+                        onTap: () {
+                          if (primaryUsers.isEmpty) {
+                            Utils().showAlert(
+                                buildContext: buildContext,
+                                message: "Please select primary inspector first.",
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                });
+                          } else {
+                            Get.to(
                                 SelectInspector(
                                   primaryInspector: selectedPrimaryUsers,
                                   isPrimary: false,
                                   selectedUsers: selectedUsers,
                                 ),
                                 preventDuplicates: false)
-                            ?.then((value) {
-                          if (value != null) {
-                            myState(() {
-                              users.clear();
-                              selectedUsers = value;
-                              for (var test in selectedUsers) {
-                                users.add(test.name);
+                                ?.then((value) {
+                              if (value != null) {
+                                myState(() {
+                                  users.clear();
+                                  selectedUsers = value;
+                                  for (var test in selectedUsers) {
+                                    users.add(test.name);
+                                  }
+                                  node.unfocus();
+                                  notesNode.unfocus();
+                                  FocusScope.of(context).unfocus();
+                                });
                               }
-                              node.unfocus();
-                              notesNode.unfocus();
-                              FocusScope.of(context).unfocus();
                             });
                           }
-                        });
-                      }
-                    },
-                    hint: "",
-                    value: users.isNotEmpty ? users.join(", ").toString() : "",
-                    title: 'Other Inspectors :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  Visibility(
-                    visible: isHideAgents,
-                    child: FormTextField(
-                      onTap: () {
-                        List<SearchEntityData> list = [];
-                        list.add(
-                            SearchEntityData(entityId: 1, entityName: "MMI"));
-                        list.add(
-                            SearchEntityData(entityId: 2, entityName: "AE"));
-                        Get.to(
+                        },
+                        hint: "",
+                        value: users.isNotEmpty ? users.join(", ").toString() : "",
+                        title: 'Other Inspectors :',
+                        inputBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        textColor: AppTheme.grayAsparagus,
+                        inputType: TextInputType.text,
+                      ),
+                      Visibility(
+                        visible: isHideAgents,
+                        child: FormTextField(
+                          onTap: () {
+                            List<SearchEntityData> list = [];
+                            list.add(
+                                SearchEntityData(entityId: 1, entityName: "MMI"));
+                            list.add(
+                                SearchEntityData(entityId: 2, entityName: "AE"));
+                            Get.to(
                                 SelectAgents(
                                   list: list,
                                   selectedAgents: selectedAgents,
                                 ),
                                 preventDuplicates: false)
-                            ?.then((value) {
-                          if (value != null) {
-                            myState(() {
-                              agents.clear();
-                              selectedAgents = value;
-                              for (var test in selectedAgents) {
-                                agents.add(test.entityName);
+                                ?.then((value) {
+                              if (value != null) {
+                                myState(() {
+                                  agents.clear();
+                                  selectedAgents = value;
+                                  for (var test in selectedAgents) {
+                                    agents.add(test.entityName);
+                                  }
+                                  node.unfocus();
+                                  notesNode.unfocus();
+                                  FocusScope.of(context).unfocus();
+                                });
                               }
-                              node.unfocus();
-                              notesNode.unfocus();
-                              FocusScope.of(context).unfocus();
                             });
-                          }
-                        });
-                      },
-                      hint: "",
-                      value:
+                          },
+                          hint: "",
+                          value:
                           agents.isNotEmpty ? agents.join(", ").toString() : "",
-                      title: 'Agents :',
-                      inputBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      textColor: AppTheme.grayAsparagus,
-                      inputType: TextInputType.text,
-                    ),
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    controller: notes,
-                    hint: "",
-                    focusNode: notesNode,
-                    value: notes.text,
-                    title: notesTitle,
-                    minLines: 2,
-                    maxLines: 3,
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  Center(
-                    child: Container(
-                      width: 200,
-                      margin: const EdgeInsets.symmetric(vertical: 20),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (taskName.text.isNotEmpty &&
-                              selectedPrimaryUsers.isNotEmpty &&
-                              selectedUsers.isNotEmpty &&
-                              (!isHideAgents || selectedAgents.isNotEmpty)) {
-                            addTask(
-                                taskName.text,
-                                selectedPrimaryUsers,
-                                selectedUsers,
-                                selectedAgents,
-                                notes.text,
-                                isHideAgents);
-                          }
+                          title: 'Agents :',
+                          inputBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          textColor: AppTheme.grayAsparagus,
+                          inputType: TextInputType.text,
+                        ),
+                      ),
+                      FormTextField(
+                        onChange: (value) {
+                          myState(() {});
                         },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          backgroundColor: taskName.text.isNotEmpty &&
+                        controller: notes,
+                        hint: "",
+                        focusNode: notesNode,
+                        value: notes.text,
+                        title: notesTitle,
+                        minLines: 2,
+                        maxLines: 3,
+                        inputBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        textColor: AppTheme.grayAsparagus,
+                        inputType: TextInputType.text,
+                      ),
+                      Center(
+                        child: Container(
+                          width: 200,
+                          margin: const EdgeInsets.symmetric(vertical: 20),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (taskName.text.isNotEmpty &&
+                                  selectedPrimaryUsers.isNotEmpty &&
+                                  selectedUsers.isNotEmpty &&
+                                  (!isHideAgents || selectedAgents.isNotEmpty)) {
+                                addTask(
+                                    taskName.text,
+                                    selectedPrimaryUsers,
+                                    selectedUsers,
+                                    selectedAgents,
+                                    notes.text,
+                                    isHideAgents);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              backgroundColor: taskName.text.isNotEmpty &&
                                   selectedUsers.isNotEmpty &&
                                   selectedUsers.isNotEmpty &&
                                   (!isHideAgents || selectedAgents.isNotEmpty)
-                              ? AppTheme.colorPrimary
-                              : AppTheme.paleGray,
-                          minimumSize: const Size.fromHeight(50),
-                        ),
-                        child: CText(
-                          text: "Add",
-                          textColor: AppTheme.textPrimary,
-                          fontSize: AppTheme.large,
-                          fontFamily: AppTheme.urbanist,
-                          fontWeight: FontWeight.w700,
+                                  ? AppTheme.colorPrimary
+                                  : AppTheme.paleGray,
+                              minimumSize: const Size.fromHeight(50),
+                            ),
+                            child: CText(
+                              text: "Add",
+                              textColor: AppTheme.textPrimary,
+                              fontSize: AppTheme.large,
+                              fontFamily: AppTheme.urbanist,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      Utils().sizeBoxHeight(height: 250)
+                    ],
                   ),
-                  Utils().sizeBoxHeight(height: 250)
-                ],
-              ),
-            ),
-          );
-        });
+                ),
+              );
+            });
       },
     ).whenComplete(() {
       setState(() {});
@@ -2281,9 +2286,9 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   List<Map<String, dynamic>> _buildUserList(
-    List<AllUserData> primaryUser,
-    List<AllUserData> otherUsers,
-  ) {
+      List<AllUserData> primaryUser,
+      List<AllUserData> otherUsers,
+      ) {
     final users = <Map<String, dynamic>>[];
 
     for (var pUser in primaryUser) {
@@ -2301,11 +2306,11 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   Map<String, dynamic> _buildTaskFields(
-    String taskName,
-    List<Map<String, dynamic>> users,
-    List<int> agentUserId,
-    String notes,
-  ) {
+      String taskName,
+      List<Map<String, dynamic>> users,
+      List<int> agentUserId,
+      String notes,
+      ) {
     return {
       "taskName": taskName,
       "entityId": [widget.entityId],
@@ -2315,14 +2320,14 @@ class _EntityDetailsState extends State<EntityDetails> {
       "notes": notes,
       "createdBy": storeUserData.getInt(USER_ID),
       "createdOn":
-          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
+      DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "taskType": 1,
     };
   }
 
   void _handleAddTaskResponse(String value) {
     final data = jsonDecode(value);
-    
+
     if (data["statusCode"] == 200) {
       _navigateToHomeScreen();
     } else {
@@ -2357,80 +2362,80 @@ class _EntityDetailsState extends State<EntityDetails> {
         focusNode.requestFocus();
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(15),
-                    topLeft: Radius.circular(15))),
-            height: MediaQuery.of(context).size.height * 0.75,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                const SizedBox(
-                  height: 20,
-                ),
-                FormTextField(
-                  onChange: (value) {
-                    setState(() {});
-                  },
-                  cardColor: AppTheme.mainBackground,
-                  hint: "",
-                  controller: remark,
-                  textColor: AppTheme.grayAsparagus,
-                  fontFamily: AppTheme.urbanist,
-                  title: notesTitle,
-                  maxLines: 10,
-                  minLines: 5,
-                ),
-                const SizedBox(height: 10),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (remark.text.isEmpty) {
-                        Utils().showAlert(
-                            buildContext: buildContext,
-                            message: "Please enter the Notes.",
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            });
-                      } else {
-                        setState(() {
-                          loading = true;
-                        });
-                        Navigator.pop(context);
-                        completeTask(remark.text);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      backgroundColor: remark.text.isNotEmpty
-                          ? AppTheme.colorPrimary
-                          : AppTheme.paleGray,
-                      minimumSize: const Size(200, 40),
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(15),
+                        topLeft: Radius.circular(15))),
+                height: MediaQuery.of(context).size.height * 0.75,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    const SizedBox(
+                      height: 20,
                     ),
-                    child: loading
-                        ? const CircularProgressIndicator(
-                            color: AppTheme.white,
-                          )
-                        : const Text(
-                            'Complete Task',
-                            style: TextStyle(
-                                color: AppTheme.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
+                    FormTextField(
+                      onChange: (value) {
+                        setState(() {});
+                      },
+                      cardColor: AppTheme.mainBackground,
+                      hint: "",
+                      controller: remark,
+                      textColor: AppTheme.grayAsparagus,
+                      fontFamily: AppTheme.urbanist,
+                      title: notesTitle,
+                      maxLines: 10,
+                      minLines: 5,
+                    ),
+                    const SizedBox(height: 10),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (remark.text.isEmpty) {
+                            Utils().showAlert(
+                                buildContext: buildContext,
+                                message: "Please enter the Notes.",
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                });
+                          } else {
+                            setState(() {
+                              loading = true;
+                            });
+                            Navigator.pop(context);
+                            completeTask(remark.text);
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                  ),
+                          backgroundColor: remark.text.isNotEmpty
+                              ? AppTheme.colorPrimary
+                              : AppTheme.paleGray,
+                          minimumSize: const Size(200, 40),
+                        ),
+                        child: loading
+                            ? const CircularProgressIndicator(
+                          color: AppTheme.white,
+                        )
+                            : const Text(
+                          'Complete Task',
+                          style: TextStyle(
+                              color: AppTheme.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
                 ),
-                const SizedBox(height: 10),
-              ],
-            ),
-          );
-        });
+              );
+            });
       },
     ).whenComplete(() {});
   }
@@ -2448,75 +2453,75 @@ class _EntityDetailsState extends State<EntityDetails> {
         focusNode.requestFocus();
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(15),
-                    topLeft: Radius.circular(15))),
-            height: MediaQuery.of(context).size.height * 0.75,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                const SizedBox(
-                  height: 20,
-                ),
-                FormTextField(
-                  cardColor: AppTheme.mainBackground,
-                  hint: "",
-                  controller: remark,
-                  textColor: AppTheme.grayAsparagus,
-                  fontFamily: AppTheme.urbanist,
-                  title: notesTitle,
-                  maxLines: 10,
-                  minLines: 5,
-                ),
-                const SizedBox(height: 10),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (remark.text.isEmpty) {
-                        Utils().showAlert(
-                            buildContext: buildContext,
-                            message: "Please enter the notes",
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            });
-                      } else {
-                        setState(() {
-                          loading = true;
-                        });
-                        Navigator.pop(context);
-                        rejectTask(taskId, remark.text);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      backgroundColor: AppTheme.red,
-                      minimumSize: const Size(200, 40),
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(15),
+                        topLeft: Radius.circular(15))),
+                height: MediaQuery.of(context).size.height * 0.75,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    const SizedBox(
+                      height: 20,
                     ),
-                    child: loading
-                        ? const CircularProgressIndicator(
-                            color: AppTheme.white,
-                          )
-                        : const Text(
-                            'Cancel',
-                            style: TextStyle(
-                                color: AppTheme.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
+                    FormTextField(
+                      cardColor: AppTheme.mainBackground,
+                      hint: "",
+                      controller: remark,
+                      textColor: AppTheme.grayAsparagus,
+                      fontFamily: AppTheme.urbanist,
+                      title: notesTitle,
+                      maxLines: 10,
+                      minLines: 5,
+                    ),
+                    const SizedBox(height: 10),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (remark.text.isEmpty) {
+                            Utils().showAlert(
+                                buildContext: buildContext,
+                                message: "Please enter the notes",
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                });
+                          } else {
+                            setState(() {
+                              loading = true;
+                            });
+                            Navigator.pop(context);
+                            rejectTask(taskId, remark.text);
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                  ),
+                          backgroundColor: AppTheme.red,
+                          minimumSize: const Size(200, 40),
+                        ),
+                        child: loading
+                            ? const CircularProgressIndicator(
+                          color: AppTheme.white,
+                        )
+                            : const Text(
+                          'Cancel',
+                          style: TextStyle(
+                              color: AppTheme.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
                 ),
-                const SizedBox(height: 10),
-              ],
-            ),
-          );
-        });
+              );
+            });
       },
     ).whenComplete(() {});
   }
@@ -2560,7 +2565,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
     LoadingIndicatorDialog().show(context);
     final url = "Mobile/NewOutlet/Delete?newOutletid=$outletId";
-    
+
     Api().getAPI(context, url).then((value) async {
       LoadingIndicatorDialog().dismiss();
       _handleDeleteOutletResponse(value, outletId);
@@ -2569,7 +2574,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   void _handleDeleteOutletResponse(String value, int outletId) {
     final data = jsonDecode(value);
-    
+
     if (data["statusCode"] == 200) {
       _processSuccessfulOutletDelete(outletId);
     } else {
@@ -2581,10 +2586,10 @@ class _EntityDetailsState extends State<EntityDetails> {
     setState(() {
       _removeOutletFromList(outletId);
       outletList.clear();
-      
+
       final inActiveList = _buildInActiveList();
       _populateOutletList();
-      
+
       storeUserData.setString(
         entityId.toString(),
         OutletData.encode(inActiveList),
@@ -2658,286 +2663,286 @@ class _EntityDetailsState extends State<EntityDetails> {
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
-          return Container(
-            decoration: const BoxDecoration(
-                color: AppTheme.mainBackground,
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(15),
-                    topLeft: Radius.circular(15))),
-            height: MediaQuery.of(context).size.height - 50,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: CText(
-                        padding:
+              return Container(
+                decoration: const BoxDecoration(
+                    color: AppTheme.mainBackground,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(15),
+                        topLeft: Radius.circular(15))),
+                height: MediaQuery.of(context).size.height - 50,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: CText(
+                            padding:
                             const EdgeInsets.only(right: 20, left: 10, top: 10),
-                        textAlign: TextAlign.center,
-                        text: "DONE",
-                        textColor: AppTheme.black,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.medium,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  FormTextField(
-                    focusNode: focusNode,
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    controller: itemName,
-                    hint: "",
-                    value: itemName.text,
-                    title: 'Outlet Name :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    hint: "",
-                    value: ownerShipType?.text ?? "",
-                    title: 'Ownership :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                    onTap: () {
-                      selectOutletTypeSheet(
-                          ownerShipList, "ownership", myState, focusNodeButton);
-                    },
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    hint: "",
-                    value: serviceType?.text ?? "",
-                    title: 'Service Type :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                    onTap: () {
-                      selectOutletTypeSheet(outletServiceList, "service",
-                          myState, focusNodeButton);
-                    },
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    hint: "",
-                    value: outletType?.text ?? "",
-                    title: 'Outlet Type :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                    onTap: () {
-                      List<AreaData> types = [];
-                      types.add(AreaData(id: 1, text: "Main Outlet"));
-                      types.add(AreaData(id: 2, text: "Sub Outlet"));
-                      selectOutletTypeSheet(
-                          types, "type", myState, focusNodeButton);
-                    },
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    controller: managerName,
-                    hint: "",
-                    value: managerName.text,
-                    title: 'Manager Name :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    inputFormatters: [
-                      maskFormatter,
-                    ],
-                    controller: emiratesId,
-                    hint: "XXX-XXXX-XXXXXXX-X",
-                    value: emiratesId.text,
-                    title: 'Emirates ID :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.number,
-                  ),
-                  FormMobileTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    controller: mobileNumber,
-                    hint: "",
-                    value: mobileNumber.text,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(8),
-                      // Limits the length to 8 characters
-                    ],
-                    title: 'Contact Number :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.phone,
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    controller: notes,
-                    hint: "",
-                    value: notes.text,
-                    title: notesTitle,
-                    minLines: 2,
-                    maxLines: 2,
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  Center(
-                    child: Container(
-                      width: 200,
-                      margin: const EdgeInsets.symmetric(vertical: 20),
-                      child: ElevatedButton(
-                        focusNode: focusNodeButton,
-                        onPressed: () {
-                          if (itemName.text.isEmpty) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter outlet name",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (serviceType == null) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please select service type",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (ownerShipType == null) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please select ownership type",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (outletType == null) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please select outlet type",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (managerName.text.isEmpty) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter manager name",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (emiratesId.text.isEmpty ||
-                              emiratesId.text.length != 18) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter valid emiratesID",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (mobileNumber.text.isEmpty ||
-                              mobileNumber.text.length != 8) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter valid contact number",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else if (notes.text.isEmpty) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter notes",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else {
-                            if (model != null) {
-                              updateOutlet(
-                                  myState,
-                                  OutletData(
-                                      outletId: model.outletId,
-                                      outletName: itemName.text,
-                                      ownerShipTypeId: ownerShipType!.id,
-                                      serviceTypeId: serviceType!.id,
-                                      ownerShipType: ownerShipType!.text,
-                                      emiratesId: emiratesId.text
-                                          .toString()
-                                          .replaceAll("-", ""),
-                                      managerName: managerName.text,
-                                      contactNumber:
-                                          "+9715${mobileNumber.text}",
-                                      notes: notes.text,
-                                      outletTypeId: outletType!.id,
-                                      outletType: outletType!.text,
-                                      newAdded: true,
-                                      serviceType: serviceType!.text,
-                                      inspectionStatusId:
-                                          model.inspectionStatusId,
-                                      inspectorId:
-                                          storeUserData.getInt(USER_ID),
-                                      inspectionId: model.inspectionId));
-                            } else {
-                              addOutlet(
-                                  myState,
-                                  OutletData(
-                                      outletId: 0,
-                                      outletName: itemName.text,
-                                      ownerShipTypeId: ownerShipType!.id,
-                                      serviceTypeId: serviceType!.id,
-                                      ownerShipType: ownerShipType!.text,
-                                      emiratesId: emiratesId.text
-                                          .toString()
-                                          .replaceAll("-", ""),
-                                      managerName: managerName.text,
-                                      contactNumber:
-                                          "+9715${mobileNumber.text}",
-                                      notes: notes.text,
-                                      newAdded: true,
-                                      inspectorId:
-                                          storeUserData.getInt(USER_ID),
-                                      serviceType: serviceType!.text,
-                                      outletTypeId: outletType!.id,
-                                      outletType: outletType!.text,
-                                      inspectionStatusId: 0,
-                                      inspectionId: 0));
-                            }
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                            textAlign: TextAlign.center,
+                            text: "DONE",
+                            textColor: AppTheme.black,
+                            fontFamily: AppTheme.urbanist,
+                            fontSize: AppTheme.medium,
+                            fontWeight: FontWeight.w700,
                           ),
-                          backgroundColor: serviceType != null &&
+                        ),
+                      ),
+                      FormTextField(
+                        focusNode: focusNode,
+                        onChange: (value) {
+                          myState(() {});
+                        },
+                        controller: itemName,
+                        hint: "",
+                        value: itemName.text,
+                        title: 'Outlet Name :',
+                        inputBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        textColor: AppTheme.grayAsparagus,
+                        inputType: TextInputType.text,
+                      ),
+                      FormTextField(
+                        onChange: (value) {
+                          myState(() {});
+                        },
+                        hint: "",
+                        value: ownerShipType?.text ?? "",
+                        title: 'Ownership :',
+                        inputBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        textColor: AppTheme.grayAsparagus,
+                        inputType: TextInputType.text,
+                        onTap: () {
+                          selectOutletTypeSheet(
+                              ownerShipList, "ownership", myState, focusNodeButton);
+                        },
+                      ),
+                      FormTextField(
+                        onChange: (value) {
+                          myState(() {});
+                        },
+                        hint: "",
+                        value: serviceType?.text ?? "",
+                        title: 'Service Type :',
+                        inputBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        textColor: AppTheme.grayAsparagus,
+                        inputType: TextInputType.text,
+                        onTap: () {
+                          selectOutletTypeSheet(outletServiceList, "service",
+                              myState, focusNodeButton);
+                        },
+                      ),
+                      FormTextField(
+                        onChange: (value) {
+                          myState(() {});
+                        },
+                        hint: "",
+                        value: outletType?.text ?? "",
+                        title: 'Outlet Type :',
+                        inputBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        textColor: AppTheme.grayAsparagus,
+                        inputType: TextInputType.text,
+                        onTap: () {
+                          List<AreaData> types = [];
+                          types.add(AreaData(id: 1, text: "Main Outlet"));
+                          types.add(AreaData(id: 2, text: "Sub Outlet"));
+                          selectOutletTypeSheet(
+                              types, "type", myState, focusNodeButton);
+                        },
+                      ),
+                      FormTextField(
+                        onChange: (value) {
+                          myState(() {});
+                        },
+                        controller: managerName,
+                        hint: "",
+                        value: managerName.text,
+                        title: 'Manager Name :',
+                        inputBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        textColor: AppTheme.grayAsparagus,
+                        inputType: TextInputType.text,
+                      ),
+                      FormTextField(
+                        onChange: (value) {
+                          myState(() {});
+                        },
+                        inputFormatters: [
+                          maskFormatter,
+                        ],
+                        controller: emiratesId,
+                        hint: "XXX-XXXX-XXXXXXX-X",
+                        value: emiratesId.text,
+                        title: 'Emirates ID :',
+                        inputBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        textColor: AppTheme.grayAsparagus,
+                        inputType: TextInputType.number,
+                      ),
+                      FormMobileTextField(
+                        onChange: (value) {
+                          myState(() {});
+                        },
+                        controller: mobileNumber,
+                        hint: "",
+                        value: mobileNumber.text,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(8),
+                          // Limits the length to 8 characters
+                        ],
+                        title: 'Contact Number :',
+                        inputBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        textColor: AppTheme.grayAsparagus,
+                        inputType: TextInputType.phone,
+                      ),
+                      FormTextField(
+                        onChange: (value) {
+                          myState(() {});
+                        },
+                        controller: notes,
+                        hint: "",
+                        value: notes.text,
+                        title: notesTitle,
+                        minLines: 2,
+                        maxLines: 2,
+                        inputBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        textColor: AppTheme.grayAsparagus,
+                        inputType: TextInputType.text,
+                      ),
+                      Center(
+                        child: Container(
+                          width: 200,
+                          margin: const EdgeInsets.symmetric(vertical: 20),
+                          child: ElevatedButton(
+                            focusNode: focusNodeButton,
+                            onPressed: () {
+                              if (itemName.text.isEmpty) {
+                                Utils().showAlert(
+                                    buildContext: buildContext,
+                                    message: "Please enter outlet name",
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    });
+                              } else if (serviceType == null) {
+                                Utils().showAlert(
+                                    buildContext: buildContext,
+                                    message: "Please select service type",
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    });
+                              } else if (ownerShipType == null) {
+                                Utils().showAlert(
+                                    buildContext: buildContext,
+                                    message: "Please select ownership type",
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    });
+                              } else if (outletType == null) {
+                                Utils().showAlert(
+                                    buildContext: buildContext,
+                                    message: "Please select outlet type",
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    });
+                              } else if (managerName.text.isEmpty) {
+                                Utils().showAlert(
+                                    buildContext: buildContext,
+                                    message: "Please enter manager name",
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    });
+                              } else if (emiratesId.text.isEmpty ||
+                                  emiratesId.text.length != 18) {
+                                Utils().showAlert(
+                                    buildContext: buildContext,
+                                    message: "Please enter valid emiratesID",
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    });
+                              } else if (mobileNumber.text.isEmpty ||
+                                  mobileNumber.text.length != 8) {
+                                Utils().showAlert(
+                                    buildContext: buildContext,
+                                    message: "Please enter valid contact number",
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    });
+                              } else if (notes.text.isEmpty) {
+                                Utils().showAlert(
+                                    buildContext: buildContext,
+                                    message: "Please enter notes",
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    });
+                              } else {
+                                if (model != null) {
+                                  updateOutlet(
+                                      myState,
+                                      OutletData(
+                                          outletId: model.outletId,
+                                          outletName: itemName.text,
+                                          ownerShipTypeId: ownerShipType!.id,
+                                          serviceTypeId: serviceType!.id,
+                                          ownerShipType: ownerShipType!.text,
+                                          emiratesId: emiratesId.text
+                                              .toString()
+                                              .replaceAll("-", ""),
+                                          managerName: managerName.text,
+                                          contactNumber:
+                                          "+9715${mobileNumber.text}",
+                                          notes: notes.text,
+                                          outletTypeId: outletType!.id,
+                                          outletType: outletType!.text,
+                                          newAdded: true,
+                                          serviceType: serviceType!.text,
+                                          inspectionStatusId:
+                                          model.inspectionStatusId,
+                                          inspectorId:
+                                          storeUserData.getInt(USER_ID),
+                                          inspectionId: model.inspectionId));
+                                } else {
+                                  addOutlet(
+                                      myState,
+                                      OutletData(
+                                          outletId: 0,
+                                          outletName: itemName.text,
+                                          ownerShipTypeId: ownerShipType!.id,
+                                          serviceTypeId: serviceType!.id,
+                                          ownerShipType: ownerShipType!.text,
+                                          emiratesId: emiratesId.text
+                                              .toString()
+                                              .replaceAll("-", ""),
+                                          managerName: managerName.text,
+                                          contactNumber:
+                                          "+9715${mobileNumber.text}",
+                                          notes: notes.text,
+                                          newAdded: true,
+                                          inspectorId:
+                                          storeUserData.getInt(USER_ID),
+                                          serviceType: serviceType!.text,
+                                          outletTypeId: outletType!.id,
+                                          outletType: outletType!.text,
+                                          inspectionStatusId: 0,
+                                          inspectionId: 0));
+                                }
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              backgroundColor: serviceType != null &&
                                   itemName.text.isNotEmpty &&
                                   managerName.text.isNotEmpty &&
                                   emiratesId.text.isNotEmpty &&
@@ -2947,26 +2952,26 @@ class _EntityDetailsState extends State<EntityDetails> {
                                   notes.text.isNotEmpty &&
                                   emiratesId.text.length == 18 &&
                                   mobileNumber.text.length == 8
-                              ? AppTheme.colorPrimary
-                              : AppTheme.paleGray,
-                          minimumSize: const Size.fromHeight(50),
-                        ),
-                        child: CText(
-                          text: model == null ? "Add" : "Update",
-                          textColor: AppTheme.textPrimary,
-                          fontSize: AppTheme.large,
-                          fontFamily: AppTheme.urbanist,
-                          fontWeight: FontWeight.w700,
+                                  ? AppTheme.colorPrimary
+                                  : AppTheme.paleGray,
+                              minimumSize: const Size.fromHeight(50),
+                            ),
+                            child: CText(
+                              text: model == null ? "Add" : "Update",
+                              textColor: AppTheme.textPrimary,
+                              fontSize: AppTheme.large,
+                              fontFamily: AppTheme.urbanist,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      Utils().sizeBoxHeight(height: 250)
+                    ],
                   ),
-                  Utils().sizeBoxHeight(height: 250)
-                ],
-              ),
-            ),
-          );
-        });
+                ),
+              );
+            });
       },
     ).whenComplete(() {
       setState(() {});
@@ -2979,7 +2984,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
     LoadingIndicatorDialog().show(context);
     final payload = _buildUpdateOutletPayload(model);
-    
+
     Api().callAPI(context, "Mobile/NewOutlet/Update", payload).then((value) async {
       LoadingIndicatorDialog().dismiss();
       _handleUpdateOutletResponse(value, myState, model);
@@ -2989,7 +2994,7 @@ class _EntityDetailsState extends State<EntityDetails> {
   Map<String, dynamic> _buildUpdateOutletPayload(OutletData model) {
     final currentTime = DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime());
     final userId = storeUserData.getInt(USER_ID);
-    
+
     return {
       "newOutletId": model.outletId,
       "entityId": entityId,
@@ -3010,7 +3015,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   void _handleUpdateOutletResponse(String value, StateSetter myState, OutletData model) {
     final data = jsonDecode(value);
-    
+
     if (data["statusCode"] == 200) {
       _processSuccessfulOutletUpdate(myState, model);
       Navigator.of(context).pop();
@@ -3023,10 +3028,10 @@ class _EntityDetailsState extends State<EntityDetails> {
     myState(() {
       _updateOutletInList(model);
       outletList.clear();
-      
+
       final inActiveList = _buildInActiveList();
       _populateOutletList();
-      
+
       print("inActiveList.length ");
       print(inActiveList.length);
       storeUserData.setString(
@@ -3088,7 +3093,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
     LoadingIndicatorDialog().show(context);
     final payload = _buildOutletPayload(model);
-    
+
     Api().callAPI(context, "Mobile/NewOutlet/Create", payload).then((value) async {
       LoadingIndicatorDialog().dismiss();
       _handleAddOutletResponse(value, myState, model);
@@ -3098,7 +3103,7 @@ class _EntityDetailsState extends State<EntityDetails> {
   Map<String, dynamic> _buildOutletPayload(OutletData model) {
     final currentTime = DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime());
     final userId = storeUserData.getInt(USER_ID);
-    
+
     return {
       "newOutletId": 0,
       "entityId": entityId,
@@ -3119,7 +3124,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   void _handleAddOutletResponse(String value, StateSetter myState, OutletData model) {
     final data = jsonDecode(value);
-    
+
     if (data["statusCode"] == 200 && data["data"] != null) {
       _processSuccessfulOutletAdd(myState, model, data["data"]);
       Navigator.of(context).pop();
@@ -3133,10 +3138,10 @@ class _EntityDetailsState extends State<EntityDetails> {
       model.outletId = outletId;
       searchOutletList.insert(0, model);
       outletList.clear();
-      
+
       final inActiveList = _buildInActiveList();
       _populateOutletList();
-      
+
       storeUserData.setString(
         entityId.toString(),
         OutletData.encode(inActiveList),
@@ -3204,84 +3209,84 @@ class _EntityDetailsState extends State<EntityDetails> {
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-          return Container(
-            decoration: const BoxDecoration(
-                color: AppTheme.mainBackground,
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(15),
-                    topLeft: Radius.circular(15))),
-            height: MediaQuery.of(context).size.height - 50,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: CText(
-                        padding: const EdgeInsets.all(20),
-                        textAlign: TextAlign.center,
-                        text: "DONE",
-                        textColor: AppTheme.black,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.medium,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  ListView.builder(
-                      padding: const EdgeInsets.only(top: 20),
-                      shrinkWrap: true,
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: list.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
+              return Container(
+                decoration: const BoxDecoration(
+                    color: AppTheme.mainBackground,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(15),
+                        topLeft: Radius.circular(15))),
+                height: MediaQuery.of(context).size.height - 50,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            setState(() {
-                              myState(() {
-                                if (types == "ownership") {
-                                  ownerShipType = list[index];
-                                } else if (types == "service") {
-                                  serviceType = list[index];
-                                } else {
-                                  outletType = list[index];
-                                }
-                              });
-                            });
                             Navigator.of(context).pop();
                           },
-                          child: Card(
-                            color: AppTheme.white,
-                            margin: const EdgeInsets.only(
-                                left: 20, right: 20, bottom: 10),
-                            surfaceTintColor: AppTheme.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            child: CText(
-                              textAlign: TextAlign.start,
-                              padding: const EdgeInsets.all(15.0),
-                              text: list[index].text,
-                              textColor: AppTheme.colorPrimary,
-                              fontFamily: AppTheme.urbanist,
-                              fontSize: AppTheme.large,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontWeight: FontWeight.w700,
-                            ),
+                          child: CText(
+                            padding: const EdgeInsets.all(20),
+                            textAlign: TextAlign.center,
+                            text: "DONE",
+                            textColor: AppTheme.black,
+                            fontFamily: AppTheme.urbanist,
+                            fontSize: AppTheme.medium,
+                            fontWeight: FontWeight.w700,
                           ),
-                        );
-                      }),
-                  Utils().sizeBoxHeight()
-                ],
-              ),
-            ),
-          );
-        });
+                        ),
+                      ),
+                      ListView.builder(
+                          padding: const EdgeInsets.only(top: 20),
+                          shrinkWrap: true,
+                          physics: const ClampingScrollPhysics(),
+                          itemCount: list.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  myState(() {
+                                    if (types == "ownership") {
+                                      ownerShipType = list[index];
+                                    } else if (types == "service") {
+                                      serviceType = list[index];
+                                    } else {
+                                      outletType = list[index];
+                                    }
+                                  });
+                                });
+                                Navigator.of(context).pop();
+                              },
+                              child: Card(
+                                color: AppTheme.white,
+                                margin: const EdgeInsets.only(
+                                    left: 20, right: 20, bottom: 10),
+                                surfaceTintColor: AppTheme.white,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: CText(
+                                  textAlign: TextAlign.start,
+                                  padding: const EdgeInsets.all(15.0),
+                                  text: list[index].text,
+                                  textColor: AppTheme.colorPrimary,
+                                  fontFamily: AppTheme.urbanist,
+                                  fontSize: AppTheme.large,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            );
+                          }),
+                      Utils().sizeBoxHeight()
+                    ],
+                  ),
+                ),
+              );
+            });
       },
     ).whenComplete(() {
       setState(() {});
@@ -3294,10 +3299,10 @@ class _EntityDetailsState extends State<EntityDetails> {
   Future<void> getDownloadReport() async {
     if (!await Utils().hasNetwork(context, setState)) return;
     if (!mounted) return;
-    
+
     LoadingIndicatorDialog().show(context);
     final url = "Department/Report/ViewReport?mainTaskId=${widget.task!.mainTaskId}&inspectionId=0";
-    
+
     Api().getAPI(context, url).then((value) async {
       LoadingIndicatorDialog().dismiss();
       print("ViewReport $value");
@@ -3433,7 +3438,7 @@ class _EntityDetailsState extends State<EntityDetails> {
       "agentEmployeeIds": agentMap,
       "departmentEmployeeId": inspectorMap,
       "createdOn":
-          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
+      DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "comments": "",
       "finalNotes": "",
       "createdByName": "",
@@ -3533,8 +3538,8 @@ class _EntityDetailsState extends State<EntityDetails> {
   Future<void> _getPositionAndAddress() async {
     final position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
-      accuracy: LocationAccuracy.high,
-    ));
+          accuracy: LocationAccuracy.high,
+        ));
 
     try {
       final placeMarks = await placemarkFromCoordinates(
@@ -3556,7 +3561,7 @@ class _EntityDetailsState extends State<EntityDetails> {
     if (!mounted) return;
     setState(() {
       googleAddress =
-          '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+      '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
     });
   }
 
