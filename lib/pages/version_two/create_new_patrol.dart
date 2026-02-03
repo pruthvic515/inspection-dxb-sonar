@@ -3743,7 +3743,22 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     return '${id.substring(0, 3)}-${id.substring(3, 7)}-${id.substring(7, 14)}-${id.substring(14, 15)}';
   }
 
+  _Controllers _initControllers(RepresentativeData? model) {
+    final controllers = _Controllers();
+
+    if (model != null) {
+      controllers.name.text = model.name;
+      controllers.emiratesId.text = formatEmiratesID(model.emiratesId);
+      controllers.mobile.text = model.phoneNo.replaceAll("+9715", "");
+      controllers.role.text = model.roleName ?? "";
+      controllers.notes.text = model.notes ?? "";
+    }
+
+    return controllers;
+  }
+
   void showAddManagerSheet(RepresentativeData? model, int type) {
+    imageAttach = "";
     var maskFormatter = MaskTextInputFormatter(
         mask: 'XXX-XXXX-XXXXXXX-X',
         // ignore: deprecated_member_use
@@ -3759,17 +3774,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     final node3 = FocusNode();
     final node4 = FocusNode();
     final node5 = FocusNode();
-
-    imageAttach = "";
-    if (model != null) {
-      setState(() {
-        name.text = model.name;
-        emiratesId.text = formatEmiratesID(model.emiratesId);
-        mobileNumber.text = model.phoneNo.replaceAll("+9715", "");
-        roleName.text = model.roleName ?? "";
-        notes.text = model.notes ?? "";
-      });
-    }
+    final controllers = _initControllers(model);
 
     showModalBottomSheet(
         enableDrag: false,
@@ -3778,15 +3783,44 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         backgroundColor: AppTheme.mainBackground,
         isScrollControlled: true,
         builder: (BuildContext buildContext) {
-          bool isFormValid() {
-            return name.text.isNotEmpty &&
-                emiratesId.text.length == 18 &&
-                mobileNumber.text.length == 8 &&
-                roleName.text.isNotEmpty;
+          bool _isFormValid(_Controllers c) {
+            return c.name.text.isNotEmpty &&
+                c.emiratesId.text.length == 18 &&
+                c.mobile.text.length == 8 &&
+                c.role.text.isNotEmpty;
+          }
+
+          void _onSubmit({
+            required BuildContext context,
+            required RepresentativeData? model,
+            required int type,
+            required _Controllers c,
+          }) {
+            final isValid = _validateForm(
+              context: context,
+              name: c.name,
+              emiratesId: c.emiratesId,
+              mobileNumber: c.mobile,
+              roleName: c.role,
+            );
+
+            if (!isValid) return;
+
+            _submitRepresentative(
+              model: model,
+              type: type,
+              name: c.name,
+              emiratesId: c.emiratesId,
+              mobileNumber: c.mobile,
+              roleName: c.role,
+              notes: c.notes,
+            );
           }
 
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter myState) {
+            final isValid = _isFormValid(controllers);
+
             return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: const BoxDecoration(
@@ -3951,34 +3985,19 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           width: 200,
                           margin: const EdgeInsets.symmetric(vertical: 20),
                           child: ElevatedButton(
-                            onPressed: isFormValid()
-                                ? () {
-                                    final isValid = _validateForm(
+                            onPressed: isValid
+                                ? () => _onSubmit(
                                       context: context,
-                                      name: name,
-                                      emiratesId: emiratesId,
-                                      mobileNumber: mobileNumber,
-                                      roleName: roleName,
-                                    );
-
-                                    if (!isValid) return;
-
-                                    _submitRepresentative(
                                       model: model,
                                       type: type,
-                                      name: name,
-                                      emiratesId: emiratesId,
-                                      mobileNumber: mobileNumber,
-                                      roleName: roleName,
-                                      notes: notes,
-                                    );
-                                  }
+                                      c: controllers,
+                                    )
                                 : null,
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              backgroundColor: isFormValid()
+                              backgroundColor: isValid
                                   ? AppTheme.colorPrimary
                                   : AppTheme.paleGray,
                               minimumSize: const Size.fromHeight(50),
@@ -4937,4 +4956,18 @@ class QuantitySaveParams {
     required this.setState,
     required this.context,
   });
+}
+
+class _Controllers {
+  final name = TextEditingController();
+  final emiratesId = TextEditingController();
+  final mobile = TextEditingController();
+  final role = TextEditingController();
+  final notes = TextEditingController();
+
+  final node1 = FocusNode();
+  final node2 = FocusNode();
+  final node3 = FocusNode();
+  final node4 = FocusNode();
+  final node5 = FocusNode();
 }

@@ -2454,6 +2454,29 @@ class _EntityDetailsState extends State<EntityDetails> {
     return '${id.substring(0, 3)}-${id.substring(3, 7)}-${id.substring(7, 14)}-${id.substring(14, 15)}';
   }
 
+  void initOutletControllers(
+    OutletData? model,
+    TextEditingController itemName,
+    TextEditingController managerName,
+    TextEditingController emiratesId,
+    TextEditingController mobileNumber,
+    TextEditingController notes,
+  ) {
+    if (model == null) return;
+
+    itemName.text = model.outletName;
+    managerName.text = model.managerName ?? "";
+    emiratesId.text = formatEmiratesID(model.emiratesId ?? "");
+    mobileNumber.text = model.contactNumber?.replaceAll("+9715", "") ?? "";
+    notes.text = model.notes ?? "";
+
+    ownerShipType =
+        AreaData(id: model.ownerShipTypeId, text: model.ownerShipType);
+    serviceType = AreaData(id: model.serviceTypeId, text: model.serviceType);
+    outletType =
+        AreaData(id: model.outletTypeId ?? 0, text: model.outletType ?? "");
+  }
+
   void showAddOutletSheet(OutletData? model) {
     var maskFormatter = MaskTextInputFormatter(
         mask: 'XXX-XXXX-XXXXXXX-X',
@@ -2465,32 +2488,44 @@ class _EntityDetailsState extends State<EntityDetails> {
     final emiratesId = TextEditingController();
     final mobileNumber = TextEditingController();
     final notes = TextEditingController();
-    var focusNode = FocusNode();
-    var focusNodeButton = FocusNode();
+
     ownerShipType = null;
     serviceType = null;
     outletType = null;
-    if (model != null) {
-      setState(() {
-        itemName.text = model.outletName;
-        managerName.text = model.managerName ?? "";
-        emiratesId.text = formatEmiratesID(model.emiratesId ?? "");
-        mobileNumber.text = model.contactNumber?.replaceAll("+9715", "") ?? "";
-        notes.text = model.notes ?? "";
-        ownerShipType =
-            AreaData(id: model.ownerShipTypeId, text: model.ownerShipType);
-        serviceType =
-            AreaData(id: model.serviceTypeId, text: model.serviceType);
-        outletType =
-            AreaData(id: model.outletTypeId ?? 0, text: model.outletType ?? "");
-      });
-    }
+
+    initOutletControllers(
+      model,
+      itemName,
+      managerName,
+      emiratesId,
+      mobileNumber,
+      notes,
+    );
+    var focusNode = FocusNode();
+    var focusNodeButton = FocusNode();
 
     showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
+        bool isOutletFormValid(
+          TextEditingController itemName,
+          TextEditingController managerName,
+          TextEditingController emiratesId,
+          TextEditingController mobileNumber,
+          TextEditingController notes,
+        ) {
+          return itemName.text.isNotEmpty &&
+              managerName.text.isNotEmpty &&
+              emiratesId.text.length == 18 &&
+              mobileNumber.text.length == 8 &&
+              notes.text.isNotEmpty &&
+              serviceType != null &&
+              ownerShipType != null &&
+              outletType != null;
+        }
+
         String? validateOutletForm() {
           if (itemName.text.isEmpty) return "Please enter outlet name";
           if (serviceType == null) return "Please select service type";
@@ -2505,6 +2540,39 @@ class _EntityDetailsState extends State<EntityDetails> {
           }
           if (notes.text.isEmpty) return "Please enter notes";
           return null;
+        }
+
+        void submitOutlet(
+          StateSetter myState,
+          OutletData? model,
+          TextEditingController itemName,
+          TextEditingController managerName,
+          TextEditingController emiratesId,
+          TextEditingController mobileNumber,
+          TextEditingController notes,
+        ) {
+          final outlet = OutletData(
+            outletId: model?.outletId ?? 0,
+            outletName: itemName.text,
+            ownerShipTypeId: ownerShipType!.id,
+            serviceTypeId: serviceType!.id,
+            ownerShipType: ownerShipType?.text ?? "",
+            serviceType: serviceType?.text ?? "",
+            managerName: managerName.text,
+            emiratesId: emiratesId.text,
+            contactNumber: mobileNumber.text,
+            outletTypeId: outletType!.id,
+            outletType: outletType!.text,
+            notes: notes.text,
+            newAdded: model == null,
+            inspectionStatusId: model?.inspectionStatusId ?? 0,
+            inspectionId: model?.inspectionId ?? 0,
+            inspectorId: storeUserData.getInt(USER_ID),
+          );
+
+          model != null
+              ? updateOutlet(myState, outlet)
+              : addOutlet(myState, outlet);
         }
 
         return StatefulBuilder(
@@ -2679,52 +2747,27 @@ class _EntityDetailsState extends State<EntityDetails> {
                             Utils().showAlert(
                               buildContext: buildContext,
                               message: error,
-                              onPressed: () => Navigator.of(context).pop(),
+                              onPressed: () => Navigator.pop(context),
                             );
                             return;
                           }
 
-                          final outlet = OutletData(
-                            outletId: model?.outletId ?? 0,
-                            outletName: itemName.text,
-                            ownerShipTypeId: ownerShipType!.id,
-                            serviceTypeId: serviceType!.id,
-                            ownerShipType: ownerShipType!.text,
-                            serviceType: serviceType!.text,
-                            managerName: managerName.text,
-                            emiratesId: emiratesId.text,
-                            contactNumber: mobileNumber.text,
-                            notes: notes.text,
-                            outletTypeId: outletType!.id,
-                            outletType: outletType!.text,
-                            outletStatusId: model?.outletStatusId,
-                            outletStatus: model?.outletStatus,
-                            newAdded: model == null,
-                            inspectionStatusId: model?.inspectionStatusId ?? 0,
-                            inspectionId: model?.inspectionId ?? 0,
-                            inspectorId: storeUserData.getInt(USER_ID),
+                          submitOutlet(
+                            myState,
+                            model,
+                            itemName,
+                            managerName,
+                            emiratesId,
+                            mobileNumber,
+                            notes,
                           );
-
-                          if (model != null) {
-                            updateOutlet(myState, outlet);
-                          } else {
-                            addOutlet(myState, outlet);
-                          }
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          backgroundColor: serviceType != null &&
-                                  itemName.text.isNotEmpty &&
-                                  managerName.text.isNotEmpty &&
-                                  emiratesId.text.isNotEmpty &&
-                                  mobileNumber.text.isNotEmpty &&
-                                  ownerShipType != null &&
-                                  outletType != null &&
-                                  notes.text.isNotEmpty &&
-                                  emiratesId.text.length == 18 &&
-                                  mobileNumber.text.length == 8
+                          backgroundColor: isOutletFormValid(itemName,
+                                  managerName, emiratesId, mobileNumber, notes)
                               ? AppTheme.colorPrimary
                               : AppTheme.paleGray,
                           minimumSize: const Size.fromHeight(50),
