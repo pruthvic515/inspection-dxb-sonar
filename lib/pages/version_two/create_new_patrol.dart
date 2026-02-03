@@ -2902,36 +2902,42 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Future<void> getAllUsers() async {
-    if (await Utils().hasNetwork(context, setState)) {
-      if (!mounted) return;
-      LoadingIndicatorDialog().show(context);
-      Api()
-          .getAPI(context,
-              "Department/Task/GetAssignedTaskInspectors?mainTaskId=${widget.mainTaskId}")
-          .then((value) async {
-        try {
-          LoadingIndicatorDialog().dismiss();
-          setState(() {
-            var data = allUsersFromJson(value);
-            if (data.data.isNotEmpty) {
-              showInspectorSheet(data.data);
-            } else {
-              Utils().showAlert(
-                  buildContext: context,
-                  message: data.data.isEmpty
-                      ? "No Data Found"
-                      : "Something Went Wrong",
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  });
-            }
-          });
-        } catch (e) {
-          LoadingIndicatorDialog().dismiss();
-          setState(() {});
-        }
-      });
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
+
+    LoadingIndicatorDialog().show(context);
+    final endpoint = "Department/Task/GetAssignedTaskInspectors?mainTaskId=${widget.mainTaskId}";
+    
+    Api().getAPI(context, endpoint).then((value) async {
+      await _handleGetAllUsersResponse(value);
+    });
+  }
+
+  Future<void> _handleGetAllUsersResponse(String? value) async {
+    LoadingIndicatorDialog().dismiss();
+    
+    try {
+      final data = allUsersFromJson(value!);
+      if (data.data.isNotEmpty) {
+        setState(() {
+          showInspectorSheet(data.data);
+        });
+      } else {
+        _showNoDataAlert();
+      }
+    } catch (e) {
+      setState(() {});
     }
+  }
+
+  void _showNoDataAlert() {
+    Utils().showAlert(
+      buildContext: context,
+      message: "No Data Found",
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
   }
 
   void showInspectorSheet(List<AllUserData> list) {
