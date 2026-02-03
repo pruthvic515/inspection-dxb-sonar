@@ -116,9 +116,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   AreaData? role;
 
   ///controllers
-  final _outlets = TextEditingController();
-  final _searchKnownProduct = TextEditingController();
-  final _searchSize = TextEditingController();
+  final outlets = TextEditingController();
+  final searchKnownProduct = TextEditingController();
+  final searchSize = TextEditingController();
   final initialNotes = TextEditingController();
   final concludeNotes = TextEditingController();
   FocusNode concludeFocusNode = FocusNode();
@@ -179,7 +179,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
 
     if (outletModel != null) {
-      _outlets.text = outletModel!.outletName;
+      outlets.text = outletModel!.outletName;
     }
 
     getEntityDetail();
@@ -237,14 +237,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       return;
     }
 
-    _clearInspectionData();
+    clearInspectionData();
     if (!mounted) return;
 
     LoadingIndicatorDialog().show(context);
-    await _fetchInspectionDetails();
+    await fetchInspectionDetails();
   }
 
-  void _clearInspectionData() {
+  void clearInspectionData() {
     setState(() {
       isAE = false;
       isMMI = false;
@@ -258,7 +258,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-  Future<void> _fetchInspectionDetails() async {
+  Future<void> fetchInspectionDetails() async {
     try {
       final value = await Api().callAPI(
         context,
@@ -268,9 +268,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
       final data = detailFromJson(value);
       if (data.data != null) {
-        _processInspectionData(data.data!);
+        processInspectionData(data.data!);
       } else {
-        _handleInspectionError(data.message);
+        handleInspectionError(data.message);
       }
     } catch (e) {
       LoadingIndicatorDialog().dismiss();
@@ -278,7 +278,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void _processInspectionData(InspectionData inspectionData) {
+  void processInspectionData(InspectionData inspectionData) {
     setState(() {
       detail = inspectionData;
       taskId = inspectionData.inspectionDetails.taskId;
@@ -286,18 +286,18 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
 
     setState(() {
-      _processAttachments(inspectionData.attachments);
-      _processProductDetails(inspectionData.productDetailModels);
-      _processEntityRepresentatives(inspectionData.entityRepresentatives);
-      _processAgentEmployees(
+      processAttachments(inspectionData.attachments);
+      processProductDetails(inspectionData.productDetailModels);
+      processEntityRepresentatives(inspectionData.entityRepresentatives);
+      processAgentEmployees(
         inspectionData.inspectorAndAgentEmployee.agentEmployeeModels,
       );
-      _updateFlagsAndNotes(inspectionData.notes.finalNotes);
+      updateFlagsAndNotes(inspectionData.notes.finalNotes);
       LoadingIndicatorDialog().dismiss();
     });
   }
 
-  void _processAttachments(List<dynamic> attachments) {
+  void processAttachments(List<dynamic> attachments) {
     try {
       image.clear();
       for (var file in attachments) {
@@ -308,7 +308,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void _processProductDetails(List<ProductDetail> productDetails) {
+  void processProductDetails(List<ProductDetail> productDetails) {
     for (var product in productDetails) {
       if (product.typeId == 1) {
         selectedKnownProductListData.add(product);
@@ -320,7 +320,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void _processEntityRepresentatives(List<RepresentativeData> representatives) {
+  void processEntityRepresentatives(List<RepresentativeData> representatives) {
     for (var representative in representatives) {
       if (representative.typeId == 1) {
         managerList.add(representative);
@@ -330,7 +330,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void _processAgentEmployees(List<WitnessData> agentEmployees) {
+  void processAgentEmployees(List<WitnessData> agentEmployees) {
     for (var employee in agentEmployees) {
       if (employee.agentId == 1) {
         selectedAEList.add(employee);
@@ -340,13 +340,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void _updateFlagsAndNotes(String? finalNotes) {
+  void updateFlagsAndNotes(String? finalNotes) {
     isAE = selectedAEList.isNotEmpty;
     isMMI = selectedMMIList.isNotEmpty;
     concludeNotes.text = finalNotes ?? "";
   }
 
-  void _handleInspectionError(String message) {
+  void handleInspectionError(String message) {
     LoadingIndicatorDialog().dismiss();
     if (message.isNotEmpty) {
       Utils().showAlert(
@@ -360,12 +360,12 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   void getAttachedThumbnail() {
-    _getStorageDirectory().then((directory) async {
-      await _generateThumbnail(directory);
+    getStorageDirectory().then((directory) async {
+      await generateThumbnail(directory);
     });
   }
 
-  Future<Directory> _getStorageDirectory() {
+  Future<Directory> getStorageDirectory() {
     if (Platform.isAndroid) {
       return getExternalStorageDirectory().then((value) => value!);
     } else {
@@ -373,7 +373,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  Future<void> _generateThumbnail(Directory directory) async {
+  Future<void> generateThumbnail(Directory directory) async {
     try {
       final thumbnail = await FlutterVideoThumbnailPlus.thumbnailFile(
         video: attachedLink,
@@ -381,13 +381,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         imageFormat: ImageFormat.png,
         quality: 100,
       );
-      _updateThumbnail(thumbnail);
+      updateThumbnail(thumbnail);
     } on Exception catch (e) {
-      _handleThumbnailError(e);
+      handleThumbnailError(e);
     }
   }
 
-  void _updateThumbnail(String? thumbnail) {
+  void updateThumbnail(String? thumbnail) {
     setState(() {
       attachedThumbnail = thumbnail ?? "";
     });
@@ -399,7 +399,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void _handleThumbnailError(Exception error) {
+  void handleThumbnailError(Exception error) {
     setState(() {
       attachedThumbnail = "";
     });
@@ -482,38 +482,38 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   void getAllKnownProducts(StateSetter myState) {
     knownProductList.clear();
     Api().callAPI(context, "Mobile/ProduectDetail/GetAllProduct", {
-      "name": _searchKnownProduct.text.toString(),
+      "name": searchKnownProduct.text.toString(),
       "categoryId": 0
     }).then((value) async {
       if (value == null) return;
-      await _processKnownProductsResponse(value, myState);
+      await processKnownProductsResponse(value, myState);
     });
   }
 
-  Future<void> _processKnownProductsResponse(
+  Future<void> processKnownProductsResponse(
       dynamic value, StateSetter myState) async {
     debugPrint("ProduectDetail $value");
     final parsed = value is String ? jsonDecode(value) : value;
 
-    if (!_hasValidProductData(parsed)) {
+    if (!hasValidProductData(parsed)) {
       return;
     }
 
     final KnownProductModel data = await parseKnownProducts(value);
     if (data.data.isNotEmpty) {
-      _updateKnownProductList(data.data, myState);
+      updateKnownProductList(data.data, myState);
     } else {
-      _handleEmptyProductData(data);
+      handleEmptyProductData(data);
     }
   }
 
-  bool _hasValidProductData(dynamic parsed) {
+  bool hasValidProductData(dynamic parsed) {
     return parsed != null &&
         parsed["data"] != null &&
         parsed["data"]["result"] != null;
   }
 
-  void _updateKnownProductList(
+  void updateKnownProductList(
       List<KnownProductData> products, StateSetter myState) {
     myState(() {
       knownProductList.clear();
@@ -521,7 +521,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-  void _handleEmptyProductData(KnownProductModel data) {
+  void handleEmptyProductData(KnownProductModel data) {
     if (data.message != null && data.message!.isNotEmpty) {
       if (!mounted) return;
       Utils().showAlert(
@@ -534,7 +534,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  Future<void> _processSearchProductsResponse(
+  Future<void> processSearchProductsResponse(
       dynamic value, StateSetter myState) async {
     final result = value is String ? jsonDecode(value) : value;
     if (result == null ||
@@ -547,13 +547,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     if (!mounted) return;
 
     if (data.data.isNotEmpty) {
-      _updateKnownProductList(data.data, myState);
+      updateKnownProductList(data.data, myState);
     } else {
-      _handleSearchEmptyProductData(data, myState);
+      handleSearchEmptyProductData(data, myState);
     }
   }
 
-  void _handleSearchEmptyProductData(
+  void handleSearchEmptyProductData(
       KnownProductModel data, StateSetter myState) {
     if (data.data.isEmpty && data.message == null) {
       myState(() {
@@ -573,16 +573,16 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   void getSearchAllKnownProducts(StateSetter myState) {
     knownProductList.clear();
-    if (_searchKnownProduct.text.isEmpty) {
+    if (searchKnownProduct.text.isEmpty) {
       if (!mounted) return;
       Navigator.pop(context);
     } else {
       Api().callAPI(context, "Mobile/ProduectDetail/GetAllProduct", {
-        "name": _searchKnownProduct.text.toString(),
+        "name": searchKnownProduct.text.toString(),
         "categoryId": 0
       }).then((value) async {
         if (value == null) return;
-        await _processSearchProductsResponse(value, myState);
+        await processSearchProductsResponse(value, myState);
       });
     }
   }
@@ -590,20 +590,20 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   Future getGeoLocationPosition() async {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      _handleLocationServiceDisabled();
+      handleLocationServiceDisabled();
       return;
     }
 
-    final permission = await _checkAndRequestPermission();
-    if (!_hasLocationPermission(permission)) {
-      _handlePermissionDenied();
+    final permission = await checkAndRequestPermission();
+    if (!hasLocationPermission(permission)) {
+      handlePermissionDenied();
       return;
     }
 
-    await _fetchLocationAndAddress();
+    await fetchLocationAndAddress();
   }
 
-  void _handleLocationServiceDisabled() {
+  void handleLocationServiceDisabled() {
     if (!mounted) return;
     Utils().showAlert(
       buildContext: context,
@@ -617,7 +617,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Future<LocationPermission> _checkAndRequestPermission() async {
+  Future<LocationPermission> checkAndRequestPermission() async {
     var permission = await Geolocator.checkPermission();
     if (permission != LocationPermission.always) {
       permission = await Geolocator.requestPermission();
@@ -625,12 +625,12 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     return permission;
   }
 
-  bool _hasLocationPermission(LocationPermission permission) {
+  bool hasLocationPermission(LocationPermission permission) {
     return permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse;
   }
 
-  void _handlePermissionDenied() {
+  void handlePermissionDenied() {
     if (!mounted) return;
     Utils().showAlert(
       buildContext: context,
@@ -641,26 +641,26 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Future<void> _fetchLocationAndAddress() async {
+  Future<void> fetchLocationAndAddress() async {
     try {
       final position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
         ),
       );
-      _updateLocation(position);
-      await _fetchAddressFromCoordinates(position);
+      updateLocation(position);
+      await fetchAddressFromCoordinates(position);
     } catch (e) {
       LogPrint().log("Error getting location: $e");
     }
   }
 
-  void _updateLocation(Position position) {
+  void updateLocation(Position position) {
     latitude = position.latitude;
     longitude = position.longitude;
   }
 
-  Future<void> _fetchAddressFromCoordinates(Position position) async {
+  Future<void> fetchAddressFromCoordinates(Position position) async {
     try {
       final placeMarks = await placemarkFromCoordinates(
         position.latitude,
@@ -668,17 +668,17 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       );
       LogPrint().log(placeMarks);
       final place = placeMarks[0];
-      _updateAddress(place);
+      updateAddress(place);
     } on TimeoutException catch (_) {
       LogPrint().log("The request timed out.");
     } catch (e) {
-      _setDefaultAddress();
+      setDefaultAddress();
       LogPrint().log("An error occurred: $e");
     }
     LogPrint().log("address$googleAddress");
   }
 
-  void _updateAddress(Placemark place) {
+  void updateAddress(Placemark place) {
     if (!mounted) return;
     setState(() {
       googleAddress =
@@ -686,7 +686,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-  void _setDefaultAddress() {
+  void setDefaultAddress() {
     setState(() {
       googleAddress = "Bur Dubai";
     });
@@ -714,9 +714,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              _buildHeader(),
-              _buildNavigationButtons(),
-              _buildTabContent(),
+              buildHeader(),
+              buildNavigationButtons(),
+              buildTabContent(),
             ],
           ),
         ),
@@ -724,22 +724,22 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget buildHeader() {
     return Container(
       height: 200,
       color: AppTheme.colorPrimary,
       width: double.infinity,
       child: Stack(
         children: [
-          _buildBackButton(),
-          _buildTitle(),
-          _buildStepIndicator(),
+          buildBackButton(),
+          buildTitle(),
+          buildStepIndicator(),
         ],
       ),
     );
   }
 
-  Widget _buildBackButton() {
+  Widget buildBackButton() {
     return GestureDetector(
       onTap: () {
         Get.back(result: {
@@ -771,7 +771,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildTitle() {
+  Widget buildTitle() {
     return Align(
       alignment: Alignment.topCenter,
       child: CText(
@@ -788,26 +788,26 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildStepIndicator() {
+  Widget buildStepIndicator() {
     return Container(
       margin:
           const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 10, top: 120),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildStepItem(1, "Details"),
-          _buildStepDivider(),
-          _buildStepItem(2, "Products \nInspections"),
-          _buildStepDivider(),
-          _buildStepItem(3, "Attachments"),
-          _buildStepDivider(),
-          _buildStepItem(4, "Witness & \nRepresentative"),
+          buildStepItem(1, "Details"),
+          buildStepDivider(),
+          buildStepItem(2, "Products \nInspections"),
+          buildStepDivider(),
+          buildStepItem(3, "Attachments"),
+          buildStepDivider(),
+          buildStepItem(4, "Witness & \nRepresentative"),
         ],
       ),
     );
   }
 
-  Widget _buildStepItem(int stepNumber, String label) {
+  Widget buildStepItem(int stepNumber, String label) {
     final isActive = tabType >= stepNumber;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -839,7 +839,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildStepDivider() {
+  Widget buildStepDivider() {
     return Expanded(
       flex: 1,
       child: Container(
@@ -850,24 +850,24 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildNavigationButtons() {
+  Widget buildNavigationButtons() {
     return Container(
       padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildPreviousButton(),
-          _buildNextButton(),
+          buildPreviousButton(),
+          buildNextButton(),
         ],
       ),
     );
   }
 
-  Widget _buildPreviousButton() {
+  Widget buildPreviousButton() {
     return Visibility(
       visible: tabType > 2,
       child: GestureDetector(
-        onTap: _handlePreviousTap,
+        onTap: handlePreviousTap,
         behavior: HitTestBehavior.translucent,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -891,7 +891,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  void _handlePreviousTap() {
+  void handlePreviousTap() {
     if (tabType > 1) {
       setState(() {
         tabType--;
@@ -899,27 +899,27 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  Widget _buildNextButton() {
+  Widget buildNextButton() {
     return Visibility(
       visible: tabType != 4 && inspectionId != 0,
       child: GestureDetector(
-        onTap: _handleNextTap,
+        onTap: handleNextTap,
         behavior: HitTestBehavior.translucent,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             CText(
               textAlign: TextAlign.center,
-              text: _getNextButtonText(),
-              textColor: _getNextButtonColor(),
+              text: getNextButtonText(),
+              textColor: getNextButtonColor(),
               fontFamily: AppTheme.urbanist,
               fontSize: AppTheme.medium,
               fontWeight: FontWeight.w700,
             ),
             Icon(
-              _getNextButtonIcon(),
+              getNextButtonIcon(),
               size: 18,
-              color: _getNextButtonColor(),
+              color: getNextButtonColor(),
             )
           ],
         ),
@@ -927,23 +927,23 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  String _getNextButtonText() {
+  String getNextButtonText() {
     return tabType == 4 ? "Close Task" : "Next";
   }
 
-  Color _getNextButtonColor() {
+  Color getNextButtonColor() {
     return validateNext() ? AppTheme.colorPrimary : AppTheme.grey;
   }
 
-  IconData _getNextButtonIcon() {
+  IconData getNextButtonIcon() {
     return tabType == 4 ? Icons.close : Icons.arrow_forward;
   }
 
-  void _handleNextTap() {
+  void handleNextTap() {
     if (!validateNext()) return;
 
     if (tabType == 3 && image.isEmpty) {
-      _showImageRequiredAlert();
+      showImageRequiredAlert();
       return;
     }
 
@@ -954,7 +954,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void _showImageRequiredAlert() {
+  void showImageRequiredAlert() {
     Utils().showAlert(
       buildContext: context,
       title: "Alert",
@@ -965,7 +965,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildTabContent() {
+  Widget buildTabContent() {
     if (tabType == 1) return tabOneUI();
     if (tabType == 2) return tabTwoUI();
     if (tabType == 3) return tabThreeUI();
@@ -1399,7 +1399,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  void _scrollToFocusedField(
+  void scrollToFocusedField(
       FocusNode focusNode, ScrollController scrollController) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final RenderBox renderBox =
@@ -1421,8 +1421,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     final focusNodeList = <FocusNode>[];
     final node = FocusNode();
 
-    _initializeProductSheet(model, serial, sizeList, focusNodeList);
-    _setupFocusListeners(focusNodeList, scrollController);
+    initializeProductSheet(model, serial, sizeList, focusNodeList);
+    setupFocusListeners(focusNodeList, scrollController);
     showModalBottomSheet(
       enableDrag: false,
       isDismissible: false,
@@ -1432,7 +1432,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return _buildProductSheetContent(
+            return buildProductSheetContent(
               model,
               serial,
               sizeList,
@@ -1453,7 +1453,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-  Widget _buildProductSheetContent(
+  Widget buildProductSheetContent(
     ProductDetail? model,
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
@@ -1481,12 +1481,12 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            _buildProductSheetHeader(context),
-            _buildProductNameField(setState),
+            buildProductSheetHeader(context),
+            buildProductNameField(setState),
             const SizedBox(height: 5),
-            _buildQuantityField(serial, sizeList, focusNodeList, setState),
+            buildQuantityField(serial, sizeList, focusNodeList, setState),
             const SizedBox(height: 5),
-            _buildSerialNumberList(
+            buildSerialNumberList(
               serial,
               sizeList,
               focusNodeList,
@@ -1494,9 +1494,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               setState,
             ),
             const SizedBox(height: 5),
-            _buildNotesField(serial, sizeList),
+            buildNotesField(serial, sizeList),
             const SizedBox(height: 10),
-            _buildSaveButton(
+            buildSaveButton(
               model,
               serial,
               sizeList,
@@ -1510,7 +1510,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildProductSheetHeader(BuildContext context) {
+  Widget buildProductSheetHeader(BuildContext context) {
     return Stack(
       children: [
         Center(
@@ -1538,13 +1538,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildProductNameField(StateSetter setState) {
+  Widget buildProductNameField(StateSetter setState) {
     return Stack(
       children: [
         FormTextField(
           onChange: (value) {
             if (productName.text.length > 3 && focusNode.hasFocus) {
-              _searchKnownProduct.text = productName.text;
+              searchKnownProduct.text = productName.text;
               getAllKnownProducts(setState);
             }
             setState(() {});
@@ -1563,7 +1563,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           top: 0,
           right: 10,
           child: GestureDetector(
-            onTap: () => _handleProductSearchTap(setState),
+            onTap: () => handleProductSearchTap(setState),
             child: Container(
               decoration: const BoxDecoration(
                 border: Border(
@@ -1589,18 +1589,18 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  void _handleProductSearchTap(StateSetter setState) {
+  void handleProductSearchTap(StateSetter setState) {
     setState(() {
       knownProductList.clear();
-      _searchKnownProduct.text = productName.text;
-      if (_searchKnownProduct.text.isNotEmpty) {
+      searchKnownProduct.text = productName.text;
+      if (searchKnownProduct.text.isNotEmpty) {
         getSearchAllKnownProducts(setState);
       }
       showKnownProductSheet();
     });
   }
 
-  Widget _buildQuantityField(
+  Widget buildQuantityField(
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
     List<FocusNode> focusNodeList,
@@ -1616,7 +1616,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       onTap: () {
         Get.to(const SelectQuantity())?.then((value) {
           if (value != null) {
-            _handleQuantityChange(
+            handleQuantityChange(
               value,
               serial,
               sizeList,
@@ -1629,7 +1629,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildSerialNumberList(
+  Widget buildSerialNumberList(
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
     List<FocusNode> focusNodeList,
@@ -1643,7 +1643,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       scrollDirection: Axis.vertical,
       itemCount: serial.length,
       itemBuilder: (context, index) {
-        return _buildSerialNumberItem(
+        return buildSerialNumberItem(
           index,
           serial,
           sizeList,
@@ -1655,7 +1655,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildSerialNumberItem(
+  Widget buildSerialNumberItem(
     int index,
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
@@ -1708,7 +1708,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           right: 0,
           top: 0,
           child: IconButton(
-            onPressed: () => _handleDeleteSerial(
+            onPressed: () => handleDeleteSerial(
               index,
               serial,
               sizeList,
@@ -1726,7 +1726,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  void _handleDeleteSerial(
+  void handleDeleteSerial(
     int index,
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
@@ -1749,12 +1749,12 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildNotesField(
+  Widget buildNotesField(
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
   ) {
     return Visibility(
-      visible: _isFormValid(serial, sizeList),
+      visible: isFormValid(serial, sizeList),
       child: FormTextField(
         onChange: (value) {},
         hint: "",
@@ -1768,7 +1768,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildSaveButton(
+  Widget buildSaveButton(
     ProductDetail? model,
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
@@ -1781,7 +1781,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         margin: const EdgeInsets.symmetric(vertical: 20),
         child: ElevatedButton(
           focusNode: node,
-          onPressed: () => _handleSaveProduct(
+          onPressed: () => handleSaveProduct(
             model,
             serial,
             sizeList,
@@ -1791,7 +1791,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),
-            backgroundColor: _isFormValid(serial, sizeList)
+            backgroundColor: isFormValid(serial, sizeList)
                 ? AppTheme.colorPrimary
                 : AppTheme.paleGray,
             minimumSize: const Size.fromHeight(50),
@@ -1808,13 +1808,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  void _handleSaveProduct(
+  void handleSaveProduct(
     ProductDetail? model,
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
     StateSetter setState,
   ) {
-    final errorMessage = _validateProductForm(serial, sizeList);
+    final errorMessage = validateProductForm(serial, sizeList);
     if (errorMessage != null) {
       Utils().showAlert(
         buildContext: context,
@@ -1822,11 +1822,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         onPressed: () => Navigator.of(context).pop(),
       );
     } else {
-      _saveProduct(model, serial, sizeList, setState, context);
+      saveProduct(model, serial, sizeList, setState, context);
     }
   }
 
-  void _initializeProductSheet(
+  void initializeProductSheet(
     ProductDetail? model,
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
@@ -1835,17 +1835,17 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     if (model != null) {
       setState(() {
         if (model.qty > 0) {
-          _initializeFromModel(model, serial, sizeList, focusNodeList);
+          initializeFromModel(model, serial, sizeList, focusNodeList);
         } else {
-          _initializeEmptyModel(model, serial, sizeList, focusNodeList);
+          initializeEmptyModel(model, serial, sizeList, focusNodeList);
         }
       });
     } else {
-      _initializeNewProduct(serial, sizeList, focusNodeList);
+      initializeNewProduct(serial, sizeList, focusNodeList);
     }
   }
 
-  void _initializeFromModel(
+  void initializeFromModel(
     ProductDetail model,
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
@@ -1858,16 +1858,16 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       for (var element in model.products) {
         serial.add(TextEditingController(text: element.serialNumber));
         focusNodeList.add(FocusNode());
-        sizeList.add(_findSizeData(element.size!));
+        sizeList.add(findSizeData(element.size!));
       }
     }
   }
 
-  AreaData _findSizeData(int sizeId) {
+  AreaData findSizeData(int sizeId) {
     return searchSizeList.firstWhere((test) => test.id == sizeId);
   }
 
-  void _initializeEmptyModel(
+  void initializeEmptyModel(
     ProductDetail model,
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
@@ -1880,7 +1880,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     sizeList.add(null);
   }
 
-  void _initializeNewProduct(
+  void initializeNewProduct(
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
     List<FocusNode> focusNodeList,
@@ -1891,20 +1891,20 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     sizeList.add(null);
   }
 
-  void _setupFocusListeners(
+  void setupFocusListeners(
     List<FocusNode> focusNodeList,
     ScrollController scrollController,
   ) {
     for (var node in focusNodeList) {
       node.addListener(() {
         if (node.hasFocus) {
-          _scrollToFocusedField(node, scrollController);
+          scrollToFocusedField(node, scrollController);
         }
       });
     }
   }
 
-  void _handleQuantityChange(
+  void handleQuantityChange(
     int newQuantity,
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
@@ -1914,14 +1914,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     setState(() {
       quantity = newQuantity;
       if (quantity > serial.length) {
-        _addSerialItems(serial, sizeList, focusNodeList);
+        addSerialItems(serial, sizeList, focusNodeList);
       } else if (quantity < serial.length) {
-        _removeSerialItems(serial, sizeList, focusNodeList);
+        removeSerialItems(serial, sizeList, focusNodeList);
       }
     });
   }
 
-  void _addSerialItems(
+  void addSerialItems(
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
     List<FocusNode> focusNodeList,
@@ -1933,7 +1933,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void _removeSerialItems(
+  void removeSerialItems(
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
     List<FocusNode> focusNodeList,
@@ -1943,7 +1943,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     sizeList.removeRange(quantity, sizeList.length);
   }
 
-  String? _validateProductForm(
+  String? validateProductForm(
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
   ) {
@@ -1953,43 +1953,43 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     if (quantity == 0) {
       return "Please select quantity";
     }
-    if (_hasInvalidSerialNumbers(serial)) {
+    if (hasInvalidSerialNumbers(serial)) {
       return "Please enter valid serial number";
     }
-    if (_hasMissingSizes(sizeList)) {
+    if (hasMissingSizes(sizeList)) {
       return "Please select size";
     }
     return null;
   }
 
-  bool _hasInvalidSerialNumbers(List<TextEditingController> serial) {
+  bool hasInvalidSerialNumbers(List<TextEditingController> serial) {
     return serial
         .any((element) => element.text.isEmpty || element.text.length < 5);
   }
 
-  bool _hasMissingSizes(List<AreaData?> sizeList) {
+  bool hasMissingSizes(List<AreaData?> sizeList) {
     return sizeList.any((element) => element == null);
   }
 
-  void _saveProduct(
+  void saveProduct(
     ProductDetail? model,
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
     StateSetter setState,
     BuildContext context,
   ) {
-    final products = _buildProductsList(serial, sizeList);
+    final products = buildProductsList(serial, sizeList);
     setState(() {
       if (model == null) {
-        _addNewProduct(products);
+        addNewProduct(products);
       } else {
-        _updateExistingProduct(model, products);
+        updateExistingProduct(model, products);
       }
       Navigator.of(context).pop();
     });
   }
 
-  List<Product> _buildProductsList(
+  List<Product> buildProductsList(
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
   ) {
@@ -2005,7 +2005,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     return products;
   }
 
-  void _addNewProduct(List<Product> products) {
+  void addNewProduct(List<Product> products) {
     addProduct(ProductDetail(
       productDetailsId: 0,
       productName: productName.text,
@@ -2021,7 +2021,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     ).toJson());
   }
 
-  void _updateExistingProduct(ProductDetail model, List<Product> products) {
+  void updateExistingProduct(ProductDetail model, List<Product> products) {
     updateProduct(ProductDetail(
       productDetailsId: model.productDetailsId,
       productName: productName.text,
@@ -2037,14 +2037,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     ).toJson());
   }
 
-  bool _isFormValid(
+  bool isFormValid(
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
   ) {
     return productName.text.isNotEmpty &&
         quantity != 0 &&
-        !_hasInvalidSerialNumbers(serial) &&
-        !_hasMissingSizes(sizeList);
+        !hasInvalidSerialNumbers(serial) &&
+        !hasMissingSizes(sizeList);
   }
 
   void showQuantitySheet(
@@ -2057,8 +2057,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     final focusNodes = <FocusNode>[];
     final scrollController = ScrollController();
 
-    _initializeQuantitySheet(model, isEdit, notes, controllers, focusNodes);
-    quantity = _getInitialQuantity(model, isEdit);
+    initializeQuantitySheet(model, isEdit, notes, controllers, focusNodes);
+    quantity = getInitialQuantity(model, isEdit);
     LogPrint().log("quantity : ${model.categoryId} ${model.qty}");
 
     showModalBottomSheet<void>(
@@ -2100,7 +2100,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     inputType: TextInputType.number,
                     onTap: () {
                       Get.to(const SelectQuantity())?.then((value) {
-                        _onQuantitySelected(
+                        onQuantitySelected(
                           value,
                           myState,
                           controllers,
@@ -2178,7 +2178,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           })
                       : Container(),
                   Visibility(
-                      visible: _isQuantityFormValid(quantity, controllers),
+                      visible: isQuantityFormValid(quantity, controllers),
                       child: FormTextField(
                         onChange: (value) {
                           setState(() {});
@@ -2196,7 +2196,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                       width: 200,
                       margin: const EdgeInsets.symmetric(vertical: 20),
                       child: ElevatedButton(
-                        onPressed: () => _onSaveQuantityPressed(
+                        onPressed: () => onSaveQuantityPressed(
                           QuantitySaveParams(
                             quantity: quantity,
                             controllers: controllers,
@@ -2240,7 +2240,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-  void _submitRepresentative({
+  void submitRepresentative({
     required RepresentativeData? model,
     required int type,
     required TextEditingController name,
@@ -2270,7 +2270,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void _showError(BuildContext context, String message) {
+  void showError(BuildContext context, String message) {
     Utils().showAlert(
       buildContext: context,
       message: message,
@@ -2278,7 +2278,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  bool _validateForm({
+  bool validateForm({
     required BuildContext context,
     required TextEditingController name,
     required TextEditingController emiratesId,
@@ -2286,22 +2286,22 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     required TextEditingController roleName,
   }) {
     if (name.text.isEmpty) {
-      _showError(context, "Please enter name");
+      showError(context, "Please enter name");
       return false;
     }
 
     if (emiratesId.text.isEmpty || emiratesId.text.length != 18) {
-      _showError(context, "Please enter valid emiratesID");
+      showError(context, "Please enter valid emiratesID");
       return false;
     }
 
     if (mobileNumber.text.isEmpty || mobileNumber.text.length != 8) {
-      _showError(context, "Please enter valid contact number");
+      showError(context, "Please enter valid contact number");
       return false;
     }
 
     if (roleName.text.isEmpty) {
-      _showError(context, "Please enter role");
+      showError(context, "Please enter role");
       return false;
     }
 
@@ -2310,13 +2310,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Color getSaveButtonColor(
       int quantity, List<TextEditingController> controllers) {
-    return _isQuantityFormValid(quantity, controllers)
+    return isQuantityFormValid(quantity, controllers)
         ? AppTheme.colorPrimary
         : AppTheme.paleGray;
   }
 
-  void _onSaveQuantityPressed(QuantitySaveParams params) {
-    final errorMessage = _validateQuantityForm(
+  void onSaveQuantityPressed(QuantitySaveParams params) {
+    final errorMessage = validateQuantityForm(
       params.quantity,
       params.controllers,
       params.buildContext,
@@ -2331,7 +2331,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       return;
     }
 
-    _saveQuantitySheet(
+    saveQuantitySheet(
       params.model,
       params.isEdit,
       params.quantity,
@@ -2342,7 +2342,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  void _onQuantitySelected(
+  void onQuantitySelected(
     int? value,
     void Function(void Function()) myState,
     List<TextEditingController> controllers,
@@ -2353,11 +2353,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
     myState(() {
       updateQuantity(value);
-      _handleQuantityChangeForSheet(value, controllers, focusNodes);
+      handleQuantityChangeForSheet(value, controllers, focusNodes);
     });
   }
 
-  void _initializeQuantitySheet(
+  void initializeQuantitySheet(
     ProductDetail model,
     bool isEdit,
     TextEditingController notes,
@@ -2366,14 +2366,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   ) {
     setState(() {
       if (model.qty > 0 && isEdit) {
-        _initializeFromModelForQuantity(
+        initializeFromModelForQuantity(
           model,
           notes,
           controllers,
           focusNodes,
         );
       } else {
-        _initializeEmptyQuantitySheet(
+        initializeEmptyQuantitySheet(
           model,
           controllers,
           focusNodes,
@@ -2382,7 +2382,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-  int _getInitialQuantity(ProductDetail model, bool isEdit) {
+  int getInitialQuantity(ProductDetail model, bool isEdit) {
     if (model.qty > 0 && isEdit) {
       return model.qty;
     }
@@ -2390,7 +2390,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     return model.qty;
   }
 
-  void _initializeFromModelForQuantity(
+  void initializeFromModelForQuantity(
     ProductDetail model,
     TextEditingController notes,
     List<TextEditingController> controllers,
@@ -2405,7 +2405,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void _initializeEmptyQuantitySheet(
+  void initializeEmptyQuantitySheet(
     ProductDetail model,
     List<TextEditingController> controllers,
     List<FocusNode> focusNodes,
@@ -2416,19 +2416,19 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     focusNodes.add(FocusNode());
   }
 
-  void _handleQuantityChangeForSheet(
+  void handleQuantityChangeForSheet(
     int newQuantity,
     List<TextEditingController> controllers,
     List<FocusNode> focusNodes,
   ) {
     if (newQuantity > controllers.length) {
-      _addControllersForQuantity(newQuantity, controllers, focusNodes);
+      addControllersForQuantity(newQuantity, controllers, focusNodes);
     } else if (newQuantity < controllers.length) {
-      _removeControllersForQuantity(newQuantity, controllers, focusNodes);
+      removeControllersForQuantity(newQuantity, controllers, focusNodes);
     }
   }
 
-  void _addControllersForQuantity(
+  void addControllersForQuantity(
     int quantity,
     List<TextEditingController> controllers,
     List<FocusNode> focusNodes,
@@ -2439,7 +2439,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void _removeControllersForQuantity(
+  void removeControllersForQuantity(
     int quantity,
     List<TextEditingController> controllers,
     List<FocusNode> focusNodes,
@@ -2448,7 +2448,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     focusNodes.removeRange(quantity, focusNodes.length);
   }
 
-  String? _validateQuantityForm(
+  String? validateQuantityForm(
     int quantity,
     List<TextEditingController> controllers,
     BuildContext buildContext,
@@ -2456,27 +2456,27 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     if (quantity == 0) {
       return "Please select quantity";
     }
-    if (_hasInvalidSerialNumbersForQuantity(controllers)) {
+    if (hasInvalidSerialNumbersForQuantity(controllers)) {
       return "Please enter valid serial number";
     }
     return null;
   }
 
-  bool _hasInvalidSerialNumbersForQuantity(
+  bool hasInvalidSerialNumbersForQuantity(
     List<TextEditingController> controllers,
   ) {
     return controllers
         .any((element) => element.text.isEmpty || element.text.length < 5);
   }
 
-  bool _isQuantityFormValid(
+  bool isQuantityFormValid(
     int quantity,
     List<TextEditingController> controllers,
   ) {
-    return quantity != 0 && !_hasInvalidSerialNumbersForQuantity(controllers);
+    return quantity != 0 && !hasInvalidSerialNumbersForQuantity(controllers);
   }
 
-  void _saveQuantitySheet(
+  void saveQuantitySheet(
     ProductDetail model,
     bool isEdit,
     int quantity,
@@ -2485,18 +2485,18 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     StateSetter setState,
     BuildContext context,
   ) {
-    final products = _buildProductsListForQuantity(controllers, model, isEdit);
+    final products = buildProductsListForQuantity(controllers, model, isEdit);
     setState(() {
       if (isEdit) {
-        _updateProductForQuantity(model, quantity, products, notes);
+        updateProductForQuantity(model, quantity, products, notes);
       } else {
-        _addProductForQuantity(model, quantity, products, notes);
+        addProductForQuantity(model, quantity, products, notes);
       }
       Navigator.of(context).pop();
     });
   }
 
-  List<Map<String, dynamic>> _buildProductsListForQuantity(
+  List<Map<String, dynamic>> buildProductsListForQuantity(
     List<TextEditingController> controllers,
     ProductDetail model,
     bool isEdit,
@@ -2512,7 +2512,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     return products;
   }
 
-  void _updateProductForQuantity(
+  void updateProductForQuantity(
     ProductDetail model,
     int quantity,
     List<Map<String, dynamic>> products,
@@ -2534,7 +2534,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     LogPrint().log("true $model");
   }
 
-  void _addProductForQuantity(
+  void addProductForQuantity(
     ProductDetail model,
     int quantity,
     List<Map<String, dynamic>> products,
@@ -2556,7 +2556,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-  void _filterSizeList(String searchText, StateSetter myState) {
+  void filterSizeList(String searchText, StateSetter myState) {
     sizeList.clear();
     myState(() {
       if (searchText.isEmpty) {
@@ -2572,7 +2572,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-  Widget _buildSizeSheetHeader(BuildContext context) {
+  Widget buildSizeSheetHeader(BuildContext context) {
     return Align(
       alignment: Alignment.topRight,
       child: GestureDetector(
@@ -2593,7 +2593,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildSizeSearchField(StateSetter myState) {
+  Widget buildSizeSearchField(StateSetter myState) {
     return Container(
       margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
       height: 45,
@@ -2602,8 +2602,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         color: AppTheme.white,
       ),
       child: TextFormField(
-        controller: _searchSize,
-        onChanged: (searchText) => _filterSizeList(searchText, myState),
+        controller: searchSize,
+        onChanged: (searchText) => filterSizeList(searchText, myState),
         maxLines: 1,
         cursorColor: AppTheme.colorPrimary,
         cursorWidth: 2,
@@ -2624,7 +2624,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildSizeListItem(BuildContext context, int index,
+  Widget buildSizeListItem(BuildContext context, int index,
       List<AreaData?>? size, int position, StateSetter setState) {
     return Card(
       color: AppTheme.white,
@@ -2677,14 +2677,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                _buildSizeSheetHeader(context),
-                _buildSizeSearchField(myState),
+                buildSizeSheetHeader(context),
+                buildSizeSearchField(myState),
                 ListView.builder(
                     padding: const EdgeInsets.only(top: 10),
                     shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),
                     itemCount: sizeList.length,
-                    itemBuilder: (context, index) => _buildSizeListItem(
+                    itemBuilder: (context, index) => buildSizeListItem(
                         context, index, size, position, setState)),
                 Utils().sizeBoxHeight()
               ],
@@ -2753,10 +2753,10 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                       color: AppTheme.white,
                     ),
                     child: TextFormField(
-                      controller: _searchKnownProduct,
+                      controller: searchKnownProduct,
                       onChanged: (searchText) {
                         myState(() {
-                          productName.text = _searchKnownProduct.text;
+                          productName.text = searchKnownProduct.text;
                         });
                         getSearchAllKnownProducts(myState);
                       },
@@ -2801,7 +2801,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                             productName.text =
                                 knownProductList[index].productName;
                             focusNode.requestFocus();
-                            _searchKnownProduct.clear();
+                            searchKnownProduct.clear();
                             knownProductList.clear();
                             Navigator.of(context).pop();
                           },
@@ -2845,7 +2845,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     ).whenComplete(() {
       setState(() {
         productTab = 3;
-        _searchKnownProduct.text = "";
+        searchKnownProduct.text = "";
       });
     });
   }
@@ -2863,7 +2863,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               child: FormTextField(
                 hint: "",
                 enabled: false,
-                controller: _outlets,
+                controller: outlets,
                 value: outletModel != null ? outletModel!.outletName : "",
                 title: 'Selected Outlet :',
               )),
@@ -3004,11 +3004,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         "Department/Task/GetAssignedTaskInspectors?mainTaskId=${widget.mainTaskId}";
 
     Api().getAPI(context, endpoint).then((value) async {
-      await _handleGetAllUsersResponse(value);
+      await handleGetAllUsersResponse(value);
     });
   }
 
-  Future<void> _handleGetAllUsersResponse(String? value) async {
+  Future<void> handleGetAllUsersResponse(String? value) async {
     LoadingIndicatorDialog().dismiss();
 
     try {
@@ -3018,14 +3018,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           showInspectorSheet(data.data);
         });
       } else {
-        _showNoDataAlert();
+        showNoDataAlert();
       }
     } catch (e) {
       setState(() {});
     }
   }
 
-  void _showNoDataAlert() {
+  void showNoDataAlert() {
     Utils().showAlert(
       buildContext: context,
       message: "No Data Found",
@@ -3485,7 +3485,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter myState) {
-            return _buildAEMMISheetContent(
+            return buildAEMMISheetContent(
               context,
               myState,
               list,
@@ -3496,11 +3496,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         );
       },
     ).whenComplete(() {
-      _saveAgentSelections(agent1, agent2);
+      saveAgentSelections(agent1, agent2);
     });
   }
 
-  Widget _buildAEMMISheetContent(
+  Widget buildAEMMISheetContent(
     BuildContext context,
     StateSetter myState,
     List<WitnessData> list,
@@ -3518,7 +3518,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       height: currentHeight - 50,
       child: Column(
         children: [
-          _buildSaveHeader(context),
+          buildSaveHeader(context),
           const Divider(height: 1, color: AppTheme.grey),
           Expanded(
             flex: 1,
@@ -3527,7 +3527,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  _buildAgentList(
+                  buildAgentList(
                     list,
                     agent1,
                     agent2,
@@ -3543,7 +3543,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildSaveHeader(BuildContext context) {
+  Widget buildSaveHeader(BuildContext context) {
     return Container(
       width: double.infinity,
       color: AppTheme.mainBackground,
@@ -3568,7 +3568,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildAgentList(
+  Widget buildAgentList(
     List<WitnessData> list,
     List<WitnessData> agent1,
     List<WitnessData> agent2,
@@ -3580,7 +3580,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       physics: const ClampingScrollPhysics(),
       itemCount: list.length,
       itemBuilder: (context, index) {
-        return _buildAgentCard(
+        return buildAgentCard(
           list[index],
           agent1,
           agent2,
@@ -3590,7 +3590,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildAgentCard(
+  Widget buildAgentCard(
     WitnessData agent,
     List<WitnessData> agent1,
     List<WitnessData> agent2,
@@ -3598,7 +3598,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   ) {
     return GestureDetector(
       onTap: () {
-        _handleAgentTap(agent, agent1, agent2, myState);
+        handleAgentTap(agent, agent1, agent2, myState);
       },
       child: Card(
         color: AppTheme.white,
@@ -3613,9 +3613,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: _buildAgentInfo(agent),
+                child: buildAgentInfo(agent),
               ),
-              _buildCheckboxIcon(agent, agent1, agent2),
+              buildCheckboxIcon(agent, agent1, agent2),
             ],
           ),
         ),
@@ -3623,7 +3623,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildAgentInfo(WitnessData agent) {
+  Widget buildAgentInfo(WitnessData agent) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -3664,7 +3664,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  Widget _buildCheckboxIcon(
+  Widget buildCheckboxIcon(
     WitnessData agent,
     List<WitnessData> agent1,
     List<WitnessData> agent2,
@@ -3688,7 +3688,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           );
   }
 
-  void _handleAgentTap(
+  void handleAgentTap(
     WitnessData agent,
     List<WitnessData> agent1,
     List<WitnessData> agent2,
@@ -3708,7 +3708,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-  void _saveAgentSelections(
+  void saveAgentSelections(
     List<WitnessData> agent1,
     List<WitnessData> agent2,
   ) {
@@ -3718,11 +3718,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       selectedAEList.addAll(agent1);
       selectedMMIList.clear();
       selectedMMIList.addAll(agent2);
-      _updateNameLists();
+      updateNameLists();
     });
   }
 
-  void _updateNameLists() {
+  void updateNameLists() {
     aeNameList.clear();
     for (var element in selectedAEList) {
       aeNameList.add(element.agentName);
@@ -3743,8 +3743,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     return '${id.substring(0, 3)}-${id.substring(3, 7)}-${id.substring(7, 14)}-${id.substring(14, 15)}';
   }
 
-  _Controllers _initControllers(RepresentativeData? model) {
-    final controllers = _Controllers();
+  Controllers initControllers(RepresentativeData? model) {
+    final controllers = Controllers();
 
     if (model != null) {
       controllers.name.text = model.name;
@@ -3774,7 +3774,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     final node3 = FocusNode();
     final node4 = FocusNode();
     final node5 = FocusNode();
-    final controllers = _initControllers(model);
+    final controllers = initControllers(model);
 
     showModalBottomSheet(
         enableDrag: false,
@@ -3783,20 +3783,20 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         backgroundColor: AppTheme.mainBackground,
         isScrollControlled: true,
         builder: (BuildContext buildContext) {
-          bool _isFormValid(_Controllers c) {
+          bool isFormValid(Controllers c) {
             return c.name.text.isNotEmpty &&
                 c.emiratesId.text.length == 18 &&
                 c.mobile.text.length == 8 &&
                 c.role.text.isNotEmpty;
           }
 
-          void _onSubmit({
+          void onSubmit({
             required BuildContext context,
             required RepresentativeData? model,
             required int type,
-            required _Controllers c,
+            required Controllers c,
           }) {
-            final isValid = _validateForm(
+            final isValid = validateForm(
               context: context,
               name: c.name,
               emiratesId: c.emiratesId,
@@ -3806,7 +3806,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
             if (!isValid) return;
 
-            _submitRepresentative(
+            submitRepresentative(
               model: model,
               type: type,
               name: c.name,
@@ -3819,7 +3819,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter myState) {
-            final isValid = _isFormValid(controllers);
+            final isValid = isFormValid(controllers);
 
             return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -3976,7 +3976,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                               "image", null, type == 1 ? 4 : 5, myState);
                         },
                       ),
-                      _buildImageAttachmentPreview(),
+                      buildImageAttachmentPreview(),
                       const SizedBox(
                         height: 10,
                       ),
@@ -3986,7 +3986,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           margin: const EdgeInsets.symmetric(vertical: 20),
                           child: ElevatedButton(
                             onPressed: isValid
-                                ? () => _onSubmit(
+                                ? () => onSubmit(
                                       context: context,
                                       model: model,
                                       type: type,
@@ -4024,7 +4024,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-  Widget _buildImageAttachmentPreview() {
+  Widget buildImageAttachmentPreview() {
     if (imageAttach.isEmpty) {
       return Container();
     }
@@ -4113,7 +4113,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Future<void> getInspectionRepresentative() async {
-    _clearRepresentativeLists();
+    clearRepresentativeLists();
 
     if (!await Utils().hasNetwork(context, setState)) return;
     if (!mounted) return;
@@ -4123,26 +4123,26 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     Api().getAPI(context, url).then((value) async {
       LogPrint().log("response : $value");
       final data = representativeFromJson(value);
-      _handleRepresentativeResponse(data);
+      handleRepresentativeResponse(data);
     });
   }
 
-  void _clearRepresentativeLists() {
+  void clearRepresentativeLists() {
     setState(() {
       managerList.clear();
       witnessList.clear();
     });
   }
 
-  void _handleRepresentativeResponse(RepresentativeModel data) {
+  void handleRepresentativeResponse(RepresentativeModel data) {
     if (data.data.isNotEmpty) {
-      _categorizeRepresentatives(data.data);
+      categorizeRepresentatives(data.data);
     } else {
-      _handleEmptyRepresentativeResponse(data.message);
+      handleEmptyRepresentativeResponse(data.message);
     }
   }
 
-  void _categorizeRepresentatives(List<RepresentativeData> representatives) {
+  void categorizeRepresentatives(List<RepresentativeData> representatives) {
     setState(() {
       for (var element in representatives) {
         if (element.typeId == 1) {
@@ -4154,7 +4154,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-  void _handleEmptyRepresentativeResponse(String? message) {
+  void handleEmptyRepresentativeResponse(String? message) {
     if (message != null && message.isNotEmpty) {
       Utils().showAlert(
         buildContext: context,
@@ -4502,34 +4502,33 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       return;
     }
 
-    await _requestAndroidCameraPermissions(
-        type, productId, categoryId, myState);
+    await requestAndroidCameraPermissions(type, productId, categoryId, myState);
   }
 
-  Future<void> _requestAndroidCameraPermissions(
+  Future<void> requestAndroidCameraPermissions(
       String type, int? productId, int? categoryId, StateSetter myState) async {
     final cameraPermission = await Permission.camera.request();
     LogPrint().log("camera permission is $cameraPermission");
 
-    if (!_isPermissionGranted(cameraPermission)) {
+    if (!isPermissionGranted(cameraPermission)) {
       return;
     }
 
     final microphone = await Permission.microphone.request();
     LogPrint().log("microphone permission is $microphone");
 
-    if (!_isPermissionGranted(microphone)) {
+    if (!isPermissionGranted(microphone)) {
       return;
     }
 
-    await _handleAndroidStoragePermission(type, productId, categoryId, myState);
+    await handleAndroidStoragePermission(type, productId, categoryId, myState);
   }
 
-  bool _isPermissionGranted(PermissionStatus status) {
+  bool isPermissionGranted(PermissionStatus status) {
     return status.isGranted || status.isProvisional;
   }
 
-  Future<void> _handleAndroidStoragePermission(
+  Future<void> handleAndroidStoragePermission(
       String type, int? productId, int? categoryId, StateSetter myState) async {
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     LogPrint().log("sdk level ${androidInfo.version.sdkInt}");
@@ -4615,7 +4614,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   void uploadImage(http.MultipartFile media, int? productId, int? categoryId,
       StateSetter myState, String type, String filePath) {
     final listMedia = [media];
-    final map = _buildUploadRequestMap(productId, categoryId);
+    final map = buildUploadRequestMap(productId, categoryId);
 
     Api()
         .callAPIWithFiles(
@@ -4623,11 +4622,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         .then((value) {
       LoadingIndicatorDialog().dismiss();
       LogPrint().log(value);
-      _handleUploadResponse(value, categoryId, myState, type, filePath);
+      handleUploadResponse(value, categoryId, myState, type, filePath);
     });
   }
 
-  Map<String, String> _buildUploadRequestMap(int? productId, int? categoryId) {
+  Map<String, String> buildUploadRequestMap(int? productId, int? categoryId) {
     final map = <String, String>{
       "InspectionId": inspectionId.toString(),
     };
@@ -4640,26 +4639,26 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     return map;
   }
 
-  void _handleUploadResponse(String value, int? categoryId, StateSetter myState,
+  void handleUploadResponse(String value, int? categoryId, StateSetter myState,
       String type, String filePath) {
     if (value == "error") {
-      _showErrorAlert(value);
+      showErrorAlert(value);
       return;
     }
 
     final json = jsonDecode(value);
     if (json["data"] == null) {
-      _showErrorAlert(json["message"]);
+      showErrorAlert(json["message"]);
       return;
     }
 
-    _handleCategorySpecificLogic(
+    handleCategorySpecificLogic(
         json["data"], categoryId, myState, type, filePath);
     Utils().showSnackBar(context, "Uploaded successfully.");
     getInspectionDetail();
   }
 
-  void _showErrorAlert(String message) {
+  void showErrorAlert(String message) {
     Utils().showAlert(
         buildContext: context,
         message: message,
@@ -4668,18 +4667,18 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         });
   }
 
-  void _handleCategorySpecificLogic(String data, int? categoryId,
+  void handleCategorySpecificLogic(String data, int? categoryId,
       StateSetter myState, String type, String filePath) {
     if (categoryId == 9) {
-      _handleCategory9Logic(data, type, filePath);
+      handleCategory9Logic(data, type, filePath);
     } else if (categoryId == 1) {
-      _handleCategory1Logic(data, myState);
+      handleCategory1Logic(data, myState);
     } else {
-      _handleOtherCategoryLogic(data, myState);
+      handleOtherCategoryLogic(data, myState);
     }
   }
 
-  void _handleCategory9Logic(String data, String type, String filePath) {
+  void handleCategory9Logic(String data, String type, String filePath) {
     if (type == "image") {
       image.add(filePath);
     }
@@ -4689,14 +4688,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     showAttachmentDialog(attachedLink);
   }
 
-  void _handleCategory1Logic(String data, StateSetter myState) {
+  void handleCategory1Logic(String data, StateSetter myState) {
     myState(() {
       attachedProduct = data;
     });
     showAttachmentDialog(attachedProduct);
   }
 
-  void _handleOtherCategoryLogic(String data, StateSetter myState) {
+  void handleOtherCategoryLogic(String data, StateSetter myState) {
     myState(() {
       imageAttach = data;
     });
@@ -4958,7 +4957,7 @@ class QuantitySaveParams {
   });
 }
 
-class _Controllers {
+class Controllers {
   final name = TextEditingController();
   final emiratesId = TextEditingController();
   final mobile = TextEditingController();
