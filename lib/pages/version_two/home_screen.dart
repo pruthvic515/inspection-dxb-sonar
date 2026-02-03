@@ -464,11 +464,11 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildAgentTabs(),
           _buildAgentSearchField(),
           _buildAgentTaskList(),
-          if (isLoading && list.isEmpty)
+       /*   if (isLoading && list.isEmpty)
             const Padding(
               padding: EdgeInsets.all(20.0),
               child: Center(child: CircularProgressIndicator()),
-            ),
+            ),*/
           const SizedBox(height: 20),
         ],
       ),
@@ -640,7 +640,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildAgentTaskList() {
-    if (list.isEmpty && !isLoading) {
+    if (list.isEmpty) {
       return _buildEmptyState();
     }
     return ListView.builder(
