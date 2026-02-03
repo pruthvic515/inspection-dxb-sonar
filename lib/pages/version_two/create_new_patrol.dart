@@ -3821,16 +3821,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     RepresentativeData? model,
     int type,
     MaskTextInputFormatter maskFormatter,
-    TextEditingController name,
-    TextEditingController emiratesId,
-    TextEditingController mobileNumber,
-    TextEditingController roleName,
-    TextEditingController notes,
-    FocusNode node1,
-    FocusNode node2,
-    FocusNode node3,
-    FocusNode node4,
-    FocusNode node5,
   ) {
     final isValid = _isManagerFormValid(controllers);
     final buttonText = model == null ? "Add" : "Update";
@@ -3874,15 +3864,15 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 onChange: (value) {
                   myState(() {});
                 },
-                focusNode: node1,
+                focusNode: controllers.node1,
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(
                       // ignore: deprecated_member_use
                       RegExp(r'^[a-zA-Z\u0600-\u06FF\s]+$')),
                 ],
-                controller: name,
+                controller: controllers.name,
                 hint: "",
-                value: name.text,
+                value: controllers.name.text,
                 title: 'Name :',
                 inputBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
@@ -3895,16 +3885,16 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               FormTextField(
                 onChange: (value) {
                   myState(() {
-                    LogPrint().log(emiratesId.text);
+                    LogPrint().log(controllers.emiratesId.text);
                   });
                 },
                 inputFormatters: [
                   maskFormatter,
                 ],
-                controller: emiratesId,
-                focusNode: node2,
+                controller: controllers.emiratesId,
+                focusNode: controllers.node2,
                 hint: "XXX-XXXX-XXXXXXX-X",
-                value: emiratesId.text,
+                value: controllers.emiratesId.text,
                 title: 'Emirates ID :',
                 inputBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
@@ -3918,10 +3908,10 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 onChange: (value) {
                   myState(() {});
                 },
-                controller: mobileNumber,
-                focusNode: node3,
+                controller: controllers.mobile,
+                focusNode: controllers.node3,
                 hint: "",
-                value: mobileNumber.text,
+                value: controllers.mobile.text,
                 title: 'Mobile Number :',
                 inputFormatters: [
                   LengthLimitingTextInputFormatter(8),
@@ -3935,13 +3925,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 height: 5,
               ),
               FormTextField(
-                controller: roleName,
+                controller: controllers.role,
                 onChange: (value) {
                   myState(() {});
                 },
                 hint: "",
-                focusNode: node4,
-                value: roleName.text,
+                focusNode: controllers.node4,
+                value: controllers.role.text,
                 title: 'Role :',
                 inputBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
@@ -3952,13 +3942,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 height: 5,
               ),
               FormTextField(
-                controller: notes,
+                controller: controllers.notes,
                 onChange: (value) {
                   myState(() {});
                 },
                 hint: "",
-                focusNode: node5,
-                value: notes.text,
+                focusNode: controllers.node5,
+                value: controllers.notes.text,
                 title: notesTitle,
                 minLines: 2,
                 maxLines: 5,
@@ -3982,11 +3972,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 textColor: AppTheme.colorPrimary,
                 inputType: TextInputType.text,
                 onTap: () {
-                  node1.unfocus();
-                  node2.unfocus();
-                  node3.unfocus();
-                  node4.unfocus();
-                  node5.unfocus();
+                  controllers.node1.unfocus();
+                  controllers.node2.unfocus();
+                  controllers.node3.unfocus();
+                  controllers.node4.unfocus();
+                  controllers.node5.unfocus();
                   requestCameraPermissions("image", null, cameraType, myState);
                 },
               ),
@@ -4039,16 +4029,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         // ignore: deprecated_member_use
         filter: {"X": RegExp(r'[0-9]')},
         type: MaskAutoCompletionType.lazy);
-    final name = TextEditingController();
-    final emiratesId = TextEditingController();
-    final mobileNumber = TextEditingController();
-    final roleName = TextEditingController();
-    final notes = TextEditingController();
-    final node1 = FocusNode();
-    final node2 = FocusNode();
-    final node3 = FocusNode();
-    final node4 = FocusNode();
-    final node5 = FocusNode();
     final controllers = initControllers(model);
 
     showModalBottomSheet(
@@ -4067,16 +4047,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               model,
               type,
               maskFormatter,
-              name,
-              emiratesId,
-              mobileNumber,
-              roleName,
-              notes,
-              node1,
-              node2,
-              node3,
-              node4,
-              node5,
             );
           });
         }).whenComplete(() {
