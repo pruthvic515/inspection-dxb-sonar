@@ -3239,40 +3239,101 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
+  Widget headerWithAddButton({
+    required String title,
+    required int type,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CText(
+            text: title,
+            textColor: AppTheme.black,
+            fontFamily: AppTheme.urbanist,
+            fontSize: AppTheme.large,
+            fontWeight: FontWeight.w600,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.colorPrimary,
+            ),
+            onPressed: () => onAddManagerPressed(type),
+            child: CText(text: "Add New"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void onAddManagerPressed(int type) {
+    if (!canEdit) return;
+    showAddManagerSheet(null, type);
+  }
+
+  void onSubmitPressed() {
+    if (!canEdit) return;
+
+    concludeFocusNode.unfocus();
+    FocusScope.of(context).unfocus();
+
+    Utils().showYesNoAlert(
+      context: context,
+      message: "Are you sure you want to finish the inspections?",
+      onYesPressed: handleInspectionConfirmation,
+      onNoPressed: () => Navigator.of(context).pop(),
+    );
+  }
+
+  void handleInspectionConfirmation() {
+    Navigator.of(context).pop();
+
+    if (widget.taskType == 2 || widget.taskType == 3) {
+      reasonBottomSheet(
+        context,
+        reasonList,
+        onSelected: (selected) {
+          submitInspection(
+            selected["inspectionReasonMasterId"],
+          );
+        },
+      );
+    } else {
+      submitInspection(0);
+    }
+  }
+
+  Widget submitInspectionButton() {
+    final isValid = validateNext();
+
+    return Container(
+      margin: const EdgeInsets.only(top: 30, right: 20, left: 20, bottom: 30),
+      child: ElevatedButton(
+        onPressed: isValid ? onSubmitPressed : null,
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          backgroundColor: isValid ? AppTheme.colorPrimary : AppTheme.grey,
+          minimumSize: const Size.fromHeight(55),
+        ),
+        child: CText(
+          text: "SUBMIT & FINISH MY INSPECTION",
+          textColor: AppTheme.textPrimary,
+        ),
+      ),
+    );
+  }
+
   Widget tabFourUI() {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CText(
-                  text: "Client Representative",
-                  textColor: AppTheme.black,
-                  fontFamily: AppTheme.urbanist,
-                  fontSize: AppTheme.large,
-                  fontWeight: FontWeight.w600,
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.colorPrimary),
-                  onPressed: () {
-                    if (canEdit) {
-                      showAddManagerSheet(null, 1);
-                    }
-                  },
-                  child: CText(
-                    text: "Add New",
-                    textColor: AppTheme.textPrimary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                )
-              ],
-            ),
+          headerWithAddButton(
+            title: "Client Representative",
+            type: 1,
           ),
           ListView.builder(
               padding: const EdgeInsets.only(top: 10),
@@ -3282,35 +3343,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               itemBuilder: (context, index) {
                 return getManagerUI(managerList, index, 1);
               }),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CText(
-                  text: "Witness",
-                  textColor: AppTheme.black,
-                  fontFamily: AppTheme.urbanist,
-                  fontSize: AppTheme.large,
-                  fontWeight: FontWeight.w600,
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.colorPrimary),
-                  onPressed: () {
-                    if (canEdit) {
-                      showAddManagerSheet(null, 2);
-                    }
-                  },
-                  child: CText(
-                    text: "Add New",
-                    textColor: AppTheme.textPrimary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                )
-              ],
-            ),
+          headerWithAddButton(
+            title: "Owner Representative",
+            type: 2,
           ),
           ListView.builder(
               padding: const EdgeInsets.only(top: 10),
@@ -3332,54 +3367,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 maxLines: 10,
                 minLines: 5,
               )),
-          Container(
-            margin:
-                const EdgeInsets.only(top: 30, right: 20, left: 20, bottom: 30),
-            child: ElevatedButton(
-              onPressed: () {
-                if (canEdit) {
-                  if (validateNext()) {
-                    concludeFocusNode.unfocus();
-                    FocusScope.of(context).unfocus();
-                    Utils().showYesNoAlert(
-                        context: context,
-                        message:
-                            "Are you sure you want to finish the inspections?",
-                        onYesPressed: () {
-                          Navigator.of(context).pop();
-                          if (widget.taskType == 2 || widget.taskType == 3) {
-                            reasonBottomSheet(context, reasonList,
-                                onSelected: (selected) {
-                              submitInspection(
-                                  selected["inspectionReasonMasterId"]);
-                            });
-                          } else {
-                            submitInspection(0);
-                          }
-                        },
-                        onNoPressed: () {
-                          Navigator.of(context).pop();
-                        });
-                  }
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                backgroundColor:
-                    validateNext() ? AppTheme.colorPrimary : AppTheme.grey,
-                minimumSize: const Size.fromHeight(55),
-              ),
-              child: CText(
-                text: "SUBMIT & FINISH MY INSPECTION",
-                textColor: AppTheme.textPrimary,
-                fontSize: AppTheme.large,
-                fontFamily: AppTheme.urbanist,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
+          submitInspectionButton(),
         ],
       ),
     );
@@ -3418,60 +3406,95 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void submitInspection([selected]) {
-    var status = 7;
-    if (entity != null) {
-      if (entity!.location?.category.toString().toLowerCase() == "hotel") {
-        status =
-            selectedMMIList.isNotEmpty || selectedAEList.isNotEmpty ? 6 : 7;
-      } else {
-        status = 6;
-      }
-    } else {
-      print("submitInspection 4 ${entity?.entityName.toString()}");
-      status = 6;
+  void submitInspection([dynamic selected]) {
+    final status = _resolveInspectionStatus();
+    final requestMap = _buildInspectionRequest(status, selected);
+
+    _callSubmitInspectionApi(requestMap);
+  }
+
+  int _resolveInspectionStatus() {
+    if (entity == null) {
+      debugPrint("submitInspection 4 ${entity?.entityName}");
+      return 6;
     }
 
-    var map = {
+    final category = entity!.location?.category.toString().toLowerCase();
+
+    if (category == "hotel") {
+      return _hasSelectedManagers() ? 6 : 7;
+    }
+
+    return 6;
+  }
+
+  bool _hasSelectedManagers() {
+    return selectedMMIList.isNotEmpty || selectedAEList.isNotEmpty;
+  }
+
+  Map<String, dynamic> _buildInspectionRequest(
+    int status,
+    dynamic selected,
+  ) {
+    final map = {
       "inspectionTaskId": taskId,
       "inspectionId": inspectionId,
       "inspectorId": storeUserData.getInt(USER_ID),
       "statusId": status,
       "finalNotes": concludeNotes.text.toString(),
-      // "inspectionReasonMasterId": selected
     };
 
-    if (widget.taskType == 2 || widget.taskType == 3) {
+    if (_requiresInspectionReason()) {
       map["inspectionReasonMasterId"] = selected;
     }
 
+    return map;
+  }
+
+  bool _requiresInspectionReason() {
+    return widget.taskType == 2 || widget.taskType == 3;
+  }
+
+  void _callSubmitInspectionApi(Map<String, dynamic> map) {
     LoadingIndicatorDialog().show(context);
+
     Api()
         .callAPI(context, "Mobile/Inspection/UpdateInspection", map)
-        .then((value) {
-      LoadingIndicatorDialog().dismiss();
-      var data = jsonDecode(value);
-      if (data["statusCode"] == 200) {
-        Utils().showAlert(
-            buildContext: context,
-            message: data["message"],
-            onPressed: () {
-              Future.delayed(const Duration(milliseconds: 300), () {
-                if (!Get.isRegistered<HomeScreen>()) {
-                  Get.offAll(() => const HomeScreen());
-                }
-              });
-            });
-      } else {
-        debugPrint("Error $value");
-        Utils().showAlert(
-            buildContext: context,
-            message: data["message"] ?? "",
-            onPressed: () {
-              Navigator.of(context).pop();
-            });
-      }
-    });
+        .then(_handleSubmitResponse);
+  }
+
+  void _handleSubmitResponse(String value) {
+    LoadingIndicatorDialog().dismiss();
+    final data = jsonDecode(value);
+
+    if (data["statusCode"] == 200) {
+      _handleSuccess(data["message"]);
+    } else {
+      _handleFailure(data["message"] ?? "", value);
+    }
+  }
+
+  void _handleSuccess(String message) {
+    Utils().showAlert(
+      buildContext: context,
+      message: message,
+      onPressed: () {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (!Get.isRegistered<HomeScreen>()) {
+            Get.offAll(() => const HomeScreen());
+          }
+        });
+      },
+    );
+  }
+
+  void _handleFailure(String message, String rawResponse) {
+    debugPrint("Error $rawResponse");
+    Utils().showAlert(
+      buildContext: context,
+      message: message,
+      onPressed: () {},
+    );
   }
 
   void showAEMMISheet(List<WitnessData> list) {

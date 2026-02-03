@@ -87,6 +87,50 @@ class _AddTaskFormState {
   final notesNode = FocusNode();
 }
 
+class _OutletFormState {
+  final OutletData? model;
+  final maskFormatter = MaskTextInputFormatter(
+      mask: 'XXX-XXXX-XXXXXXX-X',
+      // ignore: deprecated_member_use
+      filter: {"X": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy);
+  final itemName = TextEditingController();
+  final managerName = TextEditingController();
+  final emiratesId = TextEditingController();
+  final mobileNumber = TextEditingController();
+  final notes = TextEditingController();
+  final focusNode = FocusNode();
+  final focusNodeButton = FocusNode();
+  AreaData? ownerShipType;
+  AreaData? serviceType;
+  AreaData? outletType;
+
+  _OutletFormState(this.model);
+
+  void initialize(
+      List<AreaData> ownerShipList,
+      List<AreaData> outletServiceList,
+      String Function(String) formatEmiratesId) {
+    ownerShipType = null;
+    serviceType = null;
+    outletType = null;
+
+    if (model != null) {
+      itemName.text = model!.outletName;
+      managerName.text = model!.managerName ?? "";
+      emiratesId.text = formatEmiratesId(model!.emiratesId ?? "");
+      mobileNumber.text = model!.contactNumber?.replaceAll("+9715", "") ?? "";
+      notes.text = model!.notes ?? "";
+      ownerShipType =
+          AreaData(id: model!.ownerShipTypeId, text: model!.ownerShipType);
+      serviceType =
+          AreaData(id: model!.serviceTypeId, text: model!.serviceType);
+      outletType =
+          AreaData(id: model!.outletTypeId ?? 0, text: model!.outletType ?? "");
+    }
+  }
+}
+
 class _EntityDetailsState extends State<EntityDetails> {
   late int entityId;
   var storeUserData = StoreUserData();
@@ -2454,127 +2498,15 @@ class _EntityDetailsState extends State<EntityDetails> {
     return '${id.substring(0, 3)}-${id.substring(3, 7)}-${id.substring(7, 14)}-${id.substring(14, 15)}';
   }
 
-  void initOutletControllers(
-    OutletData? model,
-    TextEditingController itemName,
-    TextEditingController managerName,
-    TextEditingController emiratesId,
-    TextEditingController mobileNumber,
-    TextEditingController notes,
-  ) {
-    if (model == null) return;
-
-    itemName.text = model.outletName;
-    managerName.text = model.managerName ?? "";
-    emiratesId.text = formatEmiratesID(model.emiratesId ?? "");
-    mobileNumber.text = model.contactNumber?.replaceAll("+9715", "") ?? "";
-    notes.text = model.notes ?? "";
-
-    ownerShipType =
-        AreaData(id: model.ownerShipTypeId, text: model.ownerShipType);
-    serviceType = AreaData(id: model.serviceTypeId, text: model.serviceType);
-    outletType =
-        AreaData(id: model.outletTypeId ?? 0, text: model.outletType ?? "");
-  }
-
   void showAddOutletSheet(OutletData? model) {
-    var maskFormatter = MaskTextInputFormatter(
-        mask: 'XXX-XXXX-XXXXXXX-X',
-        // ignore: deprecated_member_use
-        filter: {"X": RegExp(r'[0-9]')},
-        type: MaskAutoCompletionType.lazy);
-    final itemName = TextEditingController();
-    final managerName = TextEditingController();
-    final emiratesId = TextEditingController();
-    final mobileNumber = TextEditingController();
-    final notes = TextEditingController();
-
-    ownerShipType = null;
-    serviceType = null;
-    outletType = null;
-
-    initOutletControllers(
-      model,
-      itemName,
-      managerName,
-      emiratesId,
-      mobileNumber,
-      notes,
-    );
-    var focusNode = FocusNode();
-    var focusNodeButton = FocusNode();
+    final formState = _OutletFormState(model);
+    formState.initialize(ownerShipList, outletServiceList, formatEmiratesID);
 
     showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: AppTheme.mainBackground,
       context: context,
       builder: (BuildContext buildContext) {
-        bool isOutletFormValid(
-          TextEditingController itemName,
-          TextEditingController managerName,
-          TextEditingController emiratesId,
-          TextEditingController mobileNumber,
-          TextEditingController notes,
-        ) {
-          return itemName.text.isNotEmpty &&
-              managerName.text.isNotEmpty &&
-              emiratesId.text.length == 18 &&
-              mobileNumber.text.length == 8 &&
-              notes.text.isNotEmpty &&
-              serviceType != null &&
-              ownerShipType != null &&
-              outletType != null;
-        }
-
-        String? validateOutletForm() {
-          if (itemName.text.isEmpty) return "Please enter outlet name";
-          if (serviceType == null) return "Please select service type";
-          if (ownerShipType == null) return "Please select ownership type";
-          if (outletType == null) return "Please select outlet type";
-          if (managerName.text.isEmpty) return "Please enter manager name";
-          if (emiratesId.text.length != 18) {
-            return "Please enter valid emirates ID";
-          }
-          if (mobileNumber.text.length != 8) {
-            return "Please enter valid contact number";
-          }
-          if (notes.text.isEmpty) return "Please enter notes";
-          return null;
-        }
-
-        void submitOutlet(
-          StateSetter myState,
-          OutletData? model,
-          TextEditingController itemName,
-          TextEditingController managerName,
-          TextEditingController emiratesId,
-          TextEditingController mobileNumber,
-          TextEditingController notes,
-        ) {
-          final outlet = OutletData(
-            outletId: model?.outletId ?? 0,
-            outletName: itemName.text,
-            serviceTypeId: serviceType!.id,
-            ownerShipTypeId: ownerShipType!.id,
-            outletTypeId: outletType!.id,
-            serviceType: serviceType!.text,
-            ownerShipType: ownerShipType!.text,
-            outletType: outletType!.text,
-            managerName: managerName.text,
-            emiratesId: emiratesId.text,
-            contactNumber: mobileNumber.text,
-            notes: notes.text,
-            newAdded: model == null,
-            inspectionStatusId: model?.inspectionStatusId ?? 0,
-            inspectionId: model?.inspectionId ?? 0,
-            inspectorId: storeUserData.getInt(USER_ID),
-          );
-
-          model != null
-              ? updateOutlet(myState, outlet)
-              : addOutlet(myState, outlet);
-        }
-
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
           return Container(
@@ -2589,199 +2521,17 @@ class _EntityDetailsState extends State<EntityDetails> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: CText(
-                        padding:
-                            const EdgeInsets.only(right: 20, left: 10, top: 10),
-                        textAlign: TextAlign.center,
-                        text: "DONE",
-                        textColor: AppTheme.black,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.medium,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  FormTextField(
-                    focusNode: focusNode,
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    controller: itemName,
-                    hint: "",
-                    value: itemName.text,
-                    title: 'Outlet Name :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    hint: "",
-                    value: ownerShipType?.text ?? "",
-                    title: 'Ownership :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                    onTap: () {
-                      selectOutletTypeSheet(
-                          ownerShipList, "ownership", myState, focusNodeButton);
-                    },
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    hint: "",
-                    value: serviceType?.text ?? "",
-                    title: 'Service Type :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                    onTap: () {
-                      selectOutletTypeSheet(outletServiceList, "service",
-                          myState, focusNodeButton);
-                    },
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    hint: "",
-                    value: outletType?.text ?? "",
-                    title: 'Outlet Type :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                    onTap: () {
-                      List<AreaData> types = [];
-                      types.add(AreaData(id: 1, text: "Main Outlet"));
-                      types.add(AreaData(id: 2, text: "Sub Outlet"));
-                      selectOutletTypeSheet(
-                          types, "type", myState, focusNodeButton);
-                    },
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    controller: managerName,
-                    hint: "",
-                    value: managerName.text,
-                    title: 'Manager Name :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    inputFormatters: [
-                      maskFormatter,
-                    ],
-                    controller: emiratesId,
-                    hint: "XXX-XXXX-XXXXXXX-X",
-                    value: emiratesId.text,
-                    title: 'Emirates ID :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.number,
-                  ),
-                  FormMobileTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    controller: mobileNumber,
-                    hint: "",
-                    value: mobileNumber.text,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(8),
-                      // Limits the length to 8 characters
-                    ],
-                    title: 'Contact Number :',
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.phone,
-                  ),
-                  FormTextField(
-                    onChange: (value) {
-                      myState(() {});
-                    },
-                    controller: notes,
-                    hint: "",
-                    value: notes.text,
-                    title: notesTitle,
-                    minLines: 2,
-                    maxLines: 2,
-                    inputBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    textColor: AppTheme.grayAsparagus,
-                    inputType: TextInputType.text,
-                  ),
-                  Center(
-                    child: Container(
-                      width: 200,
-                      margin: const EdgeInsets.symmetric(vertical: 20),
-                      child: ElevatedButton(
-                        focusNode: focusNodeButton,
-                        onPressed: () {
-                          final error = validateOutletForm();
-
-                          if (error != null) {
-                            Utils().showAlert(
-                              buildContext: buildContext,
-                              message: error,
-                              onPressed: () => Navigator.pop(context),
-                            );
-                            return;
-                          }
-
-                          submitOutlet(
-                            myState,
-                            model,
-                            itemName,
-                            managerName,
-                            emiratesId,
-                            mobileNumber,
-                            notes,
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          backgroundColor: isOutletFormValid(itemName,
-                                  managerName, emiratesId, mobileNumber, notes)
-                              ? AppTheme.colorPrimary
-                              : AppTheme.paleGray,
-                          minimumSize: const Size.fromHeight(50),
-                        ),
-                        child: CText(
-                          text: model == null ? "Add" : "Update",
-                          textColor: AppTheme.textPrimary,
-                          fontSize: AppTheme.large,
-                          fontFamily: AppTheme.urbanist,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
+                  _buildDoneButton(context),
+                  _buildOutletNameField(formState, myState),
+                  _buildOwnershipField(formState, myState),
+                  _buildServiceTypeField(formState, myState),
+                  _buildOutletTypeField(formState, myState),
+                  _buildManagerNameField(formState, myState),
+                  _buildEmiratesIdField(formState, myState),
+                  _buildContactNumberField(formState, myState),
+                  _buildOutletNotesField(formState, myState),
+                  _buildSubmitButton(
+                      formState, model, myState, buildContext, context),
                   Utils().sizeBoxHeight(height: 250)
                 ],
               ),
@@ -2792,6 +2542,262 @@ class _EntityDetailsState extends State<EntityDetails> {
     ).whenComplete(() {
       setState(() {});
     });
+  }
+
+  Widget _buildOutletNameField(
+      _OutletFormState formState, StateSetter myState) {
+    return FormTextField(
+      focusNode: formState.focusNode,
+      onChange: (value) => myState(() {}),
+      controller: formState.itemName,
+      hint: "",
+      value: formState.itemName.text,
+      title: 'Outlet Name :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.text,
+    );
+  }
+
+  Widget _buildOwnershipField(_OutletFormState formState, StateSetter myState) {
+    return FormTextField(
+      onChange: (value) => myState(() {}),
+      hint: "",
+      value: formState.ownerShipType?.text ?? "",
+      title: 'Ownership :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.text,
+      onTap: () => selectOutletTypeSheet(
+          ownerShipList, "ownership", myState, formState.focusNodeButton,
+          onSelected: (value) {
+        formState.ownerShipType = value;
+      }),
+    );
+  }
+
+  Widget _buildServiceTypeField(
+      _OutletFormState formState, StateSetter myState) {
+    return FormTextField(
+      onChange: (value) => myState(() {}),
+      hint: "",
+      value: formState.serviceType?.text ?? "",
+      title: 'Service Type :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.text,
+      onTap: () => selectOutletTypeSheet(
+          outletServiceList, "service", myState, formState.focusNodeButton,
+          onSelected: (value) {
+        formState.serviceType = value;
+      }),
+    );
+  }
+
+  Widget _buildOutletTypeField(
+      _OutletFormState formState, StateSetter myState) {
+    return FormTextField(
+      onChange: (value) => myState(() {}),
+      hint: "",
+      value: formState.outletType?.text ?? "",
+      title: 'Outlet Type :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.text,
+      onTap: () => _handleOutletTypeSelection(formState, myState),
+    );
+  }
+
+  void _handleOutletTypeSelection(
+      _OutletFormState formState, StateSetter myState) {
+    final types = [
+      AreaData(id: 1, text: "Main Outlet"),
+      AreaData(id: 2, text: "Sub Outlet"),
+    ];
+    selectOutletTypeSheet(types, "type", myState, formState.focusNodeButton,
+        onSelected: (value) {
+      formState.outletType = value;
+    });
+  }
+
+  Widget _buildManagerNameField(
+      _OutletFormState formState, StateSetter myState) {
+    return FormTextField(
+      onChange: (value) => myState(() {}),
+      controller: formState.managerName,
+      hint: "",
+      value: formState.managerName.text,
+      title: 'Manager Name :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.text,
+    );
+  }
+
+  Widget _buildEmiratesIdField(
+      _OutletFormState formState, StateSetter myState) {
+    return FormTextField(
+      onChange: (value) => myState(() {}),
+      inputFormatters: [formState.maskFormatter],
+      controller: formState.emiratesId,
+      hint: "XXX-XXXX-XXXXXXX-X",
+      value: formState.emiratesId.text,
+      title: 'Emirates ID :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.number,
+    );
+  }
+
+  Widget _buildContactNumberField(
+      _OutletFormState formState, StateSetter myState) {
+    return FormMobileTextField(
+      onChange: (value) => myState(() {}),
+      controller: formState.mobileNumber,
+      hint: "",
+      value: formState.mobileNumber.text,
+      inputFormatters: [LengthLimitingTextInputFormatter(8)],
+      title: 'Contact Number :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.phone,
+    );
+  }
+
+  Widget _buildOutletNotesField(
+      _OutletFormState formState, StateSetter myState) {
+    return FormTextField(
+      onChange: (value) => myState(() {}),
+      controller: formState.notes,
+      hint: "",
+      value: formState.notes.text,
+      title: notesTitle,
+      minLines: 2,
+      maxLines: 2,
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.text,
+    );
+  }
+
+  Widget _buildSubmitButton(_OutletFormState formState, OutletData? model,
+      StateSetter myState, BuildContext buildContext, BuildContext context) {
+    final isValid = _isOutletFormValid(formState);
+    return Center(
+      child: Container(
+        width: 200,
+        margin: const EdgeInsets.symmetric(vertical: 20),
+        child: ElevatedButton(
+          focusNode: formState.focusNodeButton,
+          onPressed: () => _handleOutletSubmit(
+              formState, model, myState, buildContext, context),
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            backgroundColor:
+                isValid ? AppTheme.colorPrimary : AppTheme.paleGray,
+            minimumSize: const Size.fromHeight(50),
+          ),
+          child: CText(
+            text: model == null ? "Add" : "Update",
+            textColor: AppTheme.textPrimary,
+            fontSize: AppTheme.large,
+            fontFamily: AppTheme.urbanist,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handleOutletSubmit(_OutletFormState formState, OutletData? model,
+      StateSetter myState, BuildContext buildContext, BuildContext context) {
+    final error = _validateOutletForm(formState);
+    if (error != null) {
+      Utils().showAlert(
+        buildContext: buildContext,
+        message: error,
+        onPressed: () => Navigator.pop(context),
+      );
+      return;
+    }
+    _submitOutlet(formState, model, myState);
+  }
+
+  bool _isOutletFormValid(_OutletFormState formState) {
+    return formState.itemName.text.isNotEmpty &&
+        formState.managerName.text.isNotEmpty &&
+        formState.emiratesId.text.length == 18 &&
+        formState.mobileNumber.text.length == 8 &&
+        formState.notes.text.isNotEmpty &&
+        formState.serviceType != null &&
+        formState.ownerShipType != null &&
+        formState.outletType != null;
+  }
+
+  String? _validateOutletForm(_OutletFormState formState) {
+    if (formState.itemName.text.isEmpty) {
+      return "Please enter outlet name";
+    }
+    if (formState.serviceType == null) {
+      return "Please select service type";
+    }
+    if (formState.ownerShipType == null) {
+      return "Please select ownership type";
+    }
+    if (formState.outletType == null) {
+      return "Please select outlet type";
+    }
+    if (formState.managerName.text.isEmpty) {
+      return "Please enter manager name";
+    }
+    if (formState.emiratesId.text.length != 18) {
+      return "Please enter valid emirates ID";
+    }
+    if (formState.mobileNumber.text.length != 8) {
+      return "Please enter valid contact number";
+    }
+    if (formState.notes.text.isEmpty) {
+      return "Please enter notes";
+    }
+    return null;
+  }
+
+  void _submitOutlet(
+      _OutletFormState formState, OutletData? model, StateSetter myState) {
+    final outlet = OutletData(
+      outletId: model?.outletId ?? 0,
+      outletName: formState.itemName.text,
+      serviceTypeId: formState.serviceType!.id,
+      ownerShipTypeId: formState.ownerShipType!.id,
+      outletTypeId: formState.outletType!.id,
+      serviceType: formState.serviceType!.text,
+      ownerShipType: formState.ownerShipType!.text,
+      outletType: formState.outletType!.text,
+      managerName: formState.managerName.text,
+      emiratesId: formState.emiratesId.text.replaceAll("-", ""),
+      contactNumber: "+9715${formState.mobileNumber.text}",
+      notes: formState.notes.text,
+      newAdded: model == null,
+      inspectionStatusId: model?.inspectionStatusId ?? 0,
+      inspectionId: model?.inspectionId ?? 0,
+      inspectorId: storeUserData.getInt(USER_ID),
+    );
+
+    if (model != null) {
+      updateOutlet(myState, outlet);
+    } else {
+      addOutlet(myState, outlet);
+    }
   }
 
   Future<void> updateOutlet(StateSetter myState, OutletData model) async {
@@ -3007,7 +3013,8 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   void selectOutletTypeSheet(List<AreaData> list, String types,
-      StateSetter myState, FocusNode focusNode) {
+      StateSetter myState, FocusNode focusNode,
+      {void Function(AreaData)? onSelected}) {
     showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: AppTheme.mainBackground,
@@ -3055,12 +3062,16 @@ class _EntityDetailsState extends State<EntityDetails> {
                           onTap: () {
                             setState(() {
                               myState(() {
-                                if (types == "ownership") {
-                                  ownerShipType = list[index];
-                                } else if (types == "service") {
-                                  serviceType = list[index];
+                                if (onSelected != null) {
+                                  onSelected(list[index]);
                                 } else {
-                                  outletType = list[index];
+                                  if (types == "ownership") {
+                                    ownerShipType = list[index];
+                                  } else if (types == "service") {
+                                    serviceType = list[index];
+                                  } else {
+                                    outletType = list[index];
+                                  }
                                 }
                               });
                             });
