@@ -130,63 +130,85 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
   }
 
   Future<void> getInspectionDetail() async {
-    if (await Utils().hasNetwork(context, setState)) {
-      if (!mounted) return;
-      LoadingIndicatorDialog().show(context);
-      Api().callAPI(context, "Mobile/Inspection/GetInspectionDetails", {
-        "mainTaskId": widget.task.mainTaskId,
-        "inspectionId": widget.inspectionId
-      }).then((value) async {
-        var data = detailFromJson(value);
-        if (data.data != null) {
-          setState(() {
-            detail = data.data!;
-            setState(() {
-              getThumbnails(data.data!.attachments);
-              timer = Timer.periodic(const Duration(seconds: 2), (timer) {
-                if (attachmentList.length == data.data!.attachments.length) {
-                  LoadingIndicatorDialog().dismiss();
-                  timer.cancel();
-                }
-              });
-              for (var i in data.data!.productDetailModels) {
-                if (i.typeId == 1) {
-                  selectedKnownProductListData.add(i);
-                } else if (i.typeId == 2) {
-                  foreignLabelsList.add(i);
-                } else if (i.typeId == 3) {
-                  unknownProductList.add(i);
-                }
-              }
-              for (var i in data.data!.entityRepresentatives) {
-                if (i.typeId == 1) {
-                  managerList.add(i);
-                } else if (i.typeId == 2) {
-                  witnessList.add(i);
-                }
-              }
-              for (var i
-                  in data.data!.inspectorAndAgentEmployee.agentEmployeeModels) {
-                if (i.agentId == 1) {
-                  selectedAEList.add(i);
-                } else if (i.agentId == 2) {
-                  selectedMMIList.add(i);
-                }
-              }
-            });
-          });
-        } else {
-          LoadingIndicatorDialog().dismiss();
-          if (data.message.isNotEmpty) {
-            Utils().showAlert(
-                buildContext: context,
-                message: data.message,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                });
-          } else {}
-        }
-      });
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
+    
+    LoadingIndicatorDialog().show(context);
+    Api().callAPI(context, "Mobile/Inspection/GetInspectionDetails", {
+      "mainTaskId": widget.task.mainTaskId,
+      "inspectionId": widget.inspectionId
+    }).then((value) async {
+      final data = detailFromJson(value);
+      if (data.data != null) {
+        _handleInspectionDetailSuccess(data.data!);
+      } else {
+        _handleInspectionDetailError(data.message);
+      }
+    });
+  }
+
+  void _handleInspectionDetailSuccess(InspectionData inspectionData) {
+    setState(() {
+      detail = inspectionData;
+      getThumbnails(inspectionData.attachments);
+      _setupThumbnailTimer(inspectionData.attachments.length);
+      _categorizeProducts(inspectionData.productDetailModels);
+      _categorizeRepresentatives(inspectionData.entityRepresentatives);
+      _categorizeAgentEmployees(inspectionData.inspectorAndAgentEmployee.agentEmployeeModels);
+    });
+  }
+
+  void _setupThumbnailTimer(int totalAttachments) {
+    timer = Timer.periodic(const Duration(seconds: 2), (timer) {
+      if (attachmentList.length == totalAttachments) {
+        LoadingIndicatorDialog().dismiss();
+        timer.cancel();
+      }
+    });
+  }
+
+  void _categorizeProducts(List<ProductDetail> products) {
+    for (var product in products) {
+      if (product.typeId == 1) {
+        selectedKnownProductListData.add(product);
+      } else if (product.typeId == 2) {
+        foreignLabelsList.add(product);
+      } else if (product.typeId == 3) {
+        unknownProductList.add(product);
+      }
+    }
+  }
+
+  void _categorizeRepresentatives(List<RepresentativeData> representatives) {
+    for (var representative in representatives) {
+      if (representative.typeId == 1) {
+        managerList.add(representative);
+      } else if (representative.typeId == 2) {
+        witnessList.add(representative);
+      }
+    }
+  }
+
+  void _categorizeAgentEmployees(List<WitnessData> agentEmployees) {
+    for (var employee in agentEmployees) {
+      if (employee.agentId == 1) {
+        selectedAEList.add(employee);
+      } else if (employee.agentId == 2) {
+        selectedMMIList.add(employee);
+      }
+    }
+  }
+
+  void _handleInspectionDetailError(String message) {
+    LoadingIndicatorDialog().dismiss();
+    if (message.isNotEmpty) {
+      Utils().showAlert(
+        buildContext: context,
+        message: message,
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
     }
   }
 

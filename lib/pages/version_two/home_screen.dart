@@ -450,9 +450,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } else if (statusId == 3) {
       return "Not Accepted";
     } else {
-      return taskStatus
-          .firstWhere((item) => item.id == statusId)
-          .text;
+      return taskStatus.firstWhere((item) => item.id == statusId).text;
     }
   }
 
@@ -637,7 +635,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.only(top: 10),
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return _buildTaskCard(list[index]);
+                    return _buildTaskCard(list[index], index);
                   }),
           if (isLoading && list.isEmpty)
             const Padding(
@@ -684,131 +682,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildTaskCard(Tasks task) {
-    return GestureDetector(
-      child: Card(
-          margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
-          color: AppTheme.white,
-          surfaceTintColor: AppTheme.white,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12))),
-          child: Padding(
-              padding: const EdgeInsets.only(left: 15.0, bottom: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CText(
-                          textAlign: TextAlign.start,
-                          padding: const EdgeInsets.only(right: 10, top: 10),
-                          text: task.taskName,
-                          textColor: AppTheme.grayAsparagus,
-                          fontFamily: AppTheme.urbanist,
-                          fontSize: AppTheme.large,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                  CText(
-                    textAlign: TextAlign.start,
-                    padding:
-                        const EdgeInsets.only(right: 10, top: 0, bottom: 5),
-                    text: task.outletName.isEmpty
-                        ? task.entityName
-                        : "${task.entityName} (${task.outletName})",
-                    textColor: AppTheme.colorPrimary,
-                    fontFamily: AppTheme.urbanist,
-                    fontSize: AppTheme.large,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CText(
-                        textAlign: TextAlign.end,
-                        padding: const EdgeInsets.only(right: 5, top: 5),
-                        text: "Date & Time :",
-                        textColor: AppTheme.grayAsparagus,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.medium,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      CText(
-                        textAlign: TextAlign.end,
-                        padding: const EdgeInsets.only(right: 20, top: 5),
-                        text: DateFormat("dd-MM-yyyy hh:mm:ss aa")
-                            .format(task.createdOn),
-                        textColor: AppTheme.grayAsparagus,
-                        fontFamily: AppTheme.urbanist,
-                        fontSize: AppTheme.medium,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ],
-                  ),
-                  Visibility(
-                      visible: task.notes.isNotEmpty,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CText(
-                            textAlign: TextAlign.end,
-                            padding: const EdgeInsets.only(right: 5, top: 10),
-                            text: notesTitle,
-                            textColor: AppTheme.colorPrimary,
-                            fontFamily: AppTheme.urbanist,
-                            fontSize: AppTheme.medium,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          Expanded(
-                              child: CText(
-                            padding: const EdgeInsets.only(right: 20, top: 10),
-                            text: task.notes,
-                            textColor: AppTheme.grayAsparagus,
-                            fontFamily: AppTheme.urbanist,
-                            fontSize: AppTheme.medium,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            fontWeight: FontWeight.w600,
-                          )),
-                        ],
-                      )),
-                ],
-              ))),
-      onTap: () async {
-        Get.to(
-            transition: Transition.rightToLeft,
-            EntityDetails(
-              fromActive: agentTabType == "waiting",
-              task: task,
-              entityId: task.entityID!,
-              taskId: task.inspectionTaskId,
-              statusId: task.statusId,
-              inspectionId: 0,
-              category: 1,
-              isAgentEmployees: task.isAgentEmployees,
-              completeStatus: agentTabType == "feedback",
-            ))?.then((onValue) {
-          refreshTask();
-        });
-      },
     );
   }
 
@@ -888,736 +761,521 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     currentHeight = MediaQuery.of(context).size.height;
     return RefreshIndicator(
-        onRefresh: () async {
-          refreshTask();
-        },
-        child: Scaffold(
-            backgroundColor: AppTheme.mainBackground,
-            body: Column(
-              children: [
-                Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    color: AppTheme.colorPrimary,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Align(
-                                alignment: Alignment.topLeft,
-                                child: CText(
-                                  padding: const EdgeInsets.only(
-                                      left: 10, right: 10),
-                                  text:
-                                      "${DateFormat("dd MMMM yyyy").format(Utils().getCurrentGSTTime())} \nHi, ${storeUserData.getString(NAME)} ",
-                                  textColor: AppTheme.textPrimary,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.big,
-                                  fontWeight: FontWeight.w600,
-                                )),
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: GestureDetector(
-                                onTap: () {
-                                  Get.to(
-                                      transition: Transition.rightToLeft,
-                                      const MenuPage());
-                                },
-                                child: Image.asset(
-                                  "${ASSET_PATH}profile.png",
-                                  height: 30,
-                                  width: 30,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        CText(
-                          textAlign: TextAlign.center,
-                          padding: const EdgeInsets.only(
-                              left: 10, right: 10, top: 10, bottom: 20),
-                          text: googleAddress.isEmpty
-                              ? "Your Location \nLoading...\n"
-                              : "Your Location \n$googleAddress",
-                          textColor: AppTheme.textPrimary,
-                          fontFamily: AppTheme.urbanist,
-                          fontSize: AppTheme.large,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ],
-                    )),
-                Expanded(
-                    child: storeUserData.getBoolean(IS_AGENT_LOGIN)
-                        ? _buildAgentTasksView()
-                        : SingleChildScrollView(
-                            controller: _scrollController,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                    padding: const EdgeInsets.only(
-                                        left: 20,
-                                        right: 20,
-                                        top: 20,
-                                        bottom: 5),
-                                    width: MediaQuery.of(context).size.width,
-                                    color: AppTheme.white,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        CText(
-                                          text: "My Task",
-                                          textColor: AppTheme.black,
-                                          fontFamily: AppTheme.urbanist,
-                                          fontSize: AppTheme.big_20,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  AppTheme.colorPrimary),
-                                          onPressed: () {
-                                            showSelectionSheet();
-                                          },
-                                          child: CText(
-                                            text: searchEntityTitle,
-                                            textColor: AppTheme.textPrimary,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                // Tabs for Non-Agent Users
-                                if (!storeUserData.getBoolean(IS_AGENT_LOGIN))
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    color: AppTheme.white,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                            flex: 1,
-                                            child: GestureDetector(
-                                                behavior:
-                                                    HitTestBehavior.translucent,
-                                                onTap: () {
-                                                  setState(() {
-                                                    list.clear();
-                                                    tabType = "pending";
-                                                    refreshTask();
-                                                  });
-                                                },
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 5),
-                                                  color: AppTheme.white,
-                                                  child: Column(
-                                                    children: [
-                                                      CText(
-                                                          text:
-                                                              "Active ($pendingCount)",
-                                                          textColor: tabType ==
-                                                                  "pending"
-                                                              ? AppTheme.black
-                                                              : AppTheme
-                                                                  .textColorGray,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontFamily:
-                                                              AppTheme.poppins,
-                                                          fontSize:
-                                                              AppTheme.medium),
-                                                      Container(
-                                                        height: 3,
-                                                        margin: const EdgeInsets
-                                                            .only(top: 8),
-                                                        color: tabType == "pending"
-                                                            ? AppTheme
-                                                                .colorPrimary
-                                                            : AppTheme
-                                                                .mainBackground,
-                                                      )
-                                                    ],
-                                                  ),
-                                                ))),
-                                        Expanded(
-                                            flex: 1,
-                                            child: GestureDetector(
-                                                behavior:
-                                                    HitTestBehavior.translucent,
-                                                onTap: () {
-                                                  setState(() {
-                                                    list.clear();
-                                                    tabType = "completed";
-                                                    refreshTask();
-                                                  });
-                                                },
-                                                child: Container(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 5),
-                                                    color: AppTheme.white,
-                                                    child: Column(
-                                                      children: [
-                                                        CText(
-                                                            text:
-                                                                "Inactive ($completeCount)",
-                                                            textColor: tabType ==
-                                                                    "completed"
-                                                                ? AppTheme.black
-                                                                : AppTheme
-                                                                    .textColorGray,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontFamily: AppTheme
-                                                                .poppins,
-                                                            fontSize: AppTheme
-                                                                .medium),
-                                                        Container(
-                                                          height: 3,
-                                                          margin:
-                                                              const EdgeInsets
-                                                                  .only(top: 8),
-                                                          color: tabType ==
-                                                                      "completed" &&
-                                                                  !storeUserData
-                                                                      .getBoolean(
-                                                                          IS_AGENT_LOGIN)
-                                                              ? AppTheme
-                                                                  .colorPrimary
-                                                              : AppTheme
-                                                                  .mainBackground,
-                                                        )
-                                                      ],
-                                                    )))),
-                                      ],
-                                    ),
-                                  ),
-                                // Search field
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                      left: 20, right: 20, top: 20),
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    color: AppTheme.white,
-                                  ),
-                                  child: TextFormField(
-                                    controller: _searchController,
-                                    onChanged: (value) {
-                                      _filterList(value);
-                                    },
-                                    maxLines: 1,
-                                    cursorColor: AppTheme.colorPrimary,
-                                    cursorWidth: 2,
-                                    decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.all(5),
-                                        hintText: searchHint,
-                                        border: InputBorder.none,
-                                        prefixIcon: Column(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Icon(
-                                                Icons.search,
-                                                color: AppTheme.grey,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        hintStyle: TextStyle(
-                                            fontFamily: AppTheme.poppins,
-                                            fontWeight: FontWeight.w400,
-                                            color: AppTheme.black,
-                                            fontSize: AppTheme.large)),
-                                  ),
-                                ),
-                                ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: list.length,
-                                    padding: const EdgeInsets.only(top: 10),
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemBuilder: (context, index) {
-                                      var task = list[index];
-                                      return GestureDetector(
-                                        child: Card(
-                                            margin: const EdgeInsets.only(
-                                                left: 20, right: 20, top: 10),
-                                            color: AppTheme.white,
-                                            surfaceTintColor: AppTheme.white,
-                                            shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(12))),
-                                            child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 15.0, bottom: 10),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: CText(
-                                                            textAlign:
-                                                                TextAlign.start,
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    right: 10,
-                                                                    top: 10),
-                                                            text: list[index]
-                                                                .taskName,
-                                                            textColor: AppTheme
-                                                                .grayAsparagus,
-                                                            fontFamily: AppTheme
-                                                                .urbanist,
-                                                            fontSize:
-                                                                AppTheme.large,
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(5),
-                                                          margin:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  right: 10,
-                                                                  top: 5,
-                                                                  bottom: 5),
-                                                          decoration: BoxDecoration(
-                                                              borderRadius:
-                                                                  const BorderRadius
-                                                                      .all(
-                                                                      Radius.circular(
-                                                                          5)),
-                                                              color: AppTheme
-                                                                  .getStatusColor(
-                                                                      list[index]
-                                                                          .statusId)),
-                                                          child: CText(
-                                                            textAlign:
-                                                                TextAlign.start,
-                                                            text: _getStatusText(list[index].statusId),
-                                                            textColor:
-                                                                AppTheme.white,
-                                                            fontFamily: AppTheme
-                                                                .urbanist,
-                                                            fontSize:
-                                                                AppTheme.small,
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    CText(
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 10,
-                                                              top: 0,
-                                                              bottom: 5),
-                                                      text: list[index]
-                                                              .outletName
-                                                              .isEmpty
-                                                          ? list[index]
-                                                              .entityName
-                                                          : "${list[index].entityName} (${list[index].outletName})",
-                                                      textColor:
-                                                          AppTheme.colorPrimary,
-                                                      fontFamily:
-                                                          AppTheme.urbanist,
-                                                      fontSize: AppTheme.large,
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                    ),
-                                                    if (!storeUserData
-                                                        .getBoolean(
-                                                            IS_AGENT_LOGIN))
-                                                      CText(
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                right: 10,
-                                                                top: 0,
-                                                                bottom: 5),
-                                                        text: list[index]
-                                                                .location
-                                                                ?.address ??
-                                                            "",
-                                                        textColor: AppTheme
-                                                            .grayAsparagus,
-                                                        fontFamily:
-                                                            AppTheme.urbanist,
-                                                        fontSize:
-                                                            AppTheme.large,
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        CText(
-                                                          textAlign:
-                                                              TextAlign.end,
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  right: 5,
-                                                                  top: 5),
-                                                          text: "Date & Time :",
-                                                          textColor: AppTheme
-                                                              .grayAsparagus,
-                                                          fontFamily:
-                                                              AppTheme.urbanist,
-                                                          fontSize:
-                                                              AppTheme.medium,
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                        CText(
-                                                          textAlign:
-                                                              TextAlign.end,
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  right: 20,
-                                                                  top: 5),
-                                                          text: DateFormat(
-                                                                  "dd-MM-yyyy hh:mm:ss aa")
-                                                              .format(list[
-                                                                      index]
-                                                                  .createdOn),
-                                                          textColor: AppTheme
-                                                              .grayAsparagus,
-                                                          fontFamily:
-                                                              AppTheme.urbanist,
-                                                          fontSize:
-                                                              AppTheme.medium,
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Visibility(
-                                                        visible: list[index]
-                                                            .notes
-                                                            .isNotEmpty,
-                                                        child: Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            CText(
-                                                              textAlign:
-                                                                  TextAlign.end,
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      right: 5,
-                                                                      top: 10),
-                                                              text: notesTitle,
-                                                              textColor: AppTheme
-                                                                  .colorPrimary,
-                                                              fontFamily:
-                                                                  AppTheme
-                                                                      .urbanist,
-                                                              fontSize: AppTheme
-                                                                  .medium,
-                                                              maxLines: 1,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700,
-                                                            ),
-                                                            Expanded(
-                                                                child: CText(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      right: 20,
-                                                                      top: 10),
-                                                              text: list[index]
-                                                                  .notes,
-                                                              textColor: AppTheme
-                                                                  .grayAsparagus,
-                                                              fontFamily:
-                                                                  AppTheme
-                                                                      .urbanist,
-                                                              fontSize: AppTheme
-                                                                  .medium,
-                                                              maxLines: 2,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                            )),
-                                                          ],
-                                                        )),
-                                                  ],
-                                                ))),
-                                        onTap: () async {
-                                          if (storeUserData
-                                              .getBoolean(IS_AGENT_LOGIN)) {
-                                            Get.to(
-                                                transition:
-                                                    Transition.rightToLeft,
-                                                EntityDetails(
-                                                  fromActive:
-                                                      tabType == "pending",
-                                                  task: list[index],
-                                                  entityId: task.entityID!,
-                                                  taskId: task.inspectionTaskId,
-                                                  statusId: task.statusId,
-                                                  inspectionId: 0,
-                                                  category: 1,
-                                                  isAgentEmployees:
-                                                      task.isAgentEmployees,
-                                                  completeStatus:
-                                                      tabType == "completed",
-                                                ))?.then((onValue) {
-                                              refreshTask();
-                                            });
-                                          } else if (tabType == "completed") {
-                                            if (list[index]
-                                                    .location
-                                                    ?.category
-                                                    .toString()
-                                                    .toLowerCase() ==
-                                                "hotel") {
-                                              print(
-                                                  "EntityDetails completed hotel 1");
+      onRefresh: () async {
+        refreshTask();
+      },
+      child: Scaffold(
+        backgroundColor: AppTheme.mainBackground,
+        body: Column(
+          children: [
+            _buildHeader(),
+            Expanded(
+              child: storeUserData.getBoolean(IS_AGENT_LOGIN)
+                  ? _buildAgentTasksView()
+                  : _buildNonAgentTasksView(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-                                              Get.to(
-                                                  transition:
-                                                      Transition.rightToLeft,
-                                                  EntityDetails(
-                                                    fromActive:
-                                                        tabType == "pending",
-                                                    task: list[index],
-                                                    entityId: task.entityID!,
-                                                    taskId:
-                                                        task.inspectionTaskId,
-                                                    statusId: task.statusId,
-                                                    inspectionId: 0,
-                                                    category: 1,
-                                                    isAgentEmployees:
-                                                        task.isAgentEmployees,
-                                                    completeStatus:
-                                                        tabType == "completed",
-                                                  ))?.whenComplete(() {
-                                                refreshTask();
-                                              });
-                                            } else {
-                                              getEntityDetail(list[index]);
-                                            }
-                                          } else if (list[index].statusId !=
-                                              3) {
-                                            if (list[index].statusId < 7) {
-                                              if (list[index]
-                                                      .inspectorStatusId ==
-                                                  1) {
-                                                showRejectRemarkSheet(
-                                                    list[index]);
-                                              } else {
-                                                if (list[index]
-                                                        .location
-                                                        ?.category
-                                                        .toString()
-                                                        .toLowerCase() ==
-                                                    "hotel") {
-                                                  print(
-                                                      "EntityDetails hotel 1");
-                                                  Get.to(
-                                                    () => EntityDetails(
-                                                      fromActive:
-                                                          tabType == "pending",
-                                                      task: list[index],
-                                                      entityId: task.entityID!,
-                                                      taskId:
-                                                          task.inspectionTaskId,
-                                                      statusId: task.statusId,
-                                                      inspectionId: 0,
-                                                      category: 1,
-                                                      isAgentEmployees:
-                                                          task.isAgentEmployees,
-                                                      completeStatus: tabType ==
-                                                          "completed",
-                                                    ),
-                                                    transition:
-                                                        Transition.rightToLeft,
-                                                  )?.then((onValue) {
-                                                    if (!mounted) return;
-                                                    if (onValue != null &&
-                                                        onValue == true) {
-                                                      refreshTask();
-                                                    }
-                                                  });
-                                                } else {
-                                                  print(
-                                                      "EntityDetails other category  2");
-                                                  print(task.inspectionId);
-                                                  Get.to(
-                                                          transition: Transition
-                                                              .rightToLeft,
-                                                          EntityDetails(
-                                                              fromActive:
-                                                                  tabType ==
-                                                                      "pending",
-                                                              task: task,
-                                                              entityId: task
-                                                                  .entityID!,
-                                                              taskId: task
-                                                                  .inspectionTaskId,
-                                                              statusId:
-                                                                  task.statusId,
-                                                              inspectionId: task
-                                                                  .inspectionId,
-                                                              category: 0,
-                                                              isAgentEmployees: task
-                                                                  .isAgentEmployees,
-                                                              completeStatus:
-                                                                  tabType ==
-                                                                      "completed"))
-                                                      ?.whenComplete(() {
-                                                    refreshTask();
-                                                  });
-                                                }
-                                              }
-                                            } else {
-                                              if (task.statusId == 7) {
-                                                if (list[index]
-                                                        .location
-                                                        ?.category
-                                                        .toLowerCase() ==
-                                                    "hotel") {
-                                                  Get.to(
-                                                          transition: Transition
-                                                              .rightToLeft,
-                                                          InspectionOutletScreen(
-                                                              task: task,
-                                                              entityId: task
-                                                                  .entityID!,
-                                                              completeStatus:
-                                                                  tabType ==
-                                                                      "completed"))
-                                                      ?.whenComplete(() {
-                                                    refreshTask();
-                                                  });
-                                                } else {
-                                                  getEntityDetail(list[index]);
-                                                }
-                                              } else {
-                                                Get.to(
-                                                        transition: Transition
-                                                            .rightToLeft,
-                                                        EntityDetails(
-                                                            fromActive:
-                                                                tabType ==
-                                                                    "pending",
-                                                            task: task,
-                                                            entityId:
-                                                                task.entityID!,
-                                                            taskId: task
-                                                                .inspectionTaskId,
-                                                            statusId:
-                                                                task.statusId,
-                                                            inspectionId: task
-                                                                .inspectionId,
-                                                            category: 0,
-                                                            isAgentEmployees: task
-                                                                .isAgentEmployees,
-                                                            completeStatus:
-                                                                tabType ==
-                                                                    "completed"))
-                                                    ?.whenComplete(() {
-                                                  refreshTask();
-                                                });
-                                              }
-                                            }
-                                          } else if (list[index].statusId ==
-                                              3) {
-                                            Get.to(
-                                                    transition:
-                                                        Transition.rightToLeft,
-                                                    EntityDetails(
-                                                        fromActive: tabType ==
-                                                            "pending",
-                                                        task: task,
-                                                        entityId:
-                                                            task.entityID!,
-                                                        taskId: task
-                                                            .inspectionTaskId,
-                                                        statusId: task.statusId,
-                                                        inspectionId:
-                                                            task.inspectionId,
-                                                        category: 0,
-                                                        isAgentEmployees: task
-                                                            .isAgentEmployees,
-                                                        completeStatus:
-                                                            tabType ==
-                                                                "completed"))
-                                                ?.whenComplete(() {
-                                              refreshTask();
-                                            });
-                                          }
-                                        },
-                                      );
-                                    }),
-                                const SizedBox(
-                                  height: 20,
-                                )
-                              ],
-                            ),
-                          )),
-              ],
-            )));
+  Widget _buildHeader() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      color: AppTheme.colorPrimary,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 50),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: CText(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  text:
+                      "${DateFormat("dd MMMM yyyy").format(Utils().getCurrentGSTTime())} \nHi, ${storeUserData.getString(NAME)} ",
+                  textColor: AppTheme.textPrimary,
+                  fontFamily: AppTheme.urbanist,
+                  fontSize: AppTheme.big,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: GestureDetector(
+                  onTap: () {
+                    Get.to(
+                      transition: Transition.rightToLeft,
+                      const MenuPage(),
+                    );
+                  },
+                  child: Image.asset(
+                    "${ASSET_PATH}profile.png",
+                    height: 30,
+                    width: 30,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          CText(
+            textAlign: TextAlign.center,
+            padding:
+                const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 20),
+            text: googleAddress.isEmpty
+                ? "Your Location \nLoading...\n"
+                : "Your Location \n$googleAddress",
+            textColor: AppTheme.textPrimary,
+            fontFamily: AppTheme.urbanist,
+            fontSize: AppTheme.large,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            fontWeight: FontWeight.w600,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNonAgentTasksView() {
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTaskHeader(),
+          if (!storeUserData.getBoolean(IS_AGENT_LOGIN)) _buildTabs(),
+          _buildSearchField(),
+          _buildTaskList(),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTaskHeader() {
+    return Container(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 5),
+      width: MediaQuery.of(context).size.width,
+      color: AppTheme.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CText(
+            text: "My Task",
+            textColor: AppTheme.black,
+            fontFamily: AppTheme.urbanist,
+            fontSize: AppTheme.big_20,
+            fontWeight: FontWeight.w800,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.colorPrimary,
+            ),
+            onPressed: () {
+              showSelectionSheet();
+            },
+            child: CText(
+              text: searchEntityTitle,
+              textColor: AppTheme.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabs() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      color: AppTheme.white,
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: _buildTabItem(
+              "Active ($pendingCount)",
+              "pending",
+              tabType == "pending",
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: _buildTabItem(
+              "Inactive ($completeCount)",
+              "completed",
+              tabType == "completed" &&
+                  !storeUserData.getBoolean(IS_AGENT_LOGIN),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabItem(String label, String tabValue, bool isActive) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        setState(() {
+          list.clear();
+          tabType = tabValue;
+          refreshTask();
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.only(top: 5),
+        color: AppTheme.white,
+        child: Column(
+          children: [
+            CText(
+              text: label,
+              textColor: isActive ? AppTheme.black : AppTheme.textColorGray,
+              fontWeight: FontWeight.w400,
+              fontFamily: AppTheme.poppins,
+              fontSize: AppTheme.medium,
+            ),
+            Container(
+              height: 3,
+              margin: const EdgeInsets.only(top: 8),
+              color: isActive ? AppTheme.colorPrimary : AppTheme.mainBackground,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Container(
+      margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      height: 45,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        color: AppTheme.white,
+      ),
+      child: TextFormField(
+        controller: _searchController,
+        onChanged: (value) {
+          _filterList(value);
+        },
+        maxLines: 1,
+        cursorColor: AppTheme.colorPrimary,
+        cursorWidth: 2,
+        decoration: const InputDecoration(
+          contentPadding: EdgeInsets.all(5),
+          hintText: searchHint,
+          border: InputBorder.none,
+          prefixIcon: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.search,
+                  color: AppTheme.grey,
+                ),
+              ),
+            ],
+          ),
+          hintStyle: TextStyle(
+            fontFamily: AppTheme.poppins,
+            fontWeight: FontWeight.w400,
+            color: AppTheme.black,
+            fontSize: AppTheme.large,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTaskList() {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: list.length,
+      padding: const EdgeInsets.only(top: 10),
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return _buildTaskCard(list[index], index);
+      },
+    );
+  }
+
+  Widget _buildTaskCard(Tasks task, int index) {
+    return GestureDetector(
+      child: Card(
+        margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+        color: AppTheme.white,
+        surfaceTintColor: AppTheme.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 15.0, bottom: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: CText(
+                      textAlign: TextAlign.start,
+                      padding: const EdgeInsets.only(right: 10, top: 10),
+                      text: task.taskName,
+                      textColor: AppTheme.grayAsparagus,
+                      fontFamily: AppTheme.urbanist,
+                      fontSize: AppTheme.large,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(5),
+                    margin: const EdgeInsets.only(right: 10, top: 5, bottom: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      color: AppTheme.getStatusColor(task.statusId),
+                    ),
+                    child: CText(
+                      textAlign: TextAlign.start,
+                      text: _getStatusText(task.statusId),
+                      textColor: AppTheme.white,
+                      fontFamily: AppTheme.urbanist,
+                      fontSize: AppTheme.small,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              CText(
+                textAlign: TextAlign.start,
+                padding: const EdgeInsets.only(right: 10, top: 0, bottom: 5),
+                text: task.outletName.isEmpty
+                    ? task.entityName
+                    : "${task.entityName} (${task.outletName})",
+                textColor: AppTheme.colorPrimary,
+                fontFamily: AppTheme.urbanist,
+                fontSize: AppTheme.large,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                fontWeight: FontWeight.w700,
+              ),
+              if (!storeUserData.getBoolean(IS_AGENT_LOGIN))
+                CText(
+                  textAlign: TextAlign.start,
+                  padding: const EdgeInsets.only(right: 10, top: 0, bottom: 5),
+                  text: task.location?.address ?? "",
+                  textColor: AppTheme.grayAsparagus,
+                  fontFamily: AppTheme.urbanist,
+                  fontSize: AppTheme.large,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  fontWeight: FontWeight.w600,
+                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CText(
+                    textAlign: TextAlign.end,
+                    padding: const EdgeInsets.only(right: 5, top: 5),
+                    text: "Date & Time :",
+                    textColor: AppTheme.grayAsparagus,
+                    fontFamily: AppTheme.urbanist,
+                    fontSize: AppTheme.medium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  CText(
+                    textAlign: TextAlign.end,
+                    padding: const EdgeInsets.only(right: 20, top: 5),
+                    text: DateFormat("dd-MM-yyyy hh:mm:ss aa")
+                        .format(task.createdOn),
+                    textColor: AppTheme.grayAsparagus,
+                    fontFamily: AppTheme.urbanist,
+                    fontSize: AppTheme.medium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ],
+              ),
+              Visibility(
+                visible: task.notes.isNotEmpty,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CText(
+                      textAlign: TextAlign.end,
+                      padding: const EdgeInsets.only(right: 5, top: 10),
+                      text: notesTitle,
+                      textColor: AppTheme.colorPrimary,
+                      fontFamily: AppTheme.urbanist,
+                      fontSize: AppTheme.medium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    Expanded(
+                      child: CText(
+                        padding: const EdgeInsets.only(right: 20, top: 10),
+                        text: task.notes,
+                        textColor: AppTheme.grayAsparagus,
+                        fontFamily: AppTheme.urbanist,
+                        fontSize: AppTheme.medium,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      onTap: () async {
+        _handleTaskTap(task, index);
+      },
+    );
+  }
+
+  void _handleTaskTap(Tasks task, int index) {
+    if (storeUserData.getBoolean(IS_AGENT_LOGIN)) {
+      _navigateToEntityDetailsForAgent(task);
+    } else if (tabType == "completed") {
+      _handleCompletedTaskTap(task, index);
+    } else if (task.statusId == 3) {
+      _navigateToEntityDetailsWithComplete(task, category: 0);
+    } else {
+      _handleActiveTaskTap(task, index);
+    }
+  }
+
+  void _navigateToEntityDetailsForAgent(Tasks task) {
+    Get.to(
+      transition: Transition.rightToLeft,
+      EntityDetails(
+        fromActive: tabType == "pending",
+        task: task,
+        entityId: task.entityID!,
+        taskId: task.inspectionTaskId,
+        statusId: task.statusId,
+        inspectionId: 0,
+        category: 1,
+        isAgentEmployees: task.isAgentEmployees,
+        completeStatus: tabType == "completed",
+      ),
+    )?.then((onValue) {
+      refreshTask();
+    });
+  }
+
+  void _handleCompletedTaskTap(Tasks task, int index) {
+    if (_isHotelCategory(list[index])) {
+      _navigateToEntityDetailsWithComplete(list[index]);
+    } else {
+      getEntityDetail(list[index]);
+    }
+  }
+
+  void _handleActiveTaskTap(Tasks task, int index) {
+    if (task.statusId < 7) {
+      _handleStatusLessThanSeven(task, index);
+    } else {
+      _handleStatusSevenOrMore(task, index);
+    }
+  }
+
+  void _handleStatusLessThanSeven(Tasks task, int index) {
+    if (task.inspectorStatusId == 1) {
+      showRejectRemarkSheet(task);
+    } else {
+      if (_isHotelCategory(list[index])) {
+        _navigateToEntityDetailsWithCallback(list[index]);
+      } else {
+        _navigateToEntityDetailsWithComplete(task);
+      }
+    }
+  }
+
+  void _handleStatusSevenOrMore(Tasks task, int index) {
+    if (task.statusId == 7) {
+      if (_isHotelCategory(list[index])) {
+        _navigateToInspectionOutletScreen(task);
+      } else {
+        getEntityDetail(list[index]);
+      }
+    } else {
+      _navigateToEntityDetailsWithComplete(task);
+    }
+  }
+
+  bool _isHotelCategory(Tasks task) {
+    return task.location?.category.toString().toLowerCase() == "hotel";
+  }
+
+  void _navigateToEntityDetailsWithComplete(Tasks task, {int category = 0}) {
+    Get.to(
+      transition: Transition.rightToLeft,
+      EntityDetails(
+        fromActive: tabType == "pending",
+        task: task,
+        entityId: task.entityID!,
+        taskId: task.inspectionTaskId,
+        statusId: task.statusId,
+        inspectionId: category == 0 ? task.inspectionId : 0,
+        category: category,
+        isAgentEmployees: task.isAgentEmployees,
+        completeStatus: tabType == "completed",
+      ),
+    )?.whenComplete(() {
+      refreshTask();
+    });
+  }
+
+  void _navigateToEntityDetailsWithCallback(Tasks task) {
+    Get.to(
+      () => EntityDetails(
+        fromActive: tabType == "pending",
+        task: task,
+        entityId: task.entityID!,
+        taskId: task.inspectionTaskId,
+        statusId: task.statusId,
+        inspectionId: 0,
+        category: 1,
+        isAgentEmployees: task.isAgentEmployees,
+        completeStatus: tabType == "completed",
+      ),
+      transition: Transition.rightToLeft,
+    )?.then((onValue) {
+      if (!mounted) return;
+      if (onValue != null && onValue == true) {
+        refreshTask();
+      }
+    });
+  }
+
+  void _navigateToInspectionOutletScreen(Tasks task) {
+    Get.to(
+      transition: Transition.rightToLeft,
+      InspectionOutletScreen(
+        task: task,
+        entityId: task.entityID!,
+        completeStatus: tabType == "completed",
+      ),
+    )?.whenComplete(() {
+      refreshTask();
+    });
   }
 
   void showRejectRemarkSheet(Tasks task) {
@@ -2112,7 +1770,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _filterList(String searchText) {
     if (storeUserData.getBoolean(IS_AGENT_LOGIN)) return;
-    
+
     list.clear();
     if (searchText.isEmpty) {
       _filterTasksWithoutSearch();
@@ -2148,7 +1806,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final lowerSearchText = searchText.toLowerCase();
     for (var item in tasks) {
       if (!_matchesSearchText(item, lowerSearchText)) continue;
-      
+
       if (_shouldIncludeTask(item)) {
         list.add(item);
       }

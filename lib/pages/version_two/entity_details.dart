@@ -3047,61 +3047,102 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   Future<void> addOutlet(StateSetter myState, OutletData model) async {
-    if (await Utils().hasNetwork(context, setState)) {
-      if (!mounted) {
-        return;
-      }
-      LoadingIndicatorDialog().show(context);
-      Api().callAPI(context, "Mobile/NewOutlet/Create", {
-        "newOutletId": 0,
-        "entityId": entityId,
-        "outletName": model.outletName,
-        "ownerShipTypeId": model.ownerShipTypeId,
-        "serviceTypeId": model.serviceTypeId,
-        "outletTypeId": model.outletTypeId,
-        "managerName": model.managerName,
-        "contactNumber": model.contactNumber,
-        "emiratesId": model.emiratesId,
-        "notes": model.notes,
-        "createdBy": storeUserData.getInt(USER_ID),
-        "createdOn":
-            DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
-        "modifiedOn":
-            DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
-        "modifiedBy": storeUserData.getInt(USER_ID)
-      }).then((value) async {
-        LoadingIndicatorDialog().dismiss();
-        var data = jsonDecode(value);
-        if (data["statusCode"] == 200 && data["data"] != null) {
-          myState(() {
-            model.outletId = data["data"];
-            searchOutletList.insert(0, model);
-            outletList.clear();
-            List<OutletData> inActiveList = [];
-            for (var item in searchOutletList) {
-              if (item.newAdded == true) {
-                inActiveList.add(item);
-              }
-              if (tabType == 2 && item.newAdded == true) {
-                outletList.add(item);
-              } else if (tabType == 1 && item.newAdded == false) {
-                outletList.add(item);
-              }
-            }
-            storeUserData.setString(
-                entityId.toString(), OutletData.encode(inActiveList));
-          });
-          Navigator.of(context).pop();
-        } else {
-          Utils().showAlert(
-              buildContext: context,
-              message: noEntityMessage,
-              onPressed: () {
-                Navigator.of(context).pop();
-              });
-        }
-      });
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
+
+    LoadingIndicatorDialog().show(context);
+    final payload = _buildOutletPayload(model);
+    
+    Api().callAPI(context, "Mobile/NewOutlet/Create", payload).then((value) async {
+      LoadingIndicatorDialog().dismiss();
+      _handleAddOutletResponse(value, myState, model);
+    });
+  }
+
+  Map<String, dynamic> _buildOutletPayload(OutletData model) {
+    final currentTime = DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime());
+    final userId = storeUserData.getInt(USER_ID);
+    
+    return {
+      "newOutletId": 0,
+      "entityId": entityId,
+      "outletName": model.outletName,
+      "ownerShipTypeId": model.ownerShipTypeId,
+      "serviceTypeId": model.serviceTypeId,
+      "outletTypeId": model.outletTypeId,
+      "managerName": model.managerName,
+      "contactNumber": model.contactNumber,
+      "emiratesId": model.emiratesId,
+      "notes": model.notes,
+      "createdBy": userId,
+      "createdOn": currentTime,
+      "modifiedOn": currentTime,
+      "modifiedBy": userId,
+    };
+  }
+
+  void _handleAddOutletResponse(String value, StateSetter myState, OutletData model) {
+    final data = jsonDecode(value);
+    
+    if (data["statusCode"] == 200 && data["data"] != null) {
+      _processSuccessfulOutletAdd(myState, model, data["data"]);
+      Navigator.of(context).pop();
+    } else {
+      _showAddOutletError();
     }
+  }
+
+  void _processSuccessfulOutletAdd(StateSetter myState, OutletData model, dynamic outletId) {
+    myState(() {
+      model.outletId = outletId;
+      searchOutletList.insert(0, model);
+      outletList.clear();
+      
+      final inActiveList = _buildInActiveList();
+      _populateOutletList();
+      
+      storeUserData.setString(
+        entityId.toString(),
+        OutletData.encode(inActiveList),
+      );
+    });
+  }
+
+  List<OutletData> _buildInActiveList() {
+    final inActiveList = <OutletData>[];
+    for (var item in searchOutletList) {
+      if (item.newAdded == true) {
+        inActiveList.add(item);
+      }
+    }
+    return inActiveList;
+  }
+
+  void _populateOutletList() {
+    for (var item in searchOutletList) {
+      if (_shouldAddToOutletList(item)) {
+        outletList.add(item);
+      }
+    }
+  }
+
+  bool _shouldAddToOutletList(OutletData item) {
+    if (tabType == 2) {
+      return item.newAdded == true;
+    } else if (tabType == 1) {
+      return item.newAdded == false;
+    }
+    return false;
+  }
+
+  void _showAddOutletError() {
+    Utils().showAlert(
+      buildContext: context,
+      message: noEntityMessage,
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
   }
 
   void selectOutletTypeSheet(List<AreaData> list, String types,

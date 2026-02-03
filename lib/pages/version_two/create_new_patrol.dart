@@ -3986,39 +3986,55 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Future<void> getInspectionRepresentative() async {
+    _clearRepresentativeLists();
+    
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
+
+    final url = "Mobile/EntityRepresentative/GetInspectionDetail?inspectionId=$inspectionId";
+    Api().getAPI(context, url).then((value) async {
+      LogPrint().log("response : $value");
+      final data = representativeFromJson(value);
+      _handleRepresentativeResponse(data);
+    });
+  }
+
+  void _clearRepresentativeLists() {
     setState(() {
       managerList.clear();
       witnessList.clear();
     });
-    if (await Utils().hasNetwork(context, setState)) {
-      if (!mounted) return;
-      Api()
-          .getAPI(context,
-              "Mobile/EntityRepresentative/GetInspectionDetail?inspectionId=$inspectionId")
-          .then((value) async {
-        LogPrint().log("response : $value");
-        var data = representativeFromJson(value);
-        if (data.data.isNotEmpty) {
-          setState(() {
-            for (var element in data.data) {
-              if (element.typeId == 1) {
-                managerList.add(element);
-              } else if (element.typeId == 2) {
-                witnessList.add(element);
-              }
-            }
-          });
-        } else {
-          if (data.message != null && data.message!.isNotEmpty) {
-            Utils().showAlert(
-                buildContext: context,
-                message: data.message!,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                });
-          }
+  }
+
+  void _handleRepresentativeResponse(RepresentativeModel data) {
+    if (data.data.isNotEmpty) {
+      _categorizeRepresentatives(data.data);
+    } else {
+      _handleEmptyRepresentativeResponse(data.message);
+    }
+  }
+
+  void _categorizeRepresentatives(List<RepresentativeData> representatives) {
+    setState(() {
+      for (var element in representatives) {
+        if (element.typeId == 1) {
+          managerList.add(element);
+        } else if (element.typeId == 2) {
+          witnessList.add(element);
         }
-      });
+      }
+    });
+  }
+
+  void _handleEmptyRepresentativeResponse(String? message) {
+    if (message != null && message.isNotEmpty) {
+      Utils().showAlert(
+        buildContext: context,
+        message: message,
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
     }
   }
 
