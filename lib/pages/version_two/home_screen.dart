@@ -71,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
   Timer? _debounce;
 
+
   @override
   void initState() {
     if (storeUserData.getBoolean(IS_AGENT_LOGIN)) {
@@ -79,13 +80,17 @@ class _HomeScreenState extends State<HomeScreen> {
       // Preload waiting tab (statusId = 4)
       refreshTask();
     }
+
     _scrollController.addListener(() {
       if (!isLoading &&
           !isLastPage &&
           _scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 100) {
-        debugPrint("🔽 Reached bottom, loading next page...");
-        refreshTask();
+
+        if (storeUserData.getBoolean(IS_AGENT_LOGIN)){
+          // debugPrint("🔽 Reached bottom, loading next page...");
+          refreshTask();
+        }
       }
     });
     getGeoLocationPosition();
@@ -190,6 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
 
       final data = tasksFromJson(decryptedValue);
+
       _updateTasksFromResponse(data);
     } catch (e) {
       _handleTaskProcessingError(e);
@@ -240,6 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _hasFetchedTasks = false;
     tasks.addAll(data.data);
     _updateTaskCounts();
+
     _addTasksToFilteredList(tasks);
   }
 
@@ -407,8 +414,23 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _addTasksToFilteredList(List<Tasks> newTasks) {
-    final statusId = agentTabType == "waiting" ? 4 : 6;
-    list.addAll(newTasks.where((e) => e.statusId == statusId).toList());
+
+    list.clear();
+
+    if(storeUserData.getBoolean(IS_AGENT_LOGIN)){
+      final statusId = agentTabType == "waiting" ? 4 : 6;
+      list.addAll(newTasks.where((e) => e.statusId == statusId).toList());
+    }else{
+      if (tabType == "pending") {
+        list.addAll(tasks
+            .where((item) => item.statusId < 6 && item.statusId != 3));
+      } else {
+        list.addAll(tasks
+            .where((item) => item.statusId > 5 || item.statusId == 3));
+      }
+    }
+
+
   }
 
   void _handleAgentTaskPagination(int totalCount) {
@@ -464,7 +486,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildAgentTabs(),
           _buildAgentSearchField(),
           _buildAgentTaskList(),
-       /*   if (isLoading && list.isEmpty)
+          /*   if (isLoading && list.isEmpty)
             const Padding(
               padding: EdgeInsets.all(20.0),
               child: Center(child: CircularProgressIndicator()),
@@ -1826,6 +1848,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (_shouldIncludeTask(item)) {
         list.add(item);
+        setState(() {});
       }
     }
   }
@@ -1843,8 +1866,22 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /* pendingCount = tasks
+                  .where((item) => item.statusId < 6 && item.statusId != 3)
+                  .length;
+              completeCount = tasks
+                  .where((item) => item.statusId > 5 || item.statusId == 3)
+                  .length;
+              if (tabType == "pending") {
+                list.addAll(tasks
+                    .where((item) => item.statusId < 6 && item.statusId != 3));
+              } else {
+                list.addAll(tasks
+                    .where((item) => item.statusId > 5 || item.statusId == 3));
+              }*/
   void refreshTask() {
     if (!storeUserData.getBoolean(IS_AGENT_LOGIN)) {
+      list.clear();
       getTasks();
     } else {
       currentPageIndex = 1;

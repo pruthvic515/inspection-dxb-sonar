@@ -3460,7 +3460,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
     Api()
         .callAPI(context, "Mobile/Inspection/UpdateInspection", map)
-        .then(_handleSubmitResponse);
+        .then((value){
+      _handleSubmitResponse(value);
+    });
   }
 
   void _handleSubmitResponse(String value) {
