@@ -79,9 +79,9 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
   @override
   void initState() {
     getInspectionDetail();
-    getKnownProductCategories();
-    getLiquorSize();
-    getEntityRole();
+    // getKnownProductCategories();
+    // getLiquorSize();
+    // getEntityRole();
 
     super.initState();
   }
