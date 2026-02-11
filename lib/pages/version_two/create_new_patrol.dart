@@ -487,6 +487,10 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }).then((value) async {
       if (value == null) return;
       await processKnownProductsResponse(value, myState);
+      myState(() {});
+      if (knownProductList.isNotEmpty) {
+        showKnownProductSheet();
+      }
     });
   }
 
@@ -501,6 +505,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
     final KnownProductModel data = await parseKnownProducts(value);
     if (data.data.isNotEmpty) {
+      // debugPrint("ProduectDetail 1 ${data.data}");
       updateKnownProductList(data.data, myState);
     } else {
       handleEmptyProductData(data);
@@ -3344,7 +3349,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 return getManagerUI(managerList, index, 1);
               }),
           headerWithAddButton(
-            title: "Owner Representative",
+            title: "Witness Representative",
             type: 2,
           ),
           ListView.builder(
@@ -3460,7 +3465,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
     Api()
         .callAPI(context, "Mobile/Inspection/UpdateInspection", map)
-        .then((value){
+        .then((value) {
       _handleSubmitResponse(value);
     });
   }
@@ -3833,8 +3838,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         decoration: const BoxDecoration(
             color: AppTheme.mainBackground,
             borderRadius: BorderRadius.only(
-                topRight: Radius.circular(15),
-                topLeft: Radius.circular(15))),
+                topRight: Radius.circular(15), topLeft: Radius.circular(15))),
         height: currentHeight - 50,
         child: SingleChildScrollView(
           padding: EdgeInsets.only(
@@ -4003,9 +4007,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      backgroundColor: isValid
-                          ? AppTheme.colorPrimary
-                          : AppTheme.paleGray,
+                      backgroundColor:
+                          isValid ? AppTheme.colorPrimary : AppTheme.paleGray,
                       minimumSize: const Size.fromHeight(50),
                     ),
                     child: CText(

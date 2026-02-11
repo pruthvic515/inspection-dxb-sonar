@@ -120,4 +120,9 @@ class LocationModel {
     "category": category,
     "address": address,
   };
+
+  @override
+  String toString() {
+    return 'LocationModel{latitude: $latitude, longitude: $longitude, name: $name, category: $category, address: $address}';
+  }
 }

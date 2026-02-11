@@ -1214,8 +1214,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _handleCompletedTaskTap(Tasks task, int index) {
     if (_isHotelCategory(list[index])) {
-      _navigateToEntityDetailsWithComplete(list[index]);
+      debugPrint("Hotel is 3");
+      _navigateToEntityDetailsWithComplete(list[index],category: 1);
     } else {
+      print("EntityDetails completed hotel 1");
       getEntityDetail(list[index]);
     }
   }
@@ -1233,8 +1235,10 @@ class _HomeScreenState extends State<HomeScreen> {
       showRejectRemarkSheet(task);
     } else {
       if (_isHotelCategory(list[index])) {
+        debugPrint("Hotel is 1");
         _navigateToEntityDetailsWithCallback(list[index]);
       } else {
+        debugPrint("Hotel is 2");
         _navigateToEntityDetailsWithComplete(task);
       }
     }
@@ -1257,6 +1261,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToEntityDetailsWithComplete(Tasks task, {int category = 0}) {
+    debugPrint("task ${task.toString()}");
     Get.to(
       transition: Transition.rightToLeft,
       EntityDetails(
@@ -1446,7 +1451,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getEntityDetail(Tasks task) async {
-    // LogPrint().log(jsonEncode(task));
+    LogPrint().log(task.toString());
     if (await Utils().hasNetwork(context, setState)) {
       if (!mounted) return;
       LoadingIndicatorDialog().show(context);

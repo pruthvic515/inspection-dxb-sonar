@@ -61,7 +61,7 @@ class EntityDetailModel {
 
   factory EntityDetailModel.fromJson(Map<String, dynamic> json) {
     return EntityDetailModel(
-      inspectionId: json['InspectionId'],
+      inspectionId: json['InspectionId'] ?? 0,
       inspectorId: json['InspectorId'],
       inspectionStatusId: json['InspectionStatusId'],
       entityID: json['EntityID'] ?? 0,

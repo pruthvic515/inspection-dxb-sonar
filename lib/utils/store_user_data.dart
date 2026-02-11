@@ -94,9 +94,30 @@ class StoreUserData {
 
   bool? clearData() {
     try {
-      String fcm=getString(USER_FCM);
+      String fcm = getString(USER_FCM);
+
+      bool isAgentLogin = getBoolean(IS_AGENT_LOGIN);
+      String agentPassword = "";
+      String agentEmail = "";
+      String userPassword = "";
+      String userId = "";
+
+      if (isAgentLogin) {
+        agentPassword = getString(USER_AGENT_PASSWORD);
+        agentEmail = getString(USER_AGENT_EMAIl);
+      } else {
+        userPassword = getString(USER_EMPLOYEE_PASSWORD);
+        userId = getString(USER_BADGE_NUMBER);
+      }
+
       instance.clear();
       setString(USER_FCM, fcm);
+      setString(USER_EMPLOYEE_PASSWORD, userPassword);
+      setString(USER_BADGE_NUMBER, userId);
+      setBoolean(IS_AGENT_LOGIN, isAgentLogin);
+      setString(USER_AGENT_PASSWORD, agentPassword);
+      setString(USER_AGENT_EMAIl, agentEmail);
+
       return true;
     } catch (e) {
       return false;

@@ -240,10 +240,6 @@ class Api {
               StoreUserData().clearData();
               StoreUserData().setString(constants.USER_FCM, deviceToken);
               Navigator.pop(context);
-              /*  Navigator.of(context).pushAndRemoveUntil(
-                Utils().createRoute(const Login()),
-                (route) => false, // This will clear the navigation stack.
-              );*/
             });
         return "error";
       }

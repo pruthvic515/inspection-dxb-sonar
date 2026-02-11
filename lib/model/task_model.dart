@@ -53,6 +53,11 @@ class Tasks {
   String categoryName;
   bool isAgentEmployees;
 
+  @override
+  String toString() {
+    return 'Tasks{mainTaskId: $mainTaskId, inspectionTaskId: $inspectionTaskId, inspectionId: $inspectionId, inspectionType: $inspectionType, taskName: $taskName, entityID: $entityID, entityName: $entityName, location: $location, startDate: $startDate, endDate: $endDate, createdOn: $createdOn, inspectorStatusId: $inspectorStatusId, statusId: $statusId, outletId: $outletId, newOutletId: $newOutletId, taskType: $taskType, outletName: $outletName, primary: $primary, createdBy: $createdBy, inspectorId: $inspectorId, agentUserId: $agentUserId, notes: $notes, modifiedOn: $modifiedOn, modifiedBy: $modifiedBy, categoryName: $categoryName, isAgentEmployees: $isAgentEmployees}';
+  }
+
   Tasks({
     required this.mainTaskId,
     required this.inspectionTaskId,

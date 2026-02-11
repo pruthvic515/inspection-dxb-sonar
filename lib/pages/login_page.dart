@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ import 'package:patrol_system/utils/api_service_dio.dart';
 import 'package:patrol_system/utils/color_const.dart';
 import 'package:patrol_system/utils/constants.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
+
 import '../controls/text.dart';
 import '../controls/text_field.dart';
 import '../encrypteddecrypted/encrypt_and_decrypt.dart';
@@ -35,8 +37,41 @@ class _LoginPageState extends State<LoginPage> {
 
   // New: Track which login type is selected
   String loginType = "CID"; // options: "CID" or "Agent"
-var errorMessage ="An error occurred. Please try again.";
-var validMessage ="Please enter valid credentials.";
+  var errorMessage = "An error occurred. Please try again.";
+  var validMessage = "Please enter valid credentials.";
+
+  @override
+  void initState() {
+    super.initState();
+    _userName.text = "";
+    _password.text = "";
+    _email.text = "";
+    _agentPassword.text = "";
+
+
+
+    if (storeUserData.getBoolean(IS_AGENT_LOGIN)) {
+      loginType="Agent";
+
+      if (storeUserData.getString(USER_AGENT_EMAIl).isNotEmpty) {
+        _email.text = storeUserData.getString(USER_AGENT_EMAIl);
+      }
+
+      if (storeUserData.getString(USER_AGENT_PASSWORD).isNotEmpty) {
+        _agentPassword.text = storeUserData.getString(USER_AGENT_PASSWORD);
+      }
+    } else {
+      loginType="CID";
+      if (storeUserData.getString(USER_BADGE_NUMBER).isNotEmpty) {
+        _userName.text = storeUserData.getString(USER_BADGE_NUMBER);
+      }
+
+      if (storeUserData.getString(USER_EMPLOYEE_PASSWORD).isNotEmpty) {
+        _password.text = storeUserData.getString(USER_EMPLOYEE_PASSWORD);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -344,8 +379,7 @@ var validMessage ="Please enter valid credentials.";
       if (statusCode != 200 ||
           encryptedData == null ||
           encryptedData is! String) {
-        _handleError(
-            message.isNotEmpty ? message : validMessage);
+        _handleError(message.isNotEmpty ? message : validMessage);
         return;
       }
 
@@ -417,8 +451,7 @@ var validMessage ="Please enter valid credentials.";
       if (statusCode != 200 ||
           encryptedData == null ||
           encryptedData is! String) {
-        _handleError(
-            message.isNotEmpty ? message : validMessage);
+        _handleError(message.isNotEmpty ? message : validMessage);
         return;
       }
 
@@ -495,9 +528,17 @@ var validMessage ="Please enter valid credentials.";
       if (mobileNumber != null) {
         storeUserData.setString(USER_MOBILE, mobileNumber);
       }
-      storeUserData.setString(USER_BADGE_NUMBER, badgeNumber);
       storeUserData.setBoolean(IS_AGENT_LOGIN, isAgentLogin);
+
+      storeUserData.setString(USER_BADGE_NUMBER, badgeNumber);
+      storeUserData.setString(
+          USER_EMPLOYEE_PASSWORD, _password.text.toString());
+
+      storeUserData.setString(
+          USER_AGENT_PASSWORD, _agentPassword.text.toString());
+      storeUserData.setString(USER_AGENT_EMAIl, _email.text.toString());
       unawaited(ApiServiceDio.instance.fcmTokenSend());
+
       Get.offAll(transition: Transition.rightToLeft, const HomeScreen());
     });
   }
