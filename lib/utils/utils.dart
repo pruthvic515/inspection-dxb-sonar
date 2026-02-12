@@ -9,8 +9,10 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import '../controls/custom_dialog.dart';
 import '../controls/custom_yes_no_dialog.dart';
+import '../pages/login_page.dart';
 import 'color_const.dart';
 import 'constants.dart';
+import 'constants.dart' as constants;
 
 class Utils {
   void showSnackBar(BuildContext context, String message) {
@@ -321,6 +323,14 @@ class Utils {
     print("==online status== open :$isOpen");
     print("==online status==$onlineStatus");
     return onlineStatus;
+  }
+
+
+  void showLoginExpireDialog() {
+    var deviceToken = StoreUserData().getString(constants.USER_FCM);
+    StoreUserData().clearData();
+    StoreUserData().setString(constants.USER_FCM, deviceToken);
+    Get.offAll(const LoginPage());
   }
 
 /*

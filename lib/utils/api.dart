@@ -1,8 +1,10 @@
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:patrol_system/utils/utils.dart';
+
 import '../encrypteddecrypted/encrypted_http_client.dart';
 import '../encrypteddecrypted/encryption_config.dart';
 import '../utils/constants.dart' as constants;
@@ -68,20 +70,33 @@ class Api {
     Map<String, dynamic>? fields,
     bool requiresEncryption,
   ) async {
+    final stopwatch = Stopwatch()..start();   // ⏱ Start timer
+
+    http.Response response;
+
+
     if (requiresEncryption) {
       print("API URL is :- $url");
       final encryptedClient = EncryptedHttpClient();
-      return await encryptedClient.post(
+      response = await encryptedClient.post(
+        url,
+        headers: headers,
+        body: jsonEncode(fields),
+      );
+    } else {
+      response = await http.post(
         url,
         headers: headers,
         body: jsonEncode(fields),
       );
     }
-    return await http.post(
-      url,
-      headers: headers,
-      body: jsonEncode(fields),
-    );
+
+    stopwatch.stop();   // ⏱ Stop timer
+
+    print("⏱ API Time: ${stopwatch.elapsedMilliseconds} ms");
+    print("⏱ API Time (seconds): ${stopwatch.elapsed.inSeconds} sec");
+
+    return response;
   }
 
   void _logResponse(http.Response response, Map<String, dynamic>? fields) {
@@ -131,7 +146,8 @@ class Api {
     return response.body;
   }
 
-  String? _handleInvalidJsonError(http.Response response, BuildContext context) {
+  String? _handleInvalidJsonError(
+      http.Response response, BuildContext context) {
     if (!context.mounted) return null;
     Utils().showAlert(
       buildContext: context,
@@ -155,6 +171,8 @@ class Api {
 
   callAPIWithFiles(BuildContext context, String function,
       Map<String, String> fields, List<http.MultipartFile> files) async {
+    final stopwatch = Stopwatch()..start();
+
     var request = http.MultipartRequest(
         "POST", Uri.parse('${constants.baseUrl}$version/$function'));
     request.fields.addAll(fields);
@@ -163,12 +181,18 @@ class Api {
     request.headers.addAll(headers);
     request.files.addAll(files);
 
+
     var response = await request.send();
+    stopwatch.stop();   // ⏱ Stop timer
+    logApiTime(response.request!.url.toString(), stopwatch);
+
     print("${response.request!.url} ${response.statusCode}");
     if (response.statusCode == 200) {
       var jsonResponse = await response.stream.bytesToString();
       return jsonResponse;
       // handle the JSON response here
+    } else if (response.statusCode == 401) {
+      Utils().showLoginExpireDialog();
     } else {
       return 'error';
     }
@@ -176,6 +200,8 @@ class Api {
 
   callAPIWithFile(BuildContext context, String function,
       Map<String, String> fields, http.MultipartFile files) async {
+    final stopwatch = Stopwatch()..start();
+
     var request = http.MultipartRequest(
         "POST", Uri.parse('${constants.baseUrl}$version/$function'));
     request.fields.addAll(fields);
@@ -188,11 +214,14 @@ class Api {
     print(request.fields);
     print(files);
     print("${response.request!.url} ${response.statusCode}");
-
+    logApiTime(response.request!.url.toString(), stopwatch);
     if (response.statusCode == 200) {
       var jsonResponse = await response.stream.bytesToString();
       print(jsonResponse);
       return jsonResponse;
+      // handle the JSON response here
+    } else if (response.statusCode == 401) {
+      Utils().showLoginExpireDialog();
       // handle the JSON response here
     } else {
       return 'error';
@@ -200,6 +229,9 @@ class Api {
   }
 
   getAPI(BuildContext context, String function) async {
+    final stopwatch = Stopwatch()..start();
+
+
     if (storeUserData.getString(constants.USER_TOKEN).isNotEmpty) {
       print("token  ${storeUserData.getString(constants.USER_TOKEN)}");
     }
@@ -226,22 +258,16 @@ class Api {
     }
 
     print("${response.request!.url.toString()} ${response.statusCode}");
+    stopwatch.stop();
+    logApiTime(response.request!.url.toString(), stopwatch);
 
     if (response.statusCode == 200) {
       return response.body;
     } else {
       if (response.statusCode == 401) {
-        if (!context.mounted) return;
-        Utils().showAlert(
-            buildContext: context,
-            message: jsonDecode(response.body)["message"],
-            onPressed: () {
-              var deviceToken = StoreUserData().getString(constants.USER_FCM);
-              StoreUserData().clearData();
-              StoreUserData().setString(constants.USER_FCM, deviceToken);
-              Navigator.pop(context);
-            });
-        return "error";
+        Utils().showLoginExpireDialog();
+        // Navigator.pop(context);
+        // return "error";
       }
       if (response.statusCode != 422) {
         if (!context.mounted) return;
@@ -255,5 +281,10 @@ class Api {
 
       return response.body;
     }
+  }
+
+  void logApiTime(String url, Stopwatch stopwatch) {
+    print("🌐 $url");
+    print("⏱ Took: ${stopwatch.elapsedMilliseconds} ms");
   }
 }

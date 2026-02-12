@@ -537,8 +537,8 @@ class _LoginPageState extends State<LoginPage> {
       storeUserData.setString(
           USER_AGENT_PASSWORD, _agentPassword.text.toString());
       storeUserData.setString(USER_AGENT_EMAIl, _email.text.toString());
+      ApiServiceDio.instance.updateAuthToken(storeUserData.getString(USER_TOKEN));
       unawaited(ApiServiceDio.instance.fcmTokenSend());
-
       Get.offAll(transition: Transition.rightToLeft, const HomeScreen());
     });
   }
