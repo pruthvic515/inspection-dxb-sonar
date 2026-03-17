@@ -2550,7 +2550,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     LogPrint().log("false $model");
     debugPrint("productDetailsId ${model.productDetailsId}");
     addProduct({
-      "productDetailsId": model.productDetailsId,
+      "productDetailsId": 0,
       "inspectionId": inspectionId,
       "typeId": productTab,
       "products": products,
