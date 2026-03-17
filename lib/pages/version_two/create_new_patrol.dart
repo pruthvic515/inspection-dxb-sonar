@@ -1994,6 +1994,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
+
   List<Product> buildProductsList(
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
@@ -2011,6 +2012,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   void addNewProduct(List<Product> products) {
+
     addProduct(ProductDetail(
       productDetailsId: 0,
       productName: productName.text,
@@ -2546,16 +2548,16 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     TextEditingController notes,
   ) {
     LogPrint().log("false $model");
+    debugPrint("productDetailsId ${model.productDetailsId}");
     addProduct({
-      "productDetailsId": 0,
+      "productDetailsId": model.productDetailsId,
       "inspectionId": inspectionId,
       "typeId": productTab,
       "products": products,
       "productId": model.productId,
       "productName": model.productName,
       "qty": quantity,
-      "createdOn":
-          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
+      "createdOn": DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "categoryId": model.categoryId,
       "notes": notes.text,
     });

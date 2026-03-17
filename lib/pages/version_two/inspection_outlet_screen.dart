@@ -709,7 +709,7 @@ class _InspectionOutletScreenState extends State<InspectionOutletScreen> {
       if (!mounted) return;
       final value = await Api().getAPI(
         context,
-        "Department/Report/ViewReport?mainTaskId=${widget.task.mainTaskId}&inspectionId=0",
+        "Department/Report/TaskViewReport?mainTaskId=${widget.task.mainTaskId}&inspectionId=0",
       );
 
       if (!mounted) return;

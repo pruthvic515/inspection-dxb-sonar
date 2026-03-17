@@ -28,6 +28,7 @@ import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../../model/area_model.dart';
 import '../../model/outlet_model.dart';
 import '../../model/patrol_visit_model.dart';
+import '../../model/place_model.dart';
 import '../../model/search_entity_model.dart';
 import '../../model/task_model.dart';
 import '../../utils/api.dart';
@@ -53,6 +54,7 @@ class EntityDetails extends StatefulWidget {
   Tasks? task;
   bool fromActive;
   bool isAgentEmployees;
+  LocationModel? locationModel;
 
   // bool isDXBTask;
   bool completeStatus;
@@ -63,6 +65,7 @@ class EntityDetails extends StatefulWidget {
       {super.key,
         required this.entityId,
         this.taskId,
+        this.locationModel,
         required this.statusId,
         required this.inspectionId,
         required this.category,
@@ -2191,22 +2194,38 @@ class _EntityDetailsState extends State<EntityDetails> {
     return users;
   }
 
+
+
   Map<String, dynamic> _buildTaskFields(
       String taskName,
       List<Map<String, dynamic>> users,
       List<int> agentUserId,
       String notes,
       ) {
+    final entityDetails = [
+      {
+        "entityId": widget.entityId,
+        "location": jsonEncode({
+          "Latitude": widget.locationModel?.latitude.toString(),
+          "Longitude": widget.locationModel?.longitude.toString(),
+          "Name": widget.locationModel?.name,
+          "Category": widget.locationModel?.category,
+          "Address":widget.locationModel?.address
+        })
+      }
+    ];
+
     return {
+      "mainTaskId": 0,
       "taskName": taskName,
-      "entityId": [widget.entityId],
+      // ✅ New field
+      "entityDetails": entityDetails,
       "statusId": 1,
       "inspectorId": users,
       "agentUserId": agentUserId.isEmpty ? [] : agentUserId,
       "notes": notes,
       "createdBy": storeUserData.getInt(USER_ID),
-      "createdOn":
-      DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
+      "createdOn": DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "taskType": 1,
     };
   }
@@ -2214,6 +2233,7 @@ class _EntityDetailsState extends State<EntityDetails> {
   void _handleAddTaskResponse(String value) {
     final data = jsonDecode(value);
 
+    debugPrint("_handleAddTaskResponse $value");
     if (data["statusCode"] == 200) {
       _navigateToHomeScreen();
     } else {
@@ -3137,7 +3157,8 @@ class _EntityDetailsState extends State<EntityDetails> {
 
     LoadingIndicatorDialog().show(context);
     final url =
-        "Department/Report/ViewReport?mainTaskId=${widget.task!.mainTaskId}&inspectionId=0";
+        // "Department/Report/ViewReport?mainTaskId=${widget.task!.mainTaskId}&inspectionId=0";
+        "Department/Report/TaskViewReport?mainTaskId=${widget.task!.mainTaskId}&inspectionId=0";
 
     Api().getAPI(context, url).then((value) async {
       LoadingIndicatorDialog().dismiss();

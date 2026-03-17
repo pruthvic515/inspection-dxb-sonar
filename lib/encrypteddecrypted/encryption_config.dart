@@ -42,6 +42,7 @@ class EncryptionConfig {
       'api/Mobile/ProduectDetail/Delete',
       'api/Mobile/NewOutlet/Delete',
       'api/Department/Report/ViewReport',
+      'api/Department/Report/TaskViewReport',
       'api/Mobile/ProduectDetail/GetLiquorSizeEnum',
     ],
     'POST': [

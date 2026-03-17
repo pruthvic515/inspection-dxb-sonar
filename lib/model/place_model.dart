@@ -71,15 +71,15 @@ class Places {
   }
   Map<String, dynamic> toJson() {
     return {
-      "entityId": entityID,
+      "EntityId": entityID,
       // "businessTypeId": businessTypeId,
-      "logoUrl": logoUrl,
-      "lastVisitedDate": lastVisitedDate,
-      "entityName": entityName,
-      "location": location?.toJson(),
-      "categoryName": categoryName,
-      "classificationName": classificationName,
-      "monthlyLimit": monthlyLimit,
+      "LogoUrl": logoUrl,
+      "LastVisitedDate": lastVisitedDate,
+      "EntityName": entityName,
+      "Location": location?.toJson(),
+      "CategoryName": categoryName,
+      "ClassificationName": classificationName,
+      "MonthlyLimit": monthlyLimit,
       // "openingTime": openingTime,
       // "closingTime": closingTime,
       "status": status,

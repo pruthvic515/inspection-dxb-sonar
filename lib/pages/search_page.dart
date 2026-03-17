@@ -362,6 +362,7 @@ class _SearchPageState extends State<SearchPage> {
         inspectionId: 0,
         completeStatus: false,
         category: category,
+        locationModel: list[index].location,
       ),
     );
   }

@@ -79,9 +79,9 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
   @override
   void initState() {
     getInspectionDetail();
-    // getKnownProductCategories();
-    // getLiquorSize();
-    // getEntityRole();
+    getKnownProductCategories();
+    getLiquorSize();
+    getEntityRole();
 
     super.initState();
   }
@@ -874,8 +874,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
       serialNumber.add(element.serialNumber);
     }
     for (var element in list[index].products) {
-      var data =
-          searchSizeList.firstWhereOrNull(((size) => size.id == element.size));
+      var data = searchSizeList.firstWhereOrNull(((size) => size.id == element.size));
       if (data != null) {
         sizes.add(data.text);
       }
@@ -1355,7 +1354,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
     if (!mounted) return;
     
     LoadingIndicatorDialog().show(context);
-    final url = "Department/Report/ViewReport?mainTaskId=${widget.task.mainTaskId}&inspectionId=0";
+    final url = "Department/Report/TaskViewReport?mainTaskId=${widget.task.mainTaskId}&inspectionId=0";
     
     Api().getAPI(context, url).then((value) async {
       LoadingIndicatorDialog().dismiss();
