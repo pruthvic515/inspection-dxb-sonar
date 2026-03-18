@@ -2527,12 +2527,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   ) {
     updateProduct({
       "productDetailsId": model.productDetailsId,
-      "inspectionId": inspectionId,
+      "InspectionId": inspectionId,
+
       "typeId": productTab,
       "products": products,
       "productId": model.productId,
       "productName": model.productName,
       "qty": quantity,
+
       "createdOn":
           DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "categoryId": model.categoryId,
@@ -2551,7 +2553,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     debugPrint("productDetailsId ${model.productDetailsId}");
     addProduct({
       "productDetailsId": 0,
-      "inspectionId": inspectionId,
+      "InspectionId": inspectionId,
       "typeId": productTab,
       "products": products,
       "productId": model.productId,

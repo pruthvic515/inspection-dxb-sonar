@@ -87,6 +87,7 @@ class ProductDetail {
       'notes': notes,
     };
   }
+
 }
 
 class Product {

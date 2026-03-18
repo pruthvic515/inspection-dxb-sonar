@@ -44,6 +44,7 @@ class EncryptionConfig {
       'api/Department/Report/ViewReport',
       'api/Department/Report/TaskViewReport',
       'api/Mobile/ProduectDetail/GetLiquorSizeEnum',
+      'api/Department/Task/GeAgentPendingFeedBackCount',
     ],
     'POST': [
       // POST methods that require encryption
@@ -51,6 +52,7 @@ class EncryptionConfig {
       'api/Agent/Employee/Login',
       'api/Department/Task/GetTask',
       'api/Department/Task/GetAll',
+
       'api/Department/Task/UpdateTaskStatus',
       'api/Department/Task/UpdateInspectionTaskStatus',
       'api/Mobile/Entity/GetEntity',

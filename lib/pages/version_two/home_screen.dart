@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPageIndex = 1;
 
   // Legacy pagination (for non-agent users)
-  final int pageSize = 10;
+  final int pageSize = 100;
   bool isLastPage = false;
   bool isLoading = false;
   final ScrollController _scrollController = ScrollController();
@@ -75,9 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     if (storeUserData.getBoolean(IS_AGENT_LOGIN)) {
       agentTabType = "feedback";
-      // Load feedback tab (statusId = 6)
-      // Preload waiting tab (statusId = 4)
-      refreshTask();
+      refreshTask(); // calls getAgentPendingFeedBackCount + getAgentTasks
     }
 
     _scrollController.addListener(() {
@@ -407,8 +405,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _updateAgentTaskCounts() {
-    waitingCount = tasks.where((e) => e.statusId == 4).toList().length;
-    feedbackCount = tasks.where((e) => e.statusId == 6).toList().length;
+    // feedbackCount & waitingCount come from GeAgentPendingFeedBackCount API
+    // Only update if not yet fetched from API (e.g. during initial load)
   }
 
   void _addTasksToFilteredList(List<Tasks> newTasks) {
@@ -1869,6 +1867,7 @@ class _HomeScreenState extends State<HomeScreen> {
       list.clear();
       getTasks();
     } else {
+      getAgentPendingFeedBackCount();
       currentPageIndex = 1;
       isLastPage = false;
       isLoading = false;
@@ -1876,6 +1875,108 @@ class _HomeScreenState extends State<HomeScreen> {
       tasks.clear();
       setState(() {});
       getAgentTasks();
+    }
+  }
+
+  Future<void> getAgentPendingFeedBackCount() async {
+    if (!storeUserData.getBoolean(IS_AGENT_LOGIN)) return;
+    if (!await Utils().hasNetwork(context, setState)) return;
+    if (!mounted) return;
+
+    try {
+      // Pass raw designation ID - EncryptedHttpClient will encrypt query params once
+      final agentId = storeUserData.getInt(USER_DESIGNATION_ID).toString();
+
+
+      final value = await Api().getAPI(
+        context,
+        "Department/Task/GeAgentPendingFeedBackCount?agentId=$agentId",
+      );
+      if (!mounted || value == null || value.isEmpty) {
+        _resetAgentCountsOnFailure();
+        return;
+      }
+
+      final decryptedValue = await _decryptCountResponse(value);
+      if (!mounted) return;
+
+      _updateAgentCountsFromApi(decryptedValue);
+    } catch (e) {
+      debugPrint("GeAgentPendingFeedBackCount error: $e");
+      _resetAgentCountsOnFailure();
+    }
+  }
+
+  void _resetAgentCountsOnFailure() {
+    if (mounted) {
+      setState(() {
+        feedbackCount = 0;
+        waitingCount = 0;
+      });
+    }
+  }
+
+  Future<String> _decryptCountResponse(String value) async {
+    debugPrint("_decryptCountResponse $value");
+    try {
+      final responseJson = jsonDecode(value);
+      if (!_isEncryptedResponse(responseJson)) return value;
+
+      final encryptAndDecrypt = EncryptAndDecrypt();
+      final decryptedData = await encryptAndDecrypt.decryption(
+        payload: responseJson['data'] as String,
+      );
+
+      if (decryptedData.isEmpty) return value;
+      return decryptedData;
+    } catch (jsonError) {
+      return value;
+    }
+  }
+
+  void _updateAgentCountsFromApi(String responseStr) {
+    try {
+      // Decrypted response: {"WaitingforAgentFeedbackCount":3,"PendingAgentFeedbackCount":3}
+      final data = jsonDecode(responseStr);
+      Map<String, dynamic>? countMap;
+
+      if (data is Map<String, dynamic>) {
+        countMap = data;
+        if (data.containsKey('data') && data['data'] is Map) {
+          countMap = data['data'] as Map<String, dynamic>;
+        }
+      }
+
+      if (countMap == null) return;
+
+      // PendingAgentFeedbackCount -> Awaiting Feedback tab (statusId 6)
+      // WaitingforAgentFeedbackCount -> Awaiting Confirmation tab (statusId 4)
+      final pendingFeedback =
+          countMap['PendingAgentFeedbackCount'] ??
+          countMap['pendingCount'] ??
+          countMap['pending'] ??
+          0;
+
+      final waitingForFeedback =
+          countMap['PendingAgentConfirmationCount'] ??
+          countMap['confirmationCount'] ??
+          countMap['confirmation'] ??
+          0;
+
+      if (mounted) {
+        setState(() {
+          feedbackCount =
+              (pendingFeedback is int)
+                  ? pendingFeedback
+                  : int.tryParse('$pendingFeedback') ?? 0;
+          waitingCount =
+              (waitingForFeedback is int)
+                  ? waitingForFeedback
+                  : int.tryParse('$waitingForFeedback') ?? 0;
+        });
+      }
+    } catch (e) {
+      debugPrint("Error parsing agent count response: $e");
     }
   }
 }
