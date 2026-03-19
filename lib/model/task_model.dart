@@ -110,7 +110,7 @@ class Tasks {
       createdOn: json['CreatedOn'] == null || json['CreatedOn'] is! String
           ? DateTime.now()
           : DateTime.parse(json['CreatedOn'] as String),
-      inspectorStatusId: json['InspectorStatusId'] ?? 1,
+      inspectorStatusId: json['InspectorStatusId'] ?? json['inspectorStatusId'] ?? 1,
       statusId: json['StatusId'] ?? 0,
       outletId: json['OutletId'] ?? 0,
       newOutletId: json['NewOutletId'] ?? 0,

@@ -1994,7 +1994,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     });
   }
 
-
   List<Product> buildProductsList(
     List<TextEditingController> serial,
     List<AreaData?> sizeList,
@@ -2012,7 +2011,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   void addNewProduct(List<Product> products) {
-
     addProduct(ProductDetail(
       productDetailsId: 0,
       productName: productName.text,
@@ -2528,13 +2526,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     updateProduct({
       "productDetailsId": model.productDetailsId,
       "InspectionId": inspectionId,
-
       "typeId": productTab,
       "products": products,
       "productId": model.productId,
       "productName": model.productName,
       "qty": quantity,
-
       "createdOn":
           DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "categoryId": model.categoryId,
@@ -2559,7 +2555,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       "productId": model.productId,
       "productName": model.productName,
       "qty": quantity,
-      "createdOn": DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
+      "createdOn":
+          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "categoryId": model.categoryId,
       "notes": notes.text,
     });
@@ -4661,9 +4658,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         .callAPIWithFiles(
             context, "Mobile/InspectionDocument/Create", map, listMedia)
         .then((value) {
-      LoadingIndicatorDialog().dismiss();
-      LogPrint().log(value);
-      handleUploadResponse(value, categoryId, myState, type, filePath);
+      try {
+        LoadingIndicatorDialog().dismiss();
+        LogPrint().log(value);
+        handleUploadResponse(value, categoryId, myState, type, filePath);
+      } catch (e) {
+        LoadingIndicatorDialog().dismiss();
+      }
     });
   }
 

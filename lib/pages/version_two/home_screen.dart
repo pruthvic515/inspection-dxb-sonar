@@ -398,15 +398,10 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
+    debugPrint("_processAgentTasks ${data.tasks.length}");
     tasks.addAll(data.tasks);
-    _updateAgentTaskCounts();
     _addTasksToFilteredList(data.tasks);
     _handleAgentTaskPagination(data.totalCount);
-  }
-
-  void _updateAgentTaskCounts() {
-    // feedbackCount & waitingCount come from GeAgentPendingFeedBackCount API
-    // Only update if not yet fetched from API (e.g. during initial load)
   }
 
   void _addTasksToFilteredList(List<Tasks> newTasks) {
@@ -1192,6 +1187,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToEntityDetailsForAgent(Tasks task) {
+    // Inspection is still pending. Entity details will be available after confirmation.
     Get.to(
       transition: Transition.rightToLeft,
       EntityDetails(
@@ -1213,7 +1209,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _handleCompletedTaskTap(Tasks task, int index) {
     if (_isHotelCategory(list[index])) {
       debugPrint("Hotel is 3");
-      _navigateToEntityDetailsWithComplete(list[index],category: 1);
+      _navigateToEntityDetailsWithComplete(list[index], category: 1);
     } else {
       print("EntityDetails completed hotel 1");
       getEntityDetail(list[index]);
@@ -1259,7 +1255,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToEntityDetailsWithComplete(Tasks task, {int category = 0}) {
-    debugPrint("task ${task.toString()}");
+    // debugPrint("task ${task.toString()}");
     Get.to(
       transition: Transition.rightToLeft,
       EntityDetails(
@@ -1887,7 +1883,6 @@ class _HomeScreenState extends State<HomeScreen> {
       // Pass raw designation ID - EncryptedHttpClient will encrypt query params once
       final agentId = storeUserData.getInt(USER_DESIGNATION_ID).toString();
 
-
       final value = await Api().getAPI(
         context,
         "Department/Task/GeAgentPendingFeedBackCount?agentId=$agentId",
@@ -1951,28 +1946,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
       // PendingAgentFeedbackCount -> Awaiting Feedback tab (statusId 6)
       // WaitingforAgentFeedbackCount -> Awaiting Confirmation tab (statusId 4)
-      final pendingFeedback =
-          countMap['PendingAgentFeedbackCount'] ??
-          countMap['pendingCount'] ??
-          countMap['pending'] ??
-          0;
+      final pendingFeedback = countMap['PendingAgentFeedbackCount'] ?? 0;
 
-      final waitingForFeedback =
-          countMap['PendingAgentConfirmationCount'] ??
-          countMap['confirmationCount'] ??
-          countMap['confirmation'] ??
-          0;
+      final waitingForFeedback = countMap['PendingAgentConfirmationCount'] ?? 0;
 
       if (mounted) {
         setState(() {
-          feedbackCount =
-              (pendingFeedback is int)
-                  ? pendingFeedback
-                  : int.tryParse('$pendingFeedback') ?? 0;
-          waitingCount =
-              (waitingForFeedback is int)
-                  ? waitingForFeedback
-                  : int.tryParse('$waitingForFeedback') ?? 0;
+          feedbackCount = (pendingFeedback is int)
+              ? pendingFeedback
+              : int.tryParse('$pendingFeedback') ?? 0;
+          waitingCount = (waitingForFeedback is int)
+              ? waitingForFeedback
+              : int.tryParse('$waitingForFeedback') ?? 0;
         });
       }
     } catch (e) {
