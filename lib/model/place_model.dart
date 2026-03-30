@@ -31,6 +31,7 @@ class Places {
   LocationModel? location;
   final String categoryName;
   String classificationName;
+  String LicenseNumber ;
   final int monthlyLimit;
   // final String openingTime;
   // final String closingTime;
@@ -45,6 +46,7 @@ class Places {
     this.location,
     required this.categoryName,
     required this.classificationName,
+    required this.LicenseNumber ,
     required this.monthlyLimit,
     // required this.openingTime,
     // required this.closingTime,
@@ -64,6 +66,7 @@ class Places {
           : LocationModel.fromJson(json['Location']),
       categoryName: json['CategoryName'] ?? "",
       classificationName: json['ClassificationName'] ?? "",
+      LicenseNumber : json['LicenseNumber'] ?? "",
       monthlyLimit: json['MonthlyLimit'] ?? 0,
       // openingTime: json['OpeningTime'] ?? "-",
       // closingTime: json['closingTime'] ?? "-",
@@ -79,6 +82,7 @@ class Places {
       "Location": location?.toJson(),
       "CategoryName": categoryName,
       "ClassificationName": classificationName,
+      "LicenseNumber": LicenseNumber,
       "MonthlyLimit": monthlyLimit,
       // "openingTime": openingTime,
       // "closingTime": closingTime,

@@ -448,10 +448,12 @@ class _SearchPageState extends State<SearchPage> {
       list.addAll(places);
     } else {
       for (var item in places) {
-        if (item.entityName.toLowerCase().contains(searchText.toLowerCase()) ||
-            item.categoryName
-                .toLowerCase()
-                .contains(searchText.toLowerCase())) {
+        if (
+        item.entityName.toLowerCase().contains(searchText.toLowerCase()) ||
+        item.entityName.toLowerCase().contains(searchText.toLowerCase()) ||
+            item.categoryName.toLowerCase().contains(searchText.toLowerCase())
+
+        ) {
           list.add(item);
         }
       }

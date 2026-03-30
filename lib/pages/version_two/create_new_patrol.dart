@@ -154,6 +154,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   bool get canEdit =>
       inspectorId == storeUserData.getInt(USER_ID) || widget.primary == true;
 
+  /// Task-backed inspections use step order: Attachments → Details → Products → Witness.
+  bool get _isTaskOrderedFlow => widget.taskId != null;
+
+  int get _detailsTabType => _isTaskOrderedFlow ? 2 : 1;
+
+  int get _attachmentsTabType => _isTaskOrderedFlow ? 1 : 3;
+
   @override
   void dispose() {
     if (timer != null && timer!.isActive) {
@@ -170,10 +177,12 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     inspectionId = widget.inspectionId;
     outletModel = widget.outletData;
     if (statusId == 5) {
-      tabType = 2;
+      tabType = _isTaskOrderedFlow ? 3 : 2;
       debugPrint("Type $tabType");
       debugPrint("statusId $statusId");
       getInspectionDetail(); // async method
+    } else if (_isTaskOrderedFlow) {
+      tabType = inspectionId == 0 ? 2 : 1;
     } else {
       tabType = 1;
     }
@@ -199,11 +208,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       payload: widget.entityId.toString(),
       urlEncode: false,
     );
-
-    debugPrint(
-        "Original value ${widget.mainTaskId} encrypted value :- $encryptedMainTaskId");
-    debugPrint(
-        "Original value ${widget.entityId} encrypted value :- $encryptedEntityId");
 
     if (!mounted) return;
     Api()
@@ -794,26 +798,47 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Widget buildStepIndicator() {
+    final steps = _isTaskOrderedFlow
+        ? [
+            buildStepItem(1, "Attachments"),
+            buildStepDivider(),
+            buildStepItem(2, "Details"),
+            buildStepDivider(),
+            buildStepItem(3, "Products \nInspections"),
+            buildStepDivider(),
+            buildStepItem(4, "Witness & \nRepresentative"),
+          ]
+        : [
+            buildStepItem(1, "Details"),
+            buildStepDivider(),
+            buildStepItem(2, "Products \nInspections"),
+            buildStepDivider(),
+            buildStepItem(3, "Attachments"),
+            buildStepDivider(),
+            buildStepItem(4, "Witness & \nRepresentative"),
+          ];
     return Container(
       margin:
           const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 10, top: 120),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          buildStepItem(1, "Details"),
-          buildStepDivider(),
-          buildStepItem(2, "Products \nInspections"),
-          buildStepDivider(),
-          buildStepItem(3, "Attachments"),
-          buildStepDivider(),
-          buildStepItem(4, "Witness & \nRepresentative"),
-        ],
+        children: steps,
       ),
     );
   }
 
+  bool _stepIndicatorActive(int stepNumber) {
+    if (_isTaskOrderedFlow &&
+        inspectionId == 0 &&
+        tabType == 2 &&
+        stepNumber == 1) {
+      return false;
+    }
+    return tabType >= stepNumber;
+  }
+
   Widget buildStepItem(int stepNumber, String label) {
-    final isActive = tabType >= stepNumber;
+    final isActive = _stepIndicatorActive(stepNumber);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -870,7 +895,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Widget buildPreviousButton() {
     return Visibility(
-      visible: tabType > 2,
+      visible: _isTaskOrderedFlow ? tabType > 1 : tabType > 2,
       child: GestureDetector(
         onTap: handlePreviousTap,
         behavior: HitTestBehavior.translucent,
@@ -947,7 +972,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   void handleNextTap() {
     if (!validateNext()) return;
 
-    if (tabType == 3 && image.isEmpty) {
+    if (tabType == _attachmentsTabType && image.isEmpty) {
       showImageRequiredAlert();
       return;
     }
@@ -971,6 +996,20 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Widget buildTabContent() {
+    if (_isTaskOrderedFlow) {
+      switch (tabType) {
+        case 1:
+          return tabThreeUI();
+        case 2:
+          return tabOneUI();
+        case 3:
+          return tabTwoUI();
+        case 4:
+          return tabFourUI();
+        default:
+          return Container();
+      }
+    }
     if (tabType == 1) return tabOneUI();
     if (tabType == 2) return tabTwoUI();
     if (tabType == 3) return tabThreeUI();
@@ -2943,7 +2982,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             ),
           ),
           Visibility(
-            visible: widget.isAgentEmployees,
+            // visible: widget.isAgentEmployees && ,
             child: FormTextField(
               hint: "",
               value: aeNameList.join(","),
@@ -3159,7 +3198,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       },
     ).whenComplete(() {
       setState(() {
-        tabType = 1;
+        tabType = _detailsTabType;
         inspectorNameList.clear();
         selectedInspectors.clear();
         selectedInspectors.addAll(selected);
@@ -3228,7 +3267,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       if (data["statusCode"] == 200 && data["data"] != null) {
         setState(() {
           statusId = 5;
-          tabType = 2;
+          tabType = _isTaskOrderedFlow ? 1 : 2;
           inspectorId = storeUserData.getInt(USER_ID);
           taskId ??= data["data"]["inspectionTaskId"];
 
@@ -3390,7 +3429,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         LoadingIndicatorDialog().dismiss();
         var data = witnessFromJson(value);
         if (data.data.isNotEmpty) {
-          showAEMMISheet(data.data);
+          showAEMMISheet(data.data, agentId);
         } else {
           /*    setState(() {
             if (agentId == 1) {
@@ -3505,7 +3544,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     );
   }
 
-  void showAEMMISheet(List<WitnessData> list) {
+  List<WitnessData> _witnessesForAgentPicker(
+    List<WitnessData> list,
+    int openedForAgentId,
+  ) {
+    return list.where((w) => w.agentId == openedForAgentId).toList();
+  }
+
+  void showAEMMISheet(List<WitnessData> list, int openedForAgentId) {
     final agent1 = List<WitnessData>.from(selectedAEList);
     final agent2 = List<WitnessData>.from(selectedMMIList);
 
@@ -3522,6 +3568,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               list,
               agent1,
               agent2,
+              openedForAgentId,
             );
           },
         );
@@ -3537,6 +3584,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     List<WitnessData> list,
     List<WitnessData> agent1,
     List<WitnessData> agent2,
+    int openedForAgentId,
   ) {
     return Container(
       decoration: const BoxDecoration(
@@ -3563,6 +3611,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     agent1,
                     agent2,
                     myState,
+                    openedForAgentId,
                   ),
                   Utils().sizeBoxHeight(height: 250),
                 ],
@@ -3604,18 +3653,21 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     List<WitnessData> agent1,
     List<WitnessData> agent2,
     StateSetter myState,
+    int openedForAgentId,
   ) {
+    final displayList = _witnessesForAgentPicker(list, openedForAgentId);
     return ListView.builder(
       padding: const EdgeInsets.only(top: 10),
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
-      itemCount: list.length,
+      itemCount: displayList.length,
       itemBuilder: (context, index) {
         return buildAgentCard(
-          list[index],
+          displayList[index],
           agent1,
           agent2,
           myState,
+          openedForAgentId,
         );
       },
     );
@@ -3626,10 +3678,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     List<WitnessData> agent1,
     List<WitnessData> agent2,
     StateSetter myState,
+    int openedForAgentId,
   ) {
     return GestureDetector(
       onTap: () {
-        handleAgentTap(agent, agent1, agent2, myState);
+        handleAgentTap(agent, agent1, agent2, myState, openedForAgentId);
       },
       child: Card(
         color: AppTheme.white,
@@ -3724,7 +3777,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     List<WitnessData> agent1,
     List<WitnessData> agent2,
     StateSetter myState,
+    int openedForAgentId,
   ) {
+    if (agent.agentId != openedForAgentId) {
+      return;
+    }
     myState(() {
       final selectedList = agent.agentId == 1 ? agent1 : agent2;
       final existingIndex = selectedList.indexWhere(
@@ -3744,7 +3801,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     List<WitnessData> agent2,
   ) {
     setState(() {
-      tabType = 1;
+      tabType = _detailsTabType;
       selectedAEList.clear();
       selectedAEList.addAll(agent1);
       selectedMMIList.clear();
@@ -4746,7 +4803,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   showAttachmentDialog(String link) {
     showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (BuildContext dialogContext) {
           return Dialog(
             backgroundColor: AppTheme.white,
             surfaceTintColor: AppTheme.white,
@@ -4769,48 +4826,69 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     ),
                   ),
                   const SizedBox(height: 20.0),
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            Navigator.of(context).pop();
-                            if (Utils().isVideoLink(link)) {
-                              Get.to(
-                                  transition: Transition.rightToLeft,
-                                  VideoPlayerScreen(
-                                    url: link,
-                                  ));
-                            } else {
-                              Get.to(
-                                  transition: Transition.rightToLeft,
-                                  FullScreenImage(
-                                    imageUrl: link,
-                                  ));
-                            }
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              Navigator.of(dialogContext).pop();
+                              if (Utils().isVideoLink(link)) {
+                                Get.to(
+                                    transition: Transition.rightToLeft,
+                                    VideoPlayerScreen(
+                                      url: link,
+                                    ));
+                              } else {
+                                Get.to(
+                                    transition: Transition.rightToLeft,
+                                    FullScreenImage(
+                                      imageUrl: link,
+                                    ));
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: AppTheme.colorPrimary),
+                            child: CText(
+                              text: 'View',
+                              fontSize: AppTheme.medium,
+                              textColor: AppTheme.white,
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              Navigator.of(dialogContext).pop();
+                            },
+                            child: CText(
+                              text: 'Back',
+                              fontSize: AppTheme.medium,
+                              textColor: AppTheme.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12.0),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop();
+                            Get.to(AllAttachmentsScreen(patrolId: inspectionId));
                           },
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.colorPrimary),
+                            backgroundColor: AppTheme.colorPrimary,
+                          ),
                           child: CText(
-                            text: 'View',
+                            text: 'View All Images',
                             fontSize: AppTheme.medium,
                             textColor: AppTheme.white,
                           ),
                         ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            Navigator.of(context).pop();
-                          },
-                          child: CText(
-                            text: 'Back',
-                            fontSize: AppTheme.medium,
-                            textColor: AppTheme.black,
-                          ),
-                        )
-                      ],
-                    ),
-                  )
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -4819,10 +4897,13 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   bool validateNext() {
-    if (tabType == 1) {
+    if (tabType == _detailsTabType) {
       if ((widget.outletData != null && outletModel == null) ||
           googleAddress.isEmpty ||
           inspectorNameList.isEmpty) {
+        return false;
+      }
+      if (widget.isAgentEmployees && !_hasSelectedManagers()) {
         return false;
       }
     }

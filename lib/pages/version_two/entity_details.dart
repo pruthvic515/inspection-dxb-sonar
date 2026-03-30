@@ -45,7 +45,6 @@ import 'outlet_detail_screen.dart';
 enum OutletType { ownership, service, outlet }
 
 class EntityDetails extends StatefulWidget {
-
   int entityId;
   int? taskId;
   int inspectionId;
@@ -63,18 +62,18 @@ class EntityDetails extends StatefulWidget {
 
   EntityDetails(
       {super.key,
-        required this.entityId,
-        this.taskId,
-        this.locationModel,
-        required this.statusId,
-        required this.inspectionId,
-        required this.category,
-        required this.fromActive,
-        required this.isAgentEmployees,
-        // required this.isDXBTask,
-        required this.completeStatus,
-        // required this.taskType,
-        this.task});
+      required this.entityId,
+      this.taskId,
+      this.locationModel,
+      required this.statusId,
+      required this.inspectionId,
+      required this.category,
+      required this.fromActive,
+      required this.isAgentEmployees,
+      // required this.isDXBTask,
+      required this.completeStatus,
+      // required this.taskType,
+      this.task});
 
   @override
   State<EntityDetails> createState() => _EntityDetailsState();
@@ -306,7 +305,7 @@ class _EntityDetailsState extends State<EntityDetails> {
   bool _isOutletNotInEntity(OutletData outlet) {
     return entity!.outletModels.firstWhereOrNull(
           (element) => element.outletId == outlet.outletId,
-    ) ==
+        ) ==
         null;
   }
 
@@ -423,7 +422,7 @@ class _EntityDetailsState extends State<EntityDetails> {
       },
       child: Padding(
         padding:
-        const EdgeInsets.only(left: 10, top: 50, right: 10, bottom: 20),
+            const EdgeInsets.only(left: 10, top: 50, right: 10, bottom: 20),
         child: Card(
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -479,7 +478,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
     return Row(
       mainAxisAlignment:
-      hasTaskId ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
+          hasTaskId ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
       children: [
         const SizedBox(width: 20),
         if (!isAgentLogin && !hasTaskId) _buildAddDxbTaskButton(),
@@ -516,19 +515,19 @@ class _EntityDetailsState extends State<EntityDetails> {
   bool _shouldShowCategoryOneCompleteButton() {
     final hasCompletedOutlets = searchOutletList
         .where((element) =>
-    element.inspectionStatusId == 6 || element.inspectionStatusId == 7)
+            element.inspectionStatusId == 6 || element.inspectionStatusId == 7)
         .isNotEmpty;
     final hasInProgressOutlets = searchOutletList
         .where((element) => element.inspectionStatusId == 5)
         .isEmpty;
     final allCompleted = searchOutletList
         .where((element) =>
-    element.inspectionStatusId != 6 && element.inspectionStatusId != 7)
+            element.inspectionStatusId != 6 && element.inspectionStatusId != 7)
         .isEmpty;
 
     return (widget.task?.primary == true &&
-        hasCompletedOutlets &&
-        hasInProgressOutlets) ||
+            hasCompletedOutlets &&
+            hasInProgressOutlets) ||
         allCompleted;
   }
 
@@ -1038,9 +1037,7 @@ class _EntityDetailsState extends State<EntityDetails> {
               CText(
                 padding: const EdgeInsets.only(top: 2),
                 textAlign: TextAlign.center,
-                text: entity?.lastVisitedDate == null
-                    ? "-"
-                    : "${DateFormat(dateFormat).format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))} \n${DateFormat("hh:mm:ss aa").format(DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(entity!.lastVisitedDate!))}",
+                text: _lastInspectionDateDisplayText(),
                 textColor: AppTheme.textBlack,
                 fontFamily: AppTheme.urbanist,
                 maxLines: 2,
@@ -1243,8 +1240,8 @@ class _EntityDetailsState extends State<EntityDetails> {
       } else {
         final filtered = searchOutletList
             .where((item) => item.outletName
-            .toLowerCase()
-            .contains(searchText.toLowerCase()))
+                .toLowerCase()
+                .contains(searchText.toLowerCase()))
             .toList();
         _populateOutletListFromSearch(filtered);
       }
@@ -1294,11 +1291,46 @@ class _EntityDetailsState extends State<EntityDetails> {
                 _buildNewOutletActions(outlet)
               else
                 _buildOutletServiceType(outlet),
+              _buildFloorNameRow(outlet),
+              const SizedBox(height: 5),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildFloorNameRow(OutletData outlet) {
+    return Row(
+      children: [
+        CText(
+          textAlign: TextAlign.center,
+          text: "Floor Name : ",
+          fontWeight: FontWeight.w600,
+          textColor: AppTheme.grayAsparagus,
+          fontFamily: AppTheme.urbanist,
+          fontSize: AppTheme.large,
+        ),
+        CText(
+          textAlign: TextAlign.center,
+          text: outlet.Floor ?? "-",
+          textColor: AppTheme.textBlack,
+          fontFamily: AppTheme.urbanist,
+          fontSize: AppTheme.large,
+          maxLines: 2,
+          fontWeight: FontWeight.w600,
+        ),
+      ],
+    );
+  }
+
+  String _lastInspectionDateDisplayText() {
+    final raw = entity?.lastVisitedDate;
+    if (raw == null) {
+      return "-";
+    }
+    final parsed = DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parse(raw);
+    return "${DateFormat(dateFormat).format(parsed)} \n${DateFormat("hh:mm:ss aa").format(parsed)}";
   }
 
   Widget _buildOutletHeaderRow(OutletData outlet) {
@@ -1599,7 +1631,7 @@ class _EntityDetailsState extends State<EntityDetails> {
       return Container(
         margin: const EdgeInsets.only(top: 10, bottom: 10),
         padding:
-        EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom),
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom),
         width: MediaQuery.of(context).size.width,
         child: Row(
           children: [
@@ -1626,7 +1658,7 @@ class _EntityDetailsState extends State<EntityDetails> {
           onPressed: () => _handleCreateInspection(),
           style: ElevatedButton.styleFrom(
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
             backgroundColor: widget.taskId != null
                 ? AppTheme.colorPrimary
                 : AppTheme.paleGray,
@@ -1698,9 +1730,9 @@ class _EntityDetailsState extends State<EntityDetails> {
           onPressed: () => _handleCancelInspection(),
           style: ElevatedButton.styleFrom(
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
             backgroundColor:
-            widget.taskId != null ? AppTheme.colorPrimary : AppTheme.grey,
+                widget.taskId != null ? AppTheme.colorPrimary : AppTheme.grey,
             minimumSize: const Size.fromHeight(50),
           ),
           child: CText(
@@ -1827,38 +1859,38 @@ class _EntityDetailsState extends State<EntityDetails> {
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
-              return Container(
-                decoration: const BoxDecoration(
-                    color: AppTheme.mainBackground,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15))),
-                height: MediaQuery.of(context).size.height - 50,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      _buildDoneButton(context),
-                      _buildTaskNameField(formState, myState),
-                      _buildPrimaryInspectorField(
-                          context, formState, myState, buildContext),
-                      _buildOtherInspectorsField(
-                          context, formState, myState, buildContext),
-                      if (isHideAgents)
-                        _buildAgentsField(context, formState, myState),
-                      _buildNotesField(formState, myState),
-                      _buildAddButton(
-                          context, formState, isHideAgents, myState, buildContext),
-                      Utils().sizeBoxHeight(height: 250)
-                    ],
-                  ),
-                ),
-              );
-            });
+          return Container(
+            decoration: const BoxDecoration(
+                color: AppTheme.mainBackground,
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15))),
+            height: MediaQuery.of(context).size.height - 50,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  _buildDoneButton(context),
+                  _buildTaskNameField(formState, myState),
+                  _buildPrimaryInspectorField(
+                      context, formState, myState, buildContext),
+                  _buildOtherInspectorsField(
+                      context, formState, myState, buildContext),
+                  if (isHideAgents)
+                    _buildAgentsField(context, formState, myState),
+                  _buildNotesField(formState, myState),
+                  _buildAddButton(
+                      context, formState, isHideAgents, myState, buildContext),
+                  Utils().sizeBoxHeight(height: 250)
+                ],
+              ),
+            ),
+          );
+        });
       },
     ).whenComplete(() {
       setState(() {});
@@ -1977,13 +2009,13 @@ class _EntityDetailsState extends State<EntityDetails> {
         margin: const EdgeInsets.symmetric(vertical: 20),
         child: ElevatedButton(
           onPressed:
-          isValid ? () => _submitTask(formState, isHideAgents) : null,
+              isValid ? () => _submitTask(formState, isHideAgents) : null,
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),
             backgroundColor:
-            isValid ? AppTheme.colorPrimary : AppTheme.paleGray,
+                isValid ? AppTheme.colorPrimary : AppTheme.paleGray,
             minimumSize: const Size.fromHeight(50),
           ),
           child: CText(
@@ -2004,12 +2036,12 @@ class _EntityDetailsState extends State<EntityDetails> {
       StateSetter myState,
       BuildContext buildContext) {
     Get.to(
-        SelectInspector(
-          isPrimary: true,
-          selectedUsers: formState.selectedUsers,
-          primaryInspector: formState.selectedPrimaryUsers,
-        ),
-        preventDuplicates: false)
+            SelectInspector(
+              isPrimary: true,
+              selectedUsers: formState.selectedUsers,
+              primaryInspector: formState.selectedPrimaryUsers,
+            ),
+            preventDuplicates: false)
         ?.then((value) {
       if (value != null) {
         if (!context.mounted) return;
@@ -2045,12 +2077,12 @@ class _EntityDetailsState extends State<EntityDetails> {
       return;
     }
     Get.to(
-        SelectInspector(
-          primaryInspector: formState.selectedPrimaryUsers,
-          isPrimary: false,
-          selectedUsers: formState.selectedUsers,
-        ),
-        preventDuplicates: false)
+            SelectInspector(
+              primaryInspector: formState.selectedPrimaryUsers,
+              isPrimary: false,
+              selectedUsers: formState.selectedUsers,
+            ),
+            preventDuplicates: false)
         ?.then((value) {
       if (value != null) {
         if (!context.mounted) return;
@@ -2078,9 +2110,9 @@ class _EntityDetailsState extends State<EntityDetails> {
       BuildContext context, _AddTaskFormState formState, StateSetter myState) {
     final agentList = _buildAgentList();
     Get.to(
-        SelectAgents(
-            list: agentList, selectedAgents: formState.selectedAgents),
-        preventDuplicates: false)
+            SelectAgents(
+                list: agentList, selectedAgents: formState.selectedAgents),
+            preventDuplicates: false)
         ?.then((value) {
       if (value != null) {
         if (!context.mounted) return;
@@ -2175,9 +2207,9 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   List<Map<String, dynamic>> _buildUserList(
-      List<AllUserData> primaryUser,
-      List<AllUserData> otherUsers,
-      ) {
+    List<AllUserData> primaryUser,
+    List<AllUserData> otherUsers,
+  ) {
     final users = <Map<String, dynamic>>[];
 
     for (var pUser in primaryUser) {
@@ -2194,14 +2226,12 @@ class _EntityDetailsState extends State<EntityDetails> {
     return users;
   }
 
-
-
   Map<String, dynamic> _buildTaskFields(
-      String taskName,
-      List<Map<String, dynamic>> users,
-      List<int> agentUserId,
-      String notes,
-      ) {
+    String taskName,
+    List<Map<String, dynamic>> users,
+    List<int> agentUserId,
+    String notes,
+  ) {
     final entityDetails = [
       {
         "entityId": widget.entityId,
@@ -2210,7 +2240,7 @@ class _EntityDetailsState extends State<EntityDetails> {
           "Longitude": widget.locationModel?.longitude.toString(),
           "Name": widget.locationModel?.name,
           "Category": widget.locationModel?.category,
-          "Address":widget.locationModel?.address
+          "Address": widget.locationModel?.address
         })
       }
     ];
@@ -2225,7 +2255,8 @@ class _EntityDetailsState extends State<EntityDetails> {
       "agentUserId": agentUserId.isEmpty ? [] : agentUserId,
       "notes": notes,
       "createdBy": storeUserData.getInt(USER_ID),
-      "createdOn": DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
+      "createdOn":
+          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "taskType": 1,
     };
   }
@@ -2268,80 +2299,80 @@ class _EntityDetailsState extends State<EntityDetails> {
         focusNode.requestFocus();
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15))),
-                height: MediaQuery.of(context).size.height * 0.75,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    FormTextField(
-                      onChange: (value) {
-                        setState(() {});
-                      },
-                      cardColor: AppTheme.mainBackground,
-                      hint: "",
-                      controller: remark,
-                      textColor: AppTheme.grayAsparagus,
-                      fontFamily: AppTheme.urbanist,
-                      title: notesTitle,
-                      maxLines: 10,
-                      minLines: 5,
-                    ),
-                    const SizedBox(height: 10),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (remark.text.isEmpty) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter the Notes.",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else {
-                            setState(() {
-                              loading = true;
-                            });
-                            Navigator.pop(context);
-                            completeTask(remark.text);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          backgroundColor: remark.text.isNotEmpty
-                              ? AppTheme.colorPrimary
-                              : AppTheme.paleGray,
-                          minimumSize: const Size(200, 40),
-                        ),
-                        child: loading
-                            ? const CircularProgressIndicator(
-                          color: AppTheme.white,
-                        )
-                            : const Text(
-                          'Complete Task',
-                          style: TextStyle(
-                              color: AppTheme.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                  ],
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15))),
+            height: MediaQuery.of(context).size.height * 0.75,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                const SizedBox(
+                  height: 20,
                 ),
-              );
-            });
+                FormTextField(
+                  onChange: (value) {
+                    setState(() {});
+                  },
+                  cardColor: AppTheme.mainBackground,
+                  hint: "",
+                  controller: remark,
+                  textColor: AppTheme.grayAsparagus,
+                  fontFamily: AppTheme.urbanist,
+                  title: notesTitle,
+                  maxLines: 10,
+                  minLines: 5,
+                ),
+                const SizedBox(height: 10),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (remark.text.isEmpty) {
+                        Utils().showAlert(
+                            buildContext: buildContext,
+                            message: "Please enter the Notes.",
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            });
+                      } else {
+                        setState(() {
+                          loading = true;
+                        });
+                        Navigator.pop(context);
+                        completeTask(remark.text);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      backgroundColor: remark.text.isNotEmpty
+                          ? AppTheme.colorPrimary
+                          : AppTheme.paleGray,
+                      minimumSize: const Size(200, 40),
+                    ),
+                    child: loading
+                        ? const CircularProgressIndicator(
+                            color: AppTheme.white,
+                          )
+                        : const Text(
+                            'Complete Task',
+                            style: TextStyle(
+                                color: AppTheme.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          );
+        });
       },
     ).whenComplete(() {});
   }
@@ -2359,75 +2390,75 @@ class _EntityDetailsState extends State<EntityDetails> {
         focusNode.requestFocus();
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15))),
-                height: MediaQuery.of(context).size.height * 0.75,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    FormTextField(
-                      cardColor: AppTheme.mainBackground,
-                      hint: "",
-                      controller: remark,
-                      textColor: AppTheme.grayAsparagus,
-                      fontFamily: AppTheme.urbanist,
-                      title: notesTitle,
-                      maxLines: 10,
-                      minLines: 5,
-                    ),
-                    const SizedBox(height: 10),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (remark.text.isEmpty) {
-                            Utils().showAlert(
-                                buildContext: buildContext,
-                                message: "Please enter the notes",
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                });
-                          } else {
-                            setState(() {
-                              loading = true;
-                            });
-                            Navigator.pop(context);
-                            rejectTask(taskId, remark.text);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          backgroundColor: AppTheme.red,
-                          minimumSize: const Size(200, 40),
-                        ),
-                        child: loading
-                            ? const CircularProgressIndicator(
-                          color: AppTheme.white,
-                        )
-                            : const Text(
-                          'Cancel',
-                          style: TextStyle(
-                              color: AppTheme.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                  ],
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15))),
+            height: MediaQuery.of(context).size.height * 0.75,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                const SizedBox(
+                  height: 20,
                 ),
-              );
-            });
+                FormTextField(
+                  cardColor: AppTheme.mainBackground,
+                  hint: "",
+                  controller: remark,
+                  textColor: AppTheme.grayAsparagus,
+                  fontFamily: AppTheme.urbanist,
+                  title: notesTitle,
+                  maxLines: 10,
+                  minLines: 5,
+                ),
+                const SizedBox(height: 10),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (remark.text.isEmpty) {
+                        Utils().showAlert(
+                            buildContext: buildContext,
+                            message: "Please enter the notes",
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            });
+                      } else {
+                        setState(() {
+                          loading = true;
+                        });
+                        Navigator.pop(context);
+                        rejectTask(taskId, remark.text);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      backgroundColor: AppTheme.red,
+                      minimumSize: const Size(200, 40),
+                    ),
+                    child: loading
+                        ? const CircularProgressIndicator(
+                            color: AppTheme.white,
+                          )
+                        : const Text(
+                            'Cancel',
+                            style: TextStyle(
+                                color: AppTheme.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          );
+        });
       },
     ).whenComplete(() {});
   }
@@ -2505,7 +2536,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   void _removeOutletFromList(int outletId) {
     final position =
-    searchOutletList.indexWhere((test) => test.outletId == outletId);
+        searchOutletList.indexWhere((test) => test.outletId == outletId);
     if (position != -1) {
       searchOutletList.removeAt(position);
     }
@@ -2532,35 +2563,35 @@ class _EntityDetailsState extends State<EntityDetails> {
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter myState) {
-              return Container(
-                decoration: const BoxDecoration(
-                    color: AppTheme.mainBackground,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15))),
-                height: MediaQuery.of(context).size.height - 50,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      _buildDoneButton(context),
-                      _buildOutletNameField(formState, myState),
-                      _buildOwnershipField(formState, myState),
-                      _buildServiceTypeField(formState, myState),
-                      _buildOutletTypeField(formState, myState),
-                      _buildManagerNameField(formState, myState),
-                      _buildEmiratesIdField(formState, myState),
-                      _buildContactNumberField(formState, myState),
-                      _buildOutletNotesField(formState, myState),
-                      _buildSubmitButton(
-                          formState, model, myState, buildContext, context),
-                      Utils().sizeBoxHeight(height: 250)
-                    ],
-                  ),
-                ),
-              );
-            });
+          return Container(
+            decoration: const BoxDecoration(
+                color: AppTheme.mainBackground,
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15))),
+            height: MediaQuery.of(context).size.height - 50,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  _buildDoneButton(context),
+                  _buildOutletNameField(formState, myState),
+                  _buildOwnershipField(formState, myState),
+                  _buildServiceTypeField(formState, myState),
+                  _buildOutletTypeField(formState, myState),
+                  _buildManagerNameField(formState, myState),
+                  _buildEmiratesIdField(formState, myState),
+                  _buildContactNumberField(formState, myState),
+                  _buildOutletNotesField(formState, myState),
+                  _buildSubmitButton(
+                      formState, model, myState, buildContext, context),
+                  Utils().sizeBoxHeight(height: 250)
+                ],
+              ),
+            ),
+          );
+        });
       },
     ).whenComplete(() {
       setState(() {});
@@ -2596,8 +2627,8 @@ class _EntityDetailsState extends State<EntityDetails> {
       onTap: () => selectOutletTypeSheet(
           ownerShipList, "ownership", myState, formState.focusNodeButton,
           onSelected: (value) {
-            formState.ownerShipType = value;
-          }),
+        formState.ownerShipType = value;
+      }),
     );
   }
 
@@ -2615,8 +2646,8 @@ class _EntityDetailsState extends State<EntityDetails> {
       onTap: () => selectOutletTypeSheet(
           outletServiceList, "service", myState, formState.focusNodeButton,
           onSelected: (value) {
-            formState.serviceType = value;
-          }),
+        formState.serviceType = value;
+      }),
     );
   }
 
@@ -2634,11 +2665,12 @@ class _EntityDetailsState extends State<EntityDetails> {
       onTap: () => _handleOutletTypeSelection(formState, myState),
     );
   }
+
   void _handleOutletSelection(
-      AreaData selected,
-      String types,
-      void Function(AreaData)? onSelected,
-      ) {
+    AreaData selected,
+    String types,
+    void Function(AreaData)? onSelected,
+  ) {
     if (onSelected != null) {
       onSelected(selected);
       return;
@@ -2664,8 +2696,8 @@ class _EntityDetailsState extends State<EntityDetails> {
     ];
     selectOutletTypeSheet(types, "type", myState, formState.focusNodeButton,
         onSelected: (value) {
-          formState.outletType = value;
-        });
+      formState.outletType = value;
+    });
   }
 
   Widget _buildManagerNameField(
@@ -2748,7 +2780,7 @@ class _EntityDetailsState extends State<EntityDetails> {
               borderRadius: BorderRadius.circular(30),
             ),
             backgroundColor:
-            isValid ? AppTheme.colorPrimary : AppTheme.paleGray,
+                isValid ? AppTheme.colorPrimary : AppTheme.paleGray,
             minimumSize: const Size.fromHeight(50),
           ),
           child: CText(
@@ -2861,7 +2893,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   Map<String, dynamic> _buildUpdateOutletPayload(OutletData model) {
     final currentTime =
-    DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime());
+        DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime());
     final userId = storeUserData.getInt(USER_ID);
 
     return {
@@ -2913,7 +2945,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   void _updateOutletInList(OutletData model) {
     final position =
-    searchOutletList.indexWhere((test) => test.outletId == model.outletId);
+        searchOutletList.indexWhere((test) => test.outletId == model.outletId);
     if (position != -1) {
       searchOutletList.removeAt(position);
       searchOutletList.insert(position, model);
@@ -2965,7 +2997,7 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   Map<String, dynamic> _buildOutletPayload(OutletData model) {
     final currentTime =
-    DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime());
+        DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime());
     final userId = storeUserData.getInt(USER_ID);
 
     return {
@@ -3066,82 +3098,82 @@ class _EntityDetailsState extends State<EntityDetails> {
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                decoration: const BoxDecoration(
-                    color: AppTheme.mainBackground,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15))),
-                height: MediaQuery.of(context).size.height - 50,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.translucent,
+          return Container(
+            decoration: const BoxDecoration(
+                color: AppTheme.mainBackground,
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15))),
+            height: MediaQuery.of(context).size.height - 50,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: CText(
+                        padding: const EdgeInsets.all(20),
+                        textAlign: TextAlign.center,
+                        text: "DONE",
+                        textColor: AppTheme.black,
+                        fontFamily: AppTheme.urbanist,
+                        fontSize: AppTheme.medium,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  ListView.builder(
+                      padding: const EdgeInsets.only(top: 20),
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      itemCount: list.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
                           onTap: () {
+                            setState(() {
+                              myState(() {
+                                _handleOutletSelection(
+                                  list[index],
+                                  types,
+                                  onSelected,
+                                );
+                              });
+                            });
                             Navigator.of(context).pop();
                           },
-                          child: CText(
-                            padding: const EdgeInsets.all(20),
-                            textAlign: TextAlign.center,
-                            text: "DONE",
-                            textColor: AppTheme.black,
-                            fontFamily: AppTheme.urbanist,
-                            fontSize: AppTheme.medium,
-                            fontWeight: FontWeight.w700,
+                          child: Card(
+                            color: AppTheme.white,
+                            margin: const EdgeInsets.only(
+                                left: 20, right: 20, bottom: 10),
+                            surfaceTintColor: AppTheme.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            child: CText(
+                              textAlign: TextAlign.start,
+                              padding: const EdgeInsets.all(15.0),
+                              text: list[index].text,
+                              textColor: AppTheme.colorPrimary,
+                              fontFamily: AppTheme.urbanist,
+                              fontSize: AppTheme.large,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                        ),
-                      ),
-                      ListView.builder(
-                          padding: const EdgeInsets.only(top: 20),
-                          shrinkWrap: true,
-                          physics: const ClampingScrollPhysics(),
-                          itemCount: list.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  myState(() {
-                                    _handleOutletSelection(
-                                      list[index],
-                                      types,
-                                      onSelected,
-                                    );
-                                  });
-                                });
-                                Navigator.of(context).pop();
-                              },
-                              child: Card(
-                                color: AppTheme.white,
-                                margin: const EdgeInsets.only(
-                                    left: 20, right: 20, bottom: 10),
-                                surfaceTintColor: AppTheme.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                child: CText(
-                                  textAlign: TextAlign.start,
-                                  padding: const EdgeInsets.all(15.0),
-                                  text: list[index].text,
-                                  textColor: AppTheme.colorPrimary,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: AppTheme.large,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            );
-                          }),
-                      Utils().sizeBoxHeight()
-                    ],
-                  ),
-                ),
-              );
-            });
+                        );
+                      }),
+                  Utils().sizeBoxHeight()
+                ],
+              ),
+            ),
+          );
+        });
       },
     ).whenComplete(() {
       setState(() {});
@@ -3295,7 +3327,7 @@ class _EntityDetailsState extends State<EntityDetails> {
       "agentEmployeeIds": agentMap,
       "departmentEmployeeId": inspectorMap,
       "createdOn":
-      DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
+          DateFormat(fullDateTimeFormat).format(Utils().getCurrentGSTTime()),
       "comments": "",
       "finalNotes": "",
       "createdByName": "",
@@ -3395,12 +3427,12 @@ class _EntityDetailsState extends State<EntityDetails> {
   Future<void> _getPositionAndAddress() async {
     final position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ));
+      accuracy: LocationAccuracy.high,
+    ));
 
     try {
       final placeMarks =
-      await placemarkFromCoordinates(position.latitude, position.longitude);
+          await placemarkFromCoordinates(position.latitude, position.longitude);
       LogPrint().log(placeMarks);
       final place = placeMarks[0];
       _updateGoogleAddress(place);
@@ -3418,7 +3450,7 @@ class _EntityDetailsState extends State<EntityDetails> {
     if (!mounted) return;
     setState(() {
       googleAddress =
-      '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+          '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
     });
   }
 

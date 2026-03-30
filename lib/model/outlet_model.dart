@@ -39,6 +39,7 @@ class OutletData {
   int? outletTypeId;
   String? outletType;
   String? notes;
+  String? Floor;
   bool newAdded;
   int inspectionStatusId;
   int inspectionId;
@@ -58,6 +59,7 @@ class OutletData {
     this.outletStatus,
     this.outletTypeId,
     this.outletType,
+    this.Floor,
     this.notes,
     required this.newAdded,
     required this.inspectionStatusId,
@@ -80,6 +82,7 @@ class OutletData {
         outletStatus: json['OutletStatus'],
         outletTypeId: json['OutletTypeId'] ?? 0,
         outletType: json['OutletType'] ?? "-",
+        Floor: json['Floor'] ?? "-",
         notes: json['Notes'] ?? "-",
         newAdded: json['NewAdded'] ?? false,
         inspectionStatusId: json['InspectionStatusId'] ?? 0,
@@ -106,6 +109,7 @@ class OutletData {
       'newAdded': newAdded,
       'inspectionStatusId': inspectionStatusId,
       'inspectionId': inspectionId,
+      'Floor': Floor,
       'inspectorId': inspectorId,
     };
   }
@@ -128,6 +132,7 @@ class OutletData {
         'newAdded': data.newAdded,
         'inspectionStatusId': data.inspectionStatusId,
         'inspectionId': data.inspectionId,
+        'Floor': data.Floor,
       };
 
   static String encode(List<OutletData> musics) => json.encode(

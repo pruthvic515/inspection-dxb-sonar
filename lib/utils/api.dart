@@ -76,7 +76,7 @@ class Api {
 
 
     if (requiresEncryption) {
-      print("API URL is :- $url");
+      print("API URL is :- $url ${jsonEncode(fields)}");
       final encryptedClient = EncryptedHttpClient();
       response = await encryptedClient.post(
         url,
@@ -228,7 +228,8 @@ class Api {
     }
   }
 
-  getAPI(BuildContext context, String function) async {
+  getAPI(BuildContext context, String function,
+      {Map<String, String>? queryParameters}) async {
     final stopwatch = Stopwatch()..start();
 
 
@@ -236,7 +237,10 @@ class Api {
       print("token  ${storeUserData.getString(constants.USER_TOKEN)}");
     }
 
-    final url = Uri.parse('${constants.baseUrl}$version/$function');
+    Uri url = Uri.parse('${constants.baseUrl}$version/$function');
+    if (queryParameters != null && queryParameters.isNotEmpty) {
+      url = url.replace(queryParameters: queryParameters);
+    }
     final headers = await getHeaders();
 
     // Check if encryption is required for this endpoint

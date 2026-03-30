@@ -1049,7 +1049,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: CText(
                       textAlign: TextAlign.start,
                       padding: const EdgeInsets.only(right: 10, top: 10),
-                      text: task.taskName,
+                      text: task.statusId == 4 ? "N/A" :task.taskName,
                       textColor: AppTheme.grayAsparagus,
                       fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.large,
@@ -1255,7 +1255,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToEntityDetailsWithComplete(Tasks task, {int category = 0}) {
-    // debugPrint("task ${task.toString()}");
+    debugPrint("task ${task.toString()}");
     Get.to(
       transition: Transition.rightToLeft,
       EntityDetails(

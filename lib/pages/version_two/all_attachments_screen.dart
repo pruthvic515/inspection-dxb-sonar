@@ -104,9 +104,12 @@ class _AllAttachmentsScreenState extends State<AllAttachmentsScreen> {
   }
 
   void getAttachments() {
-    Api()
-        .getAPI(context,
-            "Mobile/InspectionDocument/GetAllByInspectionId?Id=$inspectionId")
+    Api().getAPI(
+        context,
+        'Mobile/InspectionDocument/GetAllByInspectionId',
+        queryParameters: <String, String>{
+          'Id': inspectionId.toString(),
+        })
         .then((value) async {
       var data = attachmentsFromJson(value);
       if (data.data.isNotEmpty) {

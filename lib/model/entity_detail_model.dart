@@ -31,6 +31,7 @@ class EntityDetailModel {
   List<OutletData> outletModels;
   final String? lastVisitedDate;
   String? message;
+  String? floor;
 
   EntityDetailModel({
     this.inspectionId,
@@ -57,6 +58,7 @@ class EntityDetailModel {
     required this.outletModels,
     this.lastVisitedDate,
     this.message,
+    this.floor,
   });
 
   factory EntityDetailModel.fromJson(Map<String, dynamic> json) {
@@ -92,6 +94,7 @@ class EntityDetailModel {
               json['OutletModels'].map((x) => OutletData.fromJson(x))),
       lastVisitedDate: json['LastVisitedDate'],
       message: json['Message'] ?? "-",
+      floor: json['floor'] ?? "-",
     );
   }
 }
