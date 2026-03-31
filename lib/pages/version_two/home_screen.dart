@@ -1049,7 +1049,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: CText(
                       textAlign: TextAlign.start,
                       padding: const EdgeInsets.only(right: 10, top: 10),
-                      text: task.statusId == 4 ? "N/A" :task.taskName,
+                      text: task.statusId == 4 ? "N/A" : task.taskName,
                       textColor: AppTheme.grayAsparagus,
                       fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.large,
@@ -1506,6 +1506,9 @@ class _HomeScreenState extends State<HomeScreen> {
       area = null;
       category = null;
     });
+
+    final _licenseNumber = TextEditingController();
+
     showModalBottomSheet(
         enableDrag: false,
         isDismissible: false,
@@ -1574,6 +1577,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: FormTextField(
+                      onChange: (_) => setState(() {}),
+                      controller: _licenseNumber,
+                      hint: 'Enter license Number',
+                      value: _licenseNumber.text,
+                      title: 'License Number :',
+                      inputBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      textColor: AppTheme.grayAsparagus,
+                      inputType: TextInputType.name,
+                    ),
+                  ),
+                  /*RL1251*/
                   Container(
                     margin: const EdgeInsets.only(
                         left: 20, right: 20, top: 20, bottom: 40),
@@ -1587,6 +1605,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ? category!.id.toString()
                                   : "0",
                               location: area?.text ?? "",
+                              licenseNumber: _licenseNumber.text ?? "",
                             ))?.whenComplete(() {
                           refreshTask();
                         });

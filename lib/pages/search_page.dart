@@ -14,9 +14,10 @@ import '../utils/utils.dart';
 
 class SearchPage extends StatefulWidget {
   var location = "";
+  var licenseNumber = "";
   var categoryId = "";
 
-  SearchPage({super.key, required this.categoryId, required this.location});
+  SearchPage({super.key, required this.categoryId, required this.location, required this.licenseNumber});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -45,7 +46,8 @@ class _SearchPageState extends State<SearchPage> {
     try {
       final value = await Api().callAPI(context, "Mobile/Entity/GetEntity", {
         "categoryId": int.parse(widget.categoryId),
-        "location": widget.location
+        "location": widget.location,
+        "licenseNumber": widget.licenseNumber
       });
 
       LoadingIndicatorDialog().dismiss();

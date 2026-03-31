@@ -22,6 +22,7 @@ import 'package:patrol_system/model/known_product_model.dart';
 import 'package:patrol_system/model/outlet_model.dart';
 import 'package:patrol_system/model/witness_model.dart';
 import 'package:patrol_system/pages/version_two/all_attachments_screen.dart';
+import 'package:patrol_system/pages/version_two/create_agent_employee.dart';
 import 'package:patrol_system/pages/version_two/home_screen.dart';
 import 'package:patrol_system/pages/version_two/select_quantity.dart';
 import 'package:patrol_system/pages/version_two/sign_representative.dart';
@@ -43,6 +44,7 @@ import '../../model/inspection_product_model.dart';
 import '../../model/product_category_model.dart';
 import '../../model/representative_model.dart';
 import '../../utils/constants.dart';
+import '../../utils/emirates_id_validation.dart';
 import '../../utils/utils.dart';
 import '../full_screen_image.dart';
 import '../video_player_screen.dart';
@@ -154,12 +156,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   bool get canEdit =>
       inspectorId == storeUserData.getInt(USER_ID) || widget.primary == true;
 
-  /// Task-backed inspections use step order: Attachments → Details → Products → Witness.
+  /// Task-backed inspections use step order: Details -> Attachments  → Products → Witness.
   bool get _isTaskOrderedFlow => widget.taskId != null;
 
-  int get _detailsTabType => _isTaskOrderedFlow ? 2 : 1;
+  int get _detailsTabType => 1;
 
-  int get _attachmentsTabType => _isTaskOrderedFlow ? 1 : 3;
 
   @override
   void dispose() {
@@ -177,12 +178,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     inspectionId = widget.inspectionId;
     outletModel = widget.outletData;
     if (statusId == 5) {
-      tabType = _isTaskOrderedFlow ? 3 : 2;
-      debugPrint("Type $tabType");
-      debugPrint("statusId $statusId");
+      tabType = 2;
       getInspectionDetail(); // async method
-    } else if (_isTaskOrderedFlow) {
-      tabType = inspectionId == 0 ? 2 : 1;
     } else {
       tabType = 1;
     }
@@ -800,9 +797,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   Widget buildStepIndicator() {
     final steps = _isTaskOrderedFlow
         ? [
-            buildStepItem(1, "Attachments"),
+            buildStepItem(1, "Details"),
             buildStepDivider(),
-            buildStepItem(2, "Details"),
+            buildStepItem(2, "Attachments"),
             buildStepDivider(),
             buildStepItem(3, "Products \nInspections"),
             buildStepDivider(),
@@ -828,12 +825,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   bool _stepIndicatorActive(int stepNumber) {
-    if (_isTaskOrderedFlow &&
-        inspectionId == 0 &&
-        tabType == 2 &&
-        stepNumber == 1) {
-      return false;
-    }
     return tabType >= stepNumber;
   }
 
@@ -895,7 +886,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Widget buildPreviousButton() {
     return Visibility(
-      visible: _isTaskOrderedFlow ? tabType > 1 : tabType > 2,
+      visible: tabType > 2,
       child: GestureDetector(
         onTap: handlePreviousTap,
         behavior: HitTestBehavior.translucent,
@@ -972,7 +963,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   void handleNextTap() {
     if (!validateNext()) return;
 
-    if (tabType == _attachmentsTabType && image.isEmpty) {
+    if (tabType == 2 && image.isEmpty) {
       showImageRequiredAlert();
       return;
     }
@@ -999,9 +990,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     if (_isTaskOrderedFlow) {
       switch (tabType) {
         case 1:
-          return tabThreeUI();
-        case 2:
           return tabOneUI();
+        case 2:
+          return tabThreeUI();
         case 3:
           return tabTwoUI();
         case 4:
@@ -1011,8 +1002,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       }
     }
     if (tabType == 1) return tabOneUI();
-    if (tabType == 2) return tabTwoUI();
-    if (tabType == 3) return tabThreeUI();
+    if (tabType == 2) return tabThreeUI();
+    if (tabType == 3) return tabTwoUI();
     if (tabType == 4) return tabFourUI();
     return Container();
   }
@@ -2334,7 +2325,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       return false;
     }
 
-    if (emiratesId.text.isEmpty || emiratesId.text.length != 18) {
+    if (!EmiratesIdValidation.isValid(emiratesId.text)) {
       showError(context, "Please enter valid emiratesID");
       return false;
     }
@@ -3267,7 +3258,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       if (data["statusCode"] == 200 && data["data"] != null) {
         setState(() {
           statusId = 5;
-          tabType = _isTaskOrderedFlow ? 1 : 2;
+          tabType = 2;
           inspectorId = storeUserData.getInt(USER_ID);
           taskId ??= data["data"]["inspectionTaskId"];
 
@@ -3561,9 +3552,10 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       context: context,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
-          builder: (BuildContext context, StateSetter myState) {
+          builder: (BuildContext sheetContext, StateSetter myState) {
             return buildAEMMISheetContent(
               context,
+              sheetContext,
               myState,
               list,
               agent1,
@@ -3579,7 +3571,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Widget buildAEMMISheetContent(
-    BuildContext context,
+    BuildContext patrolContext,
+    BuildContext sheetContext,
     StateSetter myState,
     List<WitnessData> list,
     List<WitnessData> agent1,
@@ -3597,7 +3590,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       height: currentHeight - 50,
       child: Column(
         children: [
-          buildSaveHeader(context),
+          buildSaveHeader(sheetContext),
           const Divider(height: 1, color: AppTheme.grey),
           Expanded(
             flex: 1,
@@ -3606,6 +3599,59 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20, right: 20, bottom: 12, top: 8),
+                    child: Material(
+                      color: AppTheme.colorPrimary.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(12),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () async {
+                          Navigator.of(sheetContext).pop();
+                          if (!patrolContext.mounted) return;
+                          final result =
+                              await Navigator.of(patrolContext).push<bool>(
+                            MaterialPageRoute(
+                              builder: (_) => CreateAgentEmployeePage(
+                                agentIdForApi: openedForAgentId,
+                              ),
+                            ),
+                          );
+                          if (!mounted) return;
+                          if (result == true) {
+                            getAgents(openedForAgentId);
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 14),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.person_add_alt_1,
+                                color: AppTheme.colorPrimary,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: CText(
+                                  text: 'Add Agent Employee',
+                                  textColor: AppTheme.colorPrimary,
+                                  fontFamily: AppTheme.urbanist,
+                                  fontSize: AppTheme.medium,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const Icon(
+                                Icons.chevron_right,
+                                color: AppTheme.colorPrimary,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   buildAgentList(
                     list,
                     agent1,
@@ -3822,13 +3868,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   String formatEmiratesID(String id) {
-    // ignore: deprecated_member_use
-    id = id.replaceAll(RegExp(r'\D'), '');
-    if (id.length != 15) {
-      throw const FormatException(
-          "Invalid Emirates ID length. It should be 15 digits.");
-    }
-    return '${id.substring(0, 3)}-${id.substring(3, 7)}-${id.substring(7, 14)}-${id.substring(14, 15)}';
+    return EmiratesIdValidation.formatFromDigits(id);
   }
 
   Controllers initControllers(RepresentativeData? model) {
@@ -4875,7 +4915,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(dialogContext).pop();
-                            Get.to(AllAttachmentsScreen(patrolId: inspectionId));
+                            Get.to(
+                                AllAttachmentsScreen(patrolId: inspectionId));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.colorPrimary,

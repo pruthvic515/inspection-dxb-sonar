@@ -73,6 +73,7 @@ class EncryptionConfig {
       'api/Mobile/NewOutlet/Update',
       'api/Mobile/Patrol/GetAll',
       'api/Mobile/Patrol/Count',
+      'api/Agent/Employee/Create',
     ],
     "PUT":[
       "api/Mobile/Notification/UpdateFcmToken"

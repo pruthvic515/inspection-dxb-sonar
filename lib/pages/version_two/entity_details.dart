@@ -34,6 +34,7 @@ import '../../model/task_model.dart';
 import '../../utils/api.dart';
 import '../../utils/color_const.dart';
 import '../../utils/constants.dart';
+import '../../utils/emirates_id_validation.dart';
 import '../../utils/store_user_data.dart';
 import '../../utils/utils.dart';
 import '../patrol_visits_all.dart';
@@ -2543,13 +2544,7 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   String formatEmiratesID(String id) {
-    // ignore: deprecated_member_use
-    id = id.replaceAll(RegExp(r'\D'), '');
-    if (id.length != 15) {
-      throw const FormatException(
-          "Invalid Emirates ID length. It should be 15 digits.");
-    }
-    return '${id.substring(0, 3)}-${id.substring(3, 7)}-${id.substring(7, 14)}-${id.substring(14, 15)}';
+    return EmiratesIdValidation.formatFromDigits(id);
   }
 
   void showAddOutletSheet(OutletData? model) {
@@ -2836,7 +2831,7 @@ class _EntityDetailsState extends State<EntityDetails> {
     if (formState.managerName.text.isEmpty) {
       return "Please enter manager name";
     }
-    if (formState.emiratesId.text.length != 18) {
+    if (!EmiratesIdValidation.isValid(formState.emiratesId.text)) {
       return "Please enter valid emirates ID";
     }
     if (formState.mobileNumber.text.length != 8) {
