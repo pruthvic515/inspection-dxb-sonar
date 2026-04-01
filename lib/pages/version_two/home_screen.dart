@@ -1049,7 +1049,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: CText(
                       textAlign: TextAlign.start,
                       padding: const EdgeInsets.only(right: 10, top: 10),
-                      text: task.statusId == 4 ? "N/A" : task.taskName,
+                      text: (task.statusId == 4 &&
+                              storeUserData.getBoolean(IS_AGENT_LOGIN))
+                          ? "N/A"
+                          : task.taskName,
                       textColor: AppTheme.grayAsparagus,
                       fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.large,
@@ -1561,16 +1564,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: FormTextField(
                       value: category?.text ?? "",
                       title: 'Select Category',
+                      hint: "Select category",
+                      fontSize: AppTheme.medium,
                       onTap: () {
                         getCategory(setState, category);
                       },
                     ),
                   ),
                   Padding(
+
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: FormTextField(
                       value: area?.text ?? "",
                       title: 'Select Area',
+                      hint: "Select Area",
+                      fontSize: AppTheme.medium,
                       onTap: () {
                         getArea(setState);
                         // showAreaPopup();
@@ -1589,6 +1597,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       focusedBorder: InputBorder.none,
                       textColor: AppTheme.grayAsparagus,
                       inputType: TextInputType.name,
+                      fontSize: 15,
                     ),
                   ),
                   /*RL1251*/

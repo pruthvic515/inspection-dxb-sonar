@@ -164,7 +164,7 @@ class _SplashState extends State<Splash> {
           ),
           CText(
             padding: const EdgeInsets.only(bottom: 20),
-            text: "1.0.10",
+            text: "April 2026",
             fontFamily: AppTheme.urbanist,
             fontSize: 12,
             textColor: AppTheme.white,

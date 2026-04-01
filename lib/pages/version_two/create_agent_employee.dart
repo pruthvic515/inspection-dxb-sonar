@@ -30,15 +30,18 @@ class CreateAgentEmployeePage extends StatefulWidget {
 }
 
 class _CreateAgentEmployeePageState extends State<CreateAgentEmployeePage> {
+  static const String _emiratesIdIsoPrefix = '784-';
+
   final _fullName = TextEditingController();
   final _email = TextEditingController();
-  final _emiratesId = TextEditingController();
+  /// User-entered segment only: `YYYY-XXXXXXX-X` (ISO prefix [784-] is fixed in UI).
+  final _emiratesIdSuffix = TextEditingController();
   final _mobileDigits = TextEditingController();
   final _crypto = EncryptAndDecrypt();
   final _store = StoreUserData();
 
-  late final MaskTextInputFormatter _emiratesMask = MaskTextInputFormatter(
-    mask: 'XXX-XXXX-XXXXXXX-X',
+  late final MaskTextInputFormatter _emiratesSuffixMask = MaskTextInputFormatter(
+    mask: 'XXXX-XXXXXXX-X',
     // ignore: deprecated_member_use
     filter: {'X': RegExp(r'[0-9]')},
     type: MaskAutoCompletionType.lazy,
@@ -50,7 +53,7 @@ class _CreateAgentEmployeePageState extends State<CreateAgentEmployeePage> {
   void dispose() {
     _fullName.dispose();
     _email.dispose();
-    _emiratesId.dispose();
+    _emiratesIdSuffix.dispose();
     _mobileDigits.dispose();
     super.dispose();
   }
@@ -70,7 +73,7 @@ class _CreateAgentEmployeePageState extends State<CreateAgentEmployeePage> {
         AgentEmployeeCreateValidators.validateFullName(_fullName.text);
     if (nameErr != null) return nameErr;
 
-    if (!EmiratesIdValidation.isValid(_emiratesId.text)) {
+    if (!EmiratesIdValidation.isValid(_plainEmiratesIdForValidation)) {
       return 'Please enter a valid Emirates ID (784-YYYY-XXXXXXX-X)';
     }
 
@@ -82,40 +85,9 @@ class _CreateAgentEmployeePageState extends State<CreateAgentEmployeePage> {
 
   bool get _canSubmit => _collectValidationError() == null;
 
-  /// Encrypts PII field values using the same AES helper as the rest of the app.
-  Future<Map<String, String>?> _encryptPiiFields({
-    required String plainAgentName,
-    required String plainEmiratesId,
-    required String plainPhone,
-    required String plainEmail,
-  }) async {
-    try {
-      final agentName = await _crypto.encryption(
-        payload: plainAgentName,
-        urlEncode: false,
-      );
-      final emiratesId = await _crypto.encryption(
-        payload: plainEmiratesId,
-        urlEncode: false,
-      );
-      final phoneNo = await _crypto.encryption(
-        payload: plainPhone,
-        urlEncode: false,
-      );
-      final emailId = await _crypto.encryption(
-        payload: plainEmail,
-        urlEncode: false,
-      );
-      return {
-        'agentName': agentName,
-        'emiratesId': emiratesId,
-        'phoneNo': phoneNo,
-        'emailId': emailId,
-      };
-    } catch (_) {
-      return null;
-    }
-  }
+  String get _plainEmiratesIdForValidation =>
+      '$_emiratesIdIsoPrefix${_emiratesIdSuffix.text.trim()}';
+
 
   Future<void> _submit() async {
     final error = _collectValidationError();
@@ -133,7 +105,7 @@ class _CreateAgentEmployeePageState extends State<CreateAgentEmployeePage> {
     if (!mounted) return;
 
     final plainName = _fullName.text.trim();
-    final plainEid = _emiratesId.text.trim();
+    final plainEid = _plainEmiratesIdForValidation;
     final plainPhone = '+971${_mobileDigits.text.trim()}';
     final plainEmail = _email.text.trim();
     final agentId =
@@ -236,6 +208,83 @@ class _CreateAgentEmployeePageState extends State<CreateAgentEmployeePage> {
 
     if (!mounted) return;
     Navigator.of(context).pop(true);
+  }
+
+  Widget _buildEmiratesIdWith784Prefix(BuildContext context) {
+    final currentWidth = MediaQuery.of(context).size.width;
+    final isLargeScreen = currentWidth > SIZE_600;
+    final horizontalMargin = isLargeScreen ? 15.0 : 10.0;
+    final titleMargin = isLargeScreen ? 20.0 : 10.0;
+    final titleHorizontalMargin = isLargeScreen ? 15.0 : 10.0;
+    final topMargin = isLargeScreen ? 15.0 : 10.0;
+    final padding = isLargeScreen ? 10.0 : 5.0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(
+            bottom: titleMargin,
+            top: titleMargin,
+            left: titleHorizontalMargin,
+            right: titleHorizontalMargin,
+          ),
+          child: CText(
+            textColor: AppTheme.black,
+            fontSize: AppTheme.large,
+            fontFamily: AppTheme.urbanist,
+            fontWeight: FontWeight.w600,
+            text: 'Emirates ID :',
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: horizontalMargin, right: horizontalMargin),
+          child: Card(
+            surfaceTintColor: AppTheme.white,
+            elevation: 2,
+            margin: EdgeInsets.only(top: topMargin),
+            color: AppTheme.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: padding),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CText(
+                    padding: const EdgeInsets.only(top: 5),
+                    text: _emiratesIdIsoPrefix,
+                    textColor: AppTheme.grayAsparagus,
+                    fontSize: AppTheme.large,
+                    fontFamily: AppTheme.urbanist,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  Expanded(
+                    child: CTextField(
+                      inputFormatters: [_emiratesSuffixMask],
+                      onChange: (_) => setState(() {}),
+                      inputBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      hint: 'YYYY-XXXXXXX-X',
+                      inputType: TextInputType.number,
+                      controller: _emiratesIdSuffix,
+                      maxLines: 1,
+                      minLines: 1,
+                      textColor: AppTheme.grayAsparagus,
+                      fontSize: AppTheme.large,
+                      fontFamily: AppTheme.urbanist,
+                      fontWeight: FontWeight.w600,
+                      textCapitalization: TextCapitalization.none,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildMobileWith971Prefix() {
@@ -341,19 +390,7 @@ class _CreateAgentEmployeePageState extends State<CreateAgentEmployeePage> {
               textColor: AppTheme.grayAsparagus,
               inputType: TextInputType.name,
             ),
-            FormTextField(
-              onChange: (_) => setState(() {}),
-              inputFormatters: [_emiratesMask],
-              controller: _emiratesId,
-              hint: '784-YYYY-XXXXXXX-X',
-              value: _emiratesId.text,
-              title: 'Emirates ID :',
-              inputBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              textColor: AppTheme.grayAsparagus,
-              inputType: TextInputType.number,
-
-            ),
+            _buildEmiratesIdWith784Prefix(context),
             _buildMobileWith971Prefix(),
             FormTextField(
               onChange: (_) => setState(() {}),

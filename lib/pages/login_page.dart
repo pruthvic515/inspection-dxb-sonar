@@ -128,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildTitle() {
     return CText(
       padding: const EdgeInsets.only(left: 20, right: 20),
-      text: "Login to your \nAccount",
+      text: "Let's get started",
       textColor: AppTheme.black,
       fontFamily: AppTheme.urbanist,
       fontSize: 40,

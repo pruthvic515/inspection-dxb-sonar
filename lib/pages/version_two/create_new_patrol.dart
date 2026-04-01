@@ -161,7 +161,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   int get _detailsTabType => 1;
 
-
   @override
   void dispose() {
     if (timer != null && timer!.isActive) {
@@ -3296,7 +3295,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               backgroundColor: AppTheme.colorPrimary,
             ),
             onPressed: () => onAddManagerPressed(type),
-            child: CText(text: "Add New"),
+            child: CText(text: "Add New", textColor: AppTheme.textPrimary),
           ),
         ],
       ),
@@ -3420,7 +3419,10 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         LoadingIndicatorDialog().dismiss();
         var data = witnessFromJson(value);
         if (data.data.isNotEmpty) {
-          showAEMMISheet(data.data, agentId);
+          showAEMMISheet(
+            data.data,
+            agentId,
+          );
         } else {
           /*    setState(() {
             if (agentId == 1) {
@@ -4460,6 +4462,23 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // const SizedBox(height: 12.0),
+          // SizedBox(
+          //   width: double.infinity,
+          //   child: ElevatedButton(
+          //     onPressed: () {
+          //       Get.to(AllAttachmentsScreen(patrolId: inspectionId));
+          //     },
+          //     style: ElevatedButton.styleFrom(
+          //       backgroundColor: AppTheme.colorPrimary,
+          //     ),
+          //     child: CText(
+          //       text: 'View All Images',
+          //       fontSize: AppTheme.medium,
+          //       textColor: AppTheme.white,
+          //     ),
+          //   ),
+          // ),
           Utils().sizeBoxHeight(height: 25),
           Row(
             children: [
@@ -4543,28 +4562,28 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           ),
           Utils().sizeBoxHeight(),
           Visibility(
-              visible: detail != null && detail!.attachments.isNotEmpty,
+              // visible: detail != null && detail!.attachments.isNotEmpty,
               child: Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Get.to(AllAttachmentsScreen(patrolId: inspectionId));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    backgroundColor: AppTheme.colorPrimary,
-                    minimumSize: const Size(200, 55),
-                  ),
-                  child: CText(
-                    text: "Load All Images",
-                    textColor: AppTheme.white,
-                    fontSize: AppTheme.large,
-                    fontFamily: AppTheme.urbanist,
-                    fontWeight: FontWeight.w700,
-                  ),
+            child: ElevatedButton(
+              onPressed: () {
+                Get.to(AllAttachmentsScreen(patrolId: inspectionId));
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
                 ),
-              )),
+                backgroundColor: AppTheme.colorPrimary,
+                minimumSize: const Size(200, 55),
+              ),
+              child: CText(
+                text: "View All Images",
+                textColor: AppTheme.white,
+                fontSize: AppTheme.large,
+                fontFamily: AppTheme.urbanist,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          )),
         ],
       ),
     );
@@ -4908,25 +4927,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                             ),
                           ),
                         ],
-                      ),
-                      const SizedBox(height: 12.0),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(dialogContext).pop();
-                            Get.to(
-                                AllAttachmentsScreen(patrolId: inspectionId));
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.colorPrimary,
-                          ),
-                          child: CText(
-                            text: 'View All Images',
-                            fontSize: AppTheme.medium,
-                            textColor: AppTheme.white,
-                          ),
-                        ),
                       ),
                     ],
                   ),
