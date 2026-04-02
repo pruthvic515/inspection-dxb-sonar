@@ -1172,7 +1172,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       onTap: () async {
-        _handleTaskTap(task, index);
+        debugPrint("statusId ${task.statusId}");
+        debugPrint(
+            "IS_AGENT_LOGIN ${storeUserData.getBoolean(IS_AGENT_LOGIN)}");
+        bool shouldNavigate = !(task.statusId == 4 && storeUserData.getBoolean(IS_AGENT_LOGIN));
+        if (shouldNavigate) {
+          _handleTaskTap(task, index);
+        }
       },
     );
   }
@@ -1572,7 +1578,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Padding(
-
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: FormTextField(
                       value: area?.text ?? "",

@@ -2972,7 +2972,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             ),
           ),
           Visibility(
-            // visible: widget.isAgentEmployees && ,
+            visible: widget.isAgentEmployees,
             child: FormTextField(
               hint: "",
               value: aeNameList.join(","),
