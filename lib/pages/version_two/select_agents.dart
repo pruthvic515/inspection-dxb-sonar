@@ -83,7 +83,10 @@ class _SelectAgentsState extends State<SelectAgents> {
                                     null) {
                                   selectedAgents.add(widget.list[index]);
                                 } else {
-                                  selectedAgents.remove(widget.list[index]);
+                                  selectedAgents.removeWhere(
+                                        (element) => element.entityId == widget.list[index].entityId,
+                                  );
+                                  // selectedAgents.remove(widget.list[index]);
                                 }
                               });
                             },

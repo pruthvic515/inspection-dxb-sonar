@@ -3412,6 +3412,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     if (await Utils().hasNetwork(context, setState)) {
       if (!mounted) return;
       LoadingIndicatorDialog().show(context);
+      debugPrint("agentId $agentId}");
+      debugPrint("agentId ${widget.mainTaskId}");
       Api()
           .getAPI(context,
               "Agent/Agent/GetAssignedTaskEmployees?agentId=$agentId&mainTaskId=${widget.mainTaskId}")
