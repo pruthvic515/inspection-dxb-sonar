@@ -29,14 +29,13 @@ class _LoginPageState extends State<LoginPage> {
   var isLoading = false;
   var storeUserData = StoreUserData();
   final _encryptAndDecrypt = EncryptAndDecrypt();
-
   final _userName = TextEditingController();
   final _password = TextEditingController();
   final _email = TextEditingController();
   final _agentPassword = TextEditingController();
 
   // New: Track which login type is selected
-  String loginType = "CID"; // options: "CID" or "Agent"
+  String?  loginType = "CID"; // options: "CID" or "Agent"
   var errorMessage = "An error occurred. Please try again.";
   var validMessage = "Please enter valid credentials.";
 
@@ -146,34 +145,43 @@ class _LoginPageState extends State<LoginPage> {
           return Colors.black;
         }),
       ),
-      child: RadioGroup<String>(
-        groupValue: loginType,
-        onChanged: (value) {
-          setState(() {
-            loginType = value!;
-          });
-        },
-        child: const Row(
-          children: [
-            SizedBox(width: 20),
-            Expanded(
-              child: Row(
-                children: [
-                  Radio<String>(value: "CID"),
-                  Text("CID Login", style: TextStyle(fontSize: 16)),
-                ],
-              ),
+      child:
+      Row(
+        children: [
+          const SizedBox(width: 20),
+          Expanded(
+            child: Row(
+              children: [
+                Radio<String>(
+                  value: "CID",
+                  groupValue: loginType ?? "",
+                  onChanged: (String? value) {
+                    setState(() {
+                      loginType = value;
+                    });
+                  },
+                ),
+                const Text("CID Login", style: TextStyle(fontSize: 16)),
+              ],
             ),
-            Expanded(
-              child: Row(
-                children: [
-                  Radio<String>(value: "Agent"),
-                  Text("Agent Login", style: TextStyle(fontSize: 16)),
-                ],
-              ),
+          ),
+          Expanded(
+            child: Row(
+              children: [
+                Radio<String>(
+                  value: "Agent",
+                  groupValue: loginType ?? "",
+                  onChanged: (String? value) {
+                    setState(() {
+                      loginType = value ?? "";
+                    });
+                  },
+                ),
+                Text("Agent Login", style: TextStyle(fontSize: 16)),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

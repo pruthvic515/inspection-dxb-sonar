@@ -5017,23 +5017,22 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           separatorBuilder: (_, __) => const Divider(height: 1),
                           itemBuilder: (context, index) {
                             final reason = reasonList[index];
-                            return RadioGroup<int>(
+
+                            return RadioListTile<int>(
+                              contentPadding: EdgeInsets.zero,
+                              value: index,
                               groupValue: selectedIndex,
                               onChanged: (value) {
                                 setState(() {
                                   selectedIndex = value ?? -1;
                                 });
                               },
-                              child: RadioListTile<int>(
-                                contentPadding: EdgeInsets.zero,
-                                value: index,
-                                title: CText(
-                                  text: reason["name"],
-                                  textColor: AppTheme.black,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                              title: CText(
+                                text: reason["name"],
+                                textColor: AppTheme.black,
+                                fontFamily: AppTheme.urbanist,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
                               ),
                             );
                           },

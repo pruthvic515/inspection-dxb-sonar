@@ -785,35 +785,33 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                   builder: (context, setState) {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListView.separated(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          itemCount: reasonList.length,
-                          separatorBuilder: (_, __) => const Divider(height: 1),
-                          itemBuilder: (context, index) {
-                            final reason = reasonList[index];
-                            return RadioGroup<int>(
-                              groupValue: selectedIndex,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedIndex = value ?? -1;
-                                });
-                              },
-                              child: RadioListTile<int>(
-                                contentPadding: EdgeInsets.zero,
-                                value: index,
-                                title: CText(
-                                  text: reason["name"],
-                                  textColor: AppTheme.black,
-                                  fontFamily: AppTheme.urbanist,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                      children: [ListView.separated(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        itemCount: reasonList.length,
+                        separatorBuilder: (_, __) => const Divider(height: 1),
+                        itemBuilder: (context, index) {
+                          final reason = reasonList[index];
+
+                          return RadioListTile<int>(
+                            contentPadding: EdgeInsets.zero,
+                            value: index,
+                            groupValue: selectedIndex,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedIndex = value ?? -1;
+                              });
+                            },
+                            title: CText(
+                              text: reason["name"],
+                              textColor: AppTheme.black,
+                              fontFamily: AppTheme.urbanist,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          );
+                        },
+                      ),
                         Container(
                           margin: const EdgeInsets.only(
                               top: 30, right: 20, left: 20, bottom: 30),
