@@ -43,12 +43,7 @@ class _SplashState extends State<Splash> {
   }
 
   void _setAppVersion() {
-    // version code manage version: 1.0.0+9
-    // version name 1.0.0 and version code 8
-    // latest version code is 1.0.9
-    // latest version code is 1.0.10 PRO
-    // latest version code is 1.0.9 UAT
-    storeUserData.setString(LATEST_APP_VERSION, "1.0.9");
+    storeUserData.setString(LATEST_APP_VERSION, "1.0.10");
   }
 
   void _checkNetworkAndInitialize() {

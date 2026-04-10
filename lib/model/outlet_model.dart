@@ -93,7 +93,7 @@ class OutletData {
   Map<String, dynamic> toJson() {
     return {
       'outletId': outletId,
-      'outletName': outletName,
+      'OutletName': outletName,
       'ownerShipTypeId': ownerShipTypeId,
       'serviceTypeId': serviceTypeId,
       'ownerShipType': ownerShipType,
@@ -115,24 +115,25 @@ class OutletData {
   }
 
   static Map<String, dynamic> toMap(OutletData data) => {
-        'outletId': data.outletId,
-        'outletName': data.outletName,
-        'ownerShipTypeId': data.ownerShipTypeId,
-        'serviceTypeId': data.serviceTypeId,
-        'ownerShipType': data.ownerShipType,
-        'serviceType': data.serviceType,
-        'managerName': data.managerName,
-        'emiratesId': data.emiratesId,
-        'contactNumber': data.contactNumber,
-        'outletStatusId': data.outletStatusId,
-        'outletStatus': data.outletStatus,
-        'outletTypeId': data.outletTypeId,
-        'outletType': data.outletType,
-        'notes': data.notes,
-        'newAdded': data.newAdded,
-        'inspectionStatusId': data.inspectionStatusId,
-        'inspectionId': data.inspectionId,
+        'OutletId': data.outletId,
+        'OutletName': data.outletName,
+        'OwnerShipTypeId': data.ownerShipTypeId,
+        'ServiceTypeId': data.serviceTypeId,
+        'OwnerShipType': data.ownerShipType,
+        'ServiceType': data.serviceType,
+        'ManagerName': data.managerName,
+        'EmiratesId': data.emiratesId,
+        'ContactNumber': data.contactNumber,
+        'OutletStatusId': data.outletStatusId,
+        'OutletStatus': data.outletStatus,
+        'OutletTypeId': data.outletTypeId,
+        'OutletType': data.outletType,
+        'Notes': data.notes,
+        'NewAdded': data.newAdded,
+        'InspectionStatusId': data.inspectionStatusId,
+        'InspectionId': data.inspectionId,
         'Floor': data.Floor,
+        'InspectorId': data.inspectorId,
       };
 
   static String encode(List<OutletData> musics) => json.encode(
