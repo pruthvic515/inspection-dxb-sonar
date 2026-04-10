@@ -21,6 +21,7 @@ import 'package:patrol_system/controls/text.dart';
 import 'package:patrol_system/model/known_product_model.dart';
 import 'package:patrol_system/model/outlet_model.dart';
 import 'package:patrol_system/model/witness_model.dart';
+import 'package:patrol_system/pages/version_two/CaptureImagesScreen.dart';
 import 'package:patrol_system/pages/version_two/all_attachments_screen.dart';
 import 'package:patrol_system/pages/version_two/create_agent_employee.dart';
 import 'package:patrol_system/pages/version_two/home_screen.dart';
@@ -4524,9 +4525,20 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               ),
               GestureDetector(
                 onTap: () async {
+                  Get.to(const CaptureImagesScreen(
+                    isSelectionMode: true,
+                  ))?.then((onValue) async {
+                    debugPrint("onValue $onValue");
+                    if (onValue != null) {
+                      await cameraImageUpload(
+                          "image", null, 9, setState, onValue);
+                      await removeImage(onValue);
+                    }
+                  });
+                  /*
                   if (await Utils().hasNetwork(context, setState)) {
                     requestCameraPermissions("image", null, 9, setState);
-                  }
+                  }*/
                 },
                 child: Card(
                   margin: const EdgeInsets.only(left: 5, right: 20, top: 10),
@@ -4563,29 +4575,57 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             ],
           ),
           Utils().sizeBoxHeight(),
-          Visibility(
-              // visible: detail != null && detail!.attachments.isNotEmpty,
-              child: Center(
-            child: ElevatedButton(
-              onPressed: () {
-                Get.to(AllAttachmentsScreen(patrolId: inspectionId));
-              },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Visibility(
+                  // visible: detail != null && detail!.attachments.isNotEmpty,
+                  child: Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.to(const CaptureImagesScreen(isFromDraft: true));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    backgroundColor: AppTheme.colorPrimary,
+                    // minimumSize: const Size(200, 55),
+                  ),
+                  child: CText(
+                    text: "Draft Images",
+                    textColor: AppTheme.white,
+                    fontSize: AppTheme.large,
+                    fontFamily: AppTheme.urbanist,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-                backgroundColor: AppTheme.colorPrimary,
-                minimumSize: const Size(200, 55),
-              ),
-              child: CText(
-                text: "View All Images",
-                textColor: AppTheme.white,
-                fontSize: AppTheme.large,
-                fontFamily: AppTheme.urbanist,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          )),
+              )),
+              Visibility(
+                  // visible: detail != null && detail!.attachments.isNotEmpty,
+                  child: Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.to(AllAttachmentsScreen(patrolId: inspectionId));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    backgroundColor: AppTheme.colorPrimary,
+                    // minimumSize: const Size(200, 55),
+                  ),
+                  child: CText(
+                    text: "Submitted Images",
+                    textColor: AppTheme.white,
+                    fontSize: AppTheme.large,
+                    fontFamily: AppTheme.urbanist,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              )),
+            ],
+          ),
         ],
       ),
     );
@@ -4765,6 +4805,47 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         LoadingIndicatorDialog().dismiss();
       }
     }
+  }
+
+  Future<void> cameraImageUpload(String type, int? productId, int? categoryId,
+      StateSetter myState, XFile imagePath) async {
+    LoadingIndicatorDialog().show(context);
+
+    if (imagePath != null) {
+      // LogPrint().log(imagePath.length.toString());
+      File file = File(imagePath.path);
+      img.Image? image = img.decodeImage(await file.readAsBytes());
+      img.Image compressedImage = img.copyResize(image!, width: 800);
+      List<int> compressedBytes = img.encodeJpg(compressedImage, quality: 96);
+      if (inspectionId != 0) {
+        uploadImage(
+            http.MultipartFile.fromBytes(
+              'file',
+              compressedBytes,
+              filename: Utils().getFileName(imagePath.path.split("/").last),
+            ),
+            productId,
+            categoryId,
+            myState,
+            "image",
+            file.path);
+      } else {
+        LoadingIndicatorDialog().dismiss();
+      }
+    } else {
+      LogPrint().log('exception');
+      LoadingIndicatorDialog().dismiss();
+    }
+  }
+
+  Future<void> removeImage(XFile image) async {
+    final file = File(image.path);
+
+    if (await file.exists()) {
+      await file.delete();
+    }
+
+    setState(() {});
   }
 
   void uploadImage(http.MultipartFile media, int? productId, int? categoryId,

@@ -43,7 +43,7 @@ class _SplashState extends State<Splash> {
   }
 
   void _setAppVersion() {
-    storeUserData.setString(LATEST_APP_VERSION, "1.0.10");
+    storeUserData.setString(LATEST_APP_VERSION, "1.0.9");
   }
 
   void _checkNetworkAndInitialize() {

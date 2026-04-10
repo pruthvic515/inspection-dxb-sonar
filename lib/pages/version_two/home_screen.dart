@@ -22,6 +22,7 @@ import 'package:patrol_system/utils/utils.dart';
 import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../../model/entity_detail_model.dart';
 import '../../model/task_model.dart';
+import 'CaptureImagesScreen.dart';
 import 'entity_details.dart';
 import 'inspection_detail_screen.dart';
 import 'inspection_outlet_screen.dart';
@@ -830,18 +831,40 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Align(
                 alignment: Alignment.topRight,
-                child: GestureDetector(
-                  onTap: () {
-                    Get.to(
-                      transition: Transition.rightToLeft,
-                      const MenuPage(),
-                    );
-                  },
-                  child: Image.asset(
-                    "${ASSET_PATH}profile.png",
-                    height: 30,
-                    width: 30,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    /// 📸 Image Icon (Only for Officer)
+                    if (!storeUserData.getBoolean(IS_AGENT_LOGIN))
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => const CaptureImagesScreen(
+                                isSelectionMode: false,
+                              ));
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.only(right: 12),
+                          child: Icon(
+                            Icons.camera_alt,
+                            size: 40,
+                            color: AppTheme.white,
+                          ),
+                        ),
+                      ),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(
+                          transition: Transition.rightToLeft,
+                          const MenuPage(),
+                        );
+                      },
+                      child: Image.asset(
+                        "${ASSET_PATH}profile.png",
+                        height: 30,
+                        width: 30,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -1175,7 +1198,8 @@ class _HomeScreenState extends State<HomeScreen> {
         debugPrint("statusId ${task.statusId}");
         debugPrint(
             "IS_AGENT_LOGIN ${storeUserData.getBoolean(IS_AGENT_LOGIN)}");
-        bool shouldNavigate = !(task.statusId == 4 && storeUserData.getBoolean(IS_AGENT_LOGIN));
+        bool shouldNavigate =
+            !(task.statusId == 4 && storeUserData.getBoolean(IS_AGENT_LOGIN));
         if (shouldNavigate) {
           _handleTaskTap(task, index);
         }
