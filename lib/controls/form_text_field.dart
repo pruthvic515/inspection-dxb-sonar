@@ -24,6 +24,8 @@ class FormTextField extends StatelessWidget {
   InputBorder? focusedBorder;
   FocusNode? focusNode;
   ValueChanged<String>? onChange;
+  ValueChanged<String>? onSubmitted;
+  TextInputAction? textInputAction;
   List<TextInputFormatter>? inputFormatters;
   Color? cardColor;
   bool? hideIcon;
@@ -48,6 +50,8 @@ class FormTextField extends StatelessWidget {
       this.focusedBorder,
       this.focusNode,
       this.onChange,
+      this.onSubmitted,
+      this.textInputAction,
       this.inputFormatters,
       this.cardColor,
       this.hideIcon,
@@ -125,6 +129,8 @@ class FormTextField extends StatelessWidget {
           child: CTextField(
             inputFormatters: inputFormatters,
             onChange: onChange,
+            onSubmitted: onSubmitted,
+            textInputAction: textInputAction,
             focusedBorder: focusedBorder ?? InputBorder.none,
             inputBorder: inputBorder ?? InputBorder.none,
             enabled: enabled,

@@ -81,6 +81,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
     getInspectionDetail();
     getKnownProductCategories();
     getLiquorSize();
+
     getEntityRole();
 
     super.initState();
@@ -158,6 +159,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
     }).then((value) async {
       final data = detailFromJson(value);
       if (data.data != null) {
+        debugPrint("GetInspectionDetails ${value}");
         _handleInspectionDetailSuccess(data.data!);
       } else {
         _handleInspectionDetailError(data.message);
@@ -168,6 +170,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
   void _handleInspectionDetailSuccess(InspectionData inspectionData) {
     setState(() {
       detail = inspectionData;
+
       getThumbnails(inspectionData.attachments);
       _setupThumbnailTimer(inspectionData.attachments.length);
       _categorizeProducts(inspectionData.productDetailModels);
@@ -583,8 +586,8 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
                   child: CText(
                     padding: const EdgeInsets.only(right: 20, left: 10),
                     textAlign: TextAlign.start,
-                    text:
-                        "${DateFormat(dateFormat).format(widget.task.startDate)} \n${DateFormat("hh:mm:ss aa").format(widget.task.startDate)}",
+                    text:"${DateFormat(dateFormat).format(widget.task.startDate)} \n${DateFormat("hh:mm:ss aa").format(widget.task.startDate)}",
+                        // "${DateFormat(dateFormat).format(widget.task.startDate)} \n${DateFormat("hh:mm:ss aa").format(widget.task.startDate)}",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     fontFamily: AppTheme.urbanist,
@@ -616,8 +619,8 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
                   child: CText(
                     padding: const EdgeInsets.only(right: 20, left: 10),
                     textAlign: TextAlign.start,
-                    text:
-                        "${DateFormat(dateFormat).format(widget.task.endDate)} \n${DateFormat("hh:mm:ss aa").format(widget.task.endDate)}",
+                    // text:"${DateFormat(dateFormat).format(widget.task.endDate)} \n${DateFormat("hh:mm:ss aa").format(widget.task.endDate)}",
+                    text:"${DateFormat(dateFormat).format(widget.task.endDate)} \n${DateFormat("hh:mm:ss aa").format(widget.task.endDate)}",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     fontFamily: AppTheme.urbanist,

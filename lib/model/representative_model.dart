@@ -34,6 +34,7 @@ class RepresentativeData {
   int roleId;
   String? roleName;
   String? notes;
+  bool hasSignature;
 
   RepresentativeData(
       {required this.entityRepresentativeId,
@@ -44,7 +45,17 @@ class RepresentativeData {
       required this.phoneNo,
       required this.roleId,
       this.roleName,
-      this.notes});
+      this.notes,
+      this.hasSignature = false});
+
+  static bool _signatureFromJson(Map<String, dynamic> json) {
+    if (json['HasSignature'] == true || json['IsSigned'] == true) {
+      return true;
+    }
+    final url = json['SignatureUrl'] ?? json['signatureUrl'];
+    if (url is String && url.trim().isNotEmpty) return true;
+    return false;
+  }
 
   factory RepresentativeData.fromJson(Map<String, dynamic> json) {
     return RepresentativeData(
@@ -57,6 +68,7 @@ class RepresentativeData {
       roleId: json['RoleId'],
       roleName: json['RoleName'] ?? "-",
       notes: json['Notes'] ?? "-",
+      hasSignature: _signatureFromJson(json),
     );
   }
 

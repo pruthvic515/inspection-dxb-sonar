@@ -125,6 +125,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   final initialNotes = TextEditingController();
   final concludeNotes = TextEditingController();
   FocusNode concludeFocusNode = FocusNode();
+  final Set<int> _signedRepresentativeIds = {};
 
   ///sizes
   var currentHeight = 0.0;
@@ -256,6 +257,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       witnessList.clear();
       selectedAEList.clear();
       selectedMMIList.clear();
+      _signedRepresentativeIds.clear();
     });
   }
 
@@ -328,6 +330,51 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       } else if (representative.typeId == 2) {
         witnessList.add(representative);
       }
+    }
+    _pruneSignedRepresentativeIds();
+  }
+
+  void _pruneSignedRepresentativeIds() {
+    final ids = {
+      ...managerList.map((e) => e.entityRepresentativeId),
+      ...witnessList.map((e) => e.entityRepresentativeId),
+    };
+    _signedRepresentativeIds.removeWhere((id) => !ids.contains(id));
+  }
+
+  bool _isRepresentativeSigned(RepresentativeData r) {
+    return r.hasSignature ||
+        _signedRepresentativeIds.contains(r.entityRepresentativeId);
+  }
+
+  bool _allRepresentativesSigned() {
+    for (final r in managerList) {
+      if (!_isRepresentativeSigned(r)) return false;
+    }
+    for (final r in witnessList) {
+      if (!_isRepresentativeSigned(r)) return false;
+    }
+    return true;
+  }
+
+  Future<void> _openSignRepresentative(
+      RepresentativeData model, int type) async {
+    if (!canEdit) return;
+    final id = model.entityRepresentativeId;
+    final signed = await Get.to<bool>(
+      () => SignRepresentative(
+        model: model,
+        type: type,
+        inspectionId: inspectionId,
+        entityId: widget.entityId,
+      ),
+    );
+    if (!mounted) return;
+    if (signed == true) {
+      setState(() {
+        _signedRepresentativeIds.add(id);
+      });
+      getInspectionRepresentative();
     }
   }
 
@@ -2294,6 +2341,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       roleId: 0,
       roleName: roleName.text,
       notes: notes.text,
+      hasSignature: model?.hasSignature ?? false,
     );
 
     Navigator.of(context).pop();
@@ -3309,17 +3357,27 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   void onSubmitPressed() {
-    if (!canEdit) return;
+    if (!_allRepresentativesSigned()) {
+      Utils().showAlert(
+        buildContext: context,
+        message: "Please sign all representatives",
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
+    } else {
+      if (!canEdit) return;
 
-    concludeFocusNode.unfocus();
-    FocusScope.of(context).unfocus();
+      concludeFocusNode.unfocus();
+      FocusScope.of(context).unfocus();
 
-    Utils().showYesNoAlert(
-      context: context,
-      message: "Are you sure you want to finish the inspections?",
-      onYesPressed: handleInspectionConfirmation,
-      onNoPressed: () => Navigator.of(context).pop(),
-    );
+      Utils().showYesNoAlert(
+        context: context,
+        message: "Are you sure you want to finish the inspections?",
+        onYesPressed: handleInspectionConfirmation,
+        onNoPressed: () => Navigator.of(context).pop(),
+      );
+    }
   }
 
   void handleInspectionConfirmation() {
@@ -3397,6 +3455,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 hint: "",
                 focusNode: concludeFocusNode,
                 controller: concludeNotes,
+                inputType: TextInputType.multiline,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) {
+                  concludeFocusNode.unfocus();
+                },
                 textColor: AppTheme.grayAsparagus,
                 fontFamily: AppTheme.urbanist,
                 title: 'Inspection Concluding Notes :',
@@ -4279,6 +4342,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       categorizeRepresentatives(data.data);
     } else {
       handleEmptyRepresentativeResponse(data.message);
+      setState(() {
+        _signedRepresentativeIds.clear();
+      });
     }
   }
 
@@ -4291,6 +4357,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           witnessList.add(element);
         }
       }
+      _pruneSignedRepresentativeIds();
     });
   }
 
@@ -4334,20 +4401,17 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (canEdit) {
-                        Get.to(SignRepresentative(
-                          model: list[index],
-                          type: type,
-                          inspectionId: inspectionId,
-                          entityId: widget.entityId,
-                        ));
-                      }
+                      _openSignRepresentative(list[index], type);
                     },
                     behavior: HitTestBehavior.translucent,
                     child: CText(
                       textAlign: TextAlign.start,
-                      text: "E-Sign",
-                      textColor: AppTheme.colorAccent,
+                      text: _isRepresentativeSigned(list[index])
+                          ? "Signed"
+                          : "E-Sign",
+                      textColor: _isRepresentativeSigned(list[index])
+                          ? AppTheme.grayAsparagus
+                          : AppTheme.colorAccent,
                       fontFamily: AppTheme.urbanist,
                       fontSize: AppTheme.large,
                       maxLines: 1,
@@ -4525,7 +4589,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
               ),
               GestureDetector(
                 onTap: () async {
-                  Get.to(const CaptureImagesScreen(
+                  /*     Get.to(const CaptureImagesScreen(
                     isSelectionMode: true,
                   ))?.then((onValue) async {
                     debugPrint("onValue $onValue");
@@ -4534,11 +4598,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                           "image", null, 9, setState, onValue);
                       await removeImage(onValue);
                     }
-                  });
-                  /*
+                  });*/
+
                   if (await Utils().hasNetwork(context, setState)) {
                     requestCameraPermissions("image", null, 9, setState);
-                  }*/
+                  }
                 },
                 child: Card(
                   margin: const EdgeInsets.only(left: 5, right: 20, top: 10),
@@ -4583,7 +4647,21 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   child: Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.to(const CaptureImagesScreen(isFromDraft: true));
+                    // Get.to(const CaptureImagesScreen(isFromDraft: true));
+                    Get.to(const CaptureImagesScreen(
+                      isFromDraft: false,
+                      isSelectionMode: true,
+                    ))?.then((onValue) async {
+                      debugPrint("onValue $onValue");
+                      if (onValue != null) {
+                        if (!mounted) return;
+                        try {
+                          await cameraImageUpload(null, 9, setState, onValue);
+                          await removeImage(onValue);
+                        } finally {
+                        }
+                      }
+                    });
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -4807,11 +4885,30 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  Future<void> cameraImageUpload(String type, int? productId, int? categoryId,
+  Future<void> cameraImageUpload(int? productId, int? categoryId,
       StateSetter myState, XFile imagePath) async {
     LoadingIndicatorDialog().show(context);
 
-    if (imagePath != null) {
+    if (imagePath.path.endsWith("other")) {
+      var file = File(imagePath.path);
+      await VideoCompress.setLogLevel(0);
+      final info = await VideoCompress.compressVideo(
+        file.path,
+        quality: VideoQuality.MediumQuality,
+        deleteOrigin: false,
+        includeAudio: true,
+      );
+      LogPrint().log(info!.path);
+      uploadImage(
+          http.MultipartFile('file', File(info.path!).readAsBytes().asStream(),
+              File(info.path!).lengthSync(),
+              filename: Utils().getFileName(info.path!.split("/").last)),
+          productId,
+          categoryId,
+          myState,
+          "video",
+          info.path!);
+    } else {
       // LogPrint().log(imagePath.length.toString());
       File file = File(imagePath.path);
       img.Image? image = img.decodeImage(await file.readAsBytes());
@@ -4832,9 +4929,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       } else {
         LoadingIndicatorDialog().dismiss();
       }
-    } else {
-      LogPrint().log('exception');
-      LoadingIndicatorDialog().dismiss();
     }
   }
 
@@ -5032,7 +5126,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       }
     }
     if (tabType == 4) {
-      if (concludeNotes.text.isEmpty) {
+      if (concludeNotes.text.trim().isEmpty) {
         return false;
       }
     }

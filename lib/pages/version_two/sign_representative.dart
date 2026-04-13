@@ -290,7 +290,7 @@ class _SignRepresentativeState extends State<SignRepresentative> {
         var json = jsonDecode(value);
         if (json["data"] != null) {
           Utils().showSnackBar(context, "Uploaded successfully.");
-          Navigator.of(context).pop();
+          Get.back(result: true);
         } else {
           Utils().showAlert(
               buildContext: context,
