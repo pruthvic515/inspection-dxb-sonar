@@ -75,7 +75,7 @@ class OutletData {
         serviceTypeId: json['ServiceTypeId'] ?? 1,
         ownerShipType: json['OwnerShipType'] ?? "",
         serviceType: json['ServiceType'] ?? "",
-        managerName: json['<m>anagerName'] ?? "-",
+        managerName: json['ManagerName'] ?? "-",
         emiratesId: json['EmiratesId'] ?? "-",
         contactNumber: json['ContactNumber'] ?? "-",
         outletStatusId: json['OutletStatusId'] ?? 0,
@@ -109,7 +109,7 @@ class OutletData {
       'newAdded': newAdded,
       'inspectionStatusId': inspectionStatusId,
       'inspectionId': inspectionId,
-      'Floor': Floor,
+      'floor': Floor,
       'inspectorId': inspectorId,
     };
   }

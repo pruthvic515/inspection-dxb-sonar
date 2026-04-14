@@ -598,7 +598,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
                 ),
               ],
             ),
-            Utils().sizeBoxHeight(height: 5),
+/*            Utils().sizeBoxHeight(height: 5),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -630,7 +630,7 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
                   ),
                 ),
               ],
-            ),
+            ),*/
             Utils().sizeBoxHeight(height: 15),
           ],
         ));

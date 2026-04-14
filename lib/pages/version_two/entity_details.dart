@@ -105,6 +105,7 @@ class _OutletFormState {
   final emiratesId = TextEditingController();
   final mobileNumber = TextEditingController();
   final notes = TextEditingController();
+  final floor = TextEditingController();
   final focusNode = FocusNode();
   final focusNodeButton = FocusNode();
   AreaData? ownerShipType;
@@ -124,6 +125,7 @@ class _OutletFormState {
     if (model != null) {
       itemName.text = model!.outletName;
       managerName.text = model!.managerName ?? "";
+      floor.text = model!.Floor ?? "";
       emiratesId.text = formatEmiratesId(model!.emiratesId ?? "");
       mobileNumber.text = model!.contactNumber?.replaceAll("+9715", "") ?? "";
       notes.text = model!.notes ?? "";
@@ -1196,6 +1198,7 @@ class _EntityDetailsState extends State<EntityDetails> {
       outletList.clear();
       tabType = 2;
       for (var item in searchOutletList) {
+        debugPrint("OutletData  ${OutletData.toMap(item)}");
         if (tabType == 2 && item.newAdded == true) {
           outletList.add(item);
         }
@@ -1302,6 +1305,7 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   Widget _buildFloorNameRow(OutletData outlet) {
+    // debugPrint("outlet ${OutletData.toMap(outlet)}");
     return Row(
       children: [
         CText(
@@ -1464,13 +1468,12 @@ class _EntityDetailsState extends State<EntityDetails> {
 
   void _handleOutletTap(OutletData outlet) {
     debugPrint(outlet.inspectorId.toString());
-    debugPrint(storeUserData.getInt(USER_ID).toString());
+    var out = OutletData.toMap(outlet);
 
-    final canAccess = outlet.inspectorId == 0 ||
-        (outlet.inspectorId == storeUserData.getInt(USER_ID) &&
-            widget.task?.primary == true);
+    final canAccess = outlet.inspectorId == 0 || widget.task?.primary == true;
     final isAgentLogin = storeUserData.getBoolean(IS_AGENT_LOGIN);
 
+    debugPrint(" canAccess $canAccess");
     if (canAccess) {
       if (outlet.inspectionStatusId <= 5) {
         Get.to(
@@ -1681,9 +1684,10 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   void _handleCreateInspection() {
-    debugPrint(widget.taskId.toString());
-    debugPrint(widget.statusId.toString());
-    debugPrint(widget.task?.primary.toString());
+    // debugPrint(widget.taskId.toString());
+    // debugPrint(widget.statusId.toString());
+    // debugPrint(widget.task?.primary.toString());
+    debugPrint("Task data ${widget.task.toString()}");
 
     if (widget.taskId != null) {
       if (widget.statusId == 5 || widget.task?.primary == true) {
@@ -2576,6 +2580,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                   _buildServiceTypeField(formState, myState),
                   _buildOutletTypeField(formState, myState),
                   _buildManagerNameField(formState, myState),
+                  _buildFloorField(formState, myState),
                   _buildEmiratesIdField(formState, myState),
                   _buildContactNumberField(formState, myState),
                   _buildOutletNotesField(formState, myState),
@@ -2703,6 +2708,20 @@ class _EntityDetailsState extends State<EntityDetails> {
       hint: "",
       value: formState.managerName.text,
       title: 'Manager Name :',
+      inputBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      textColor: AppTheme.grayAsparagus,
+      inputType: TextInputType.text,
+    );
+  }
+
+  Widget _buildFloorField(_OutletFormState formState, StateSetter myState) {
+    return FormTextField(
+      onChange: (value) => myState(() {}),
+      controller: formState.floor,
+      hint: "",
+      value: formState.floor.text,
+      title: 'Floor :',
       inputBorder: InputBorder.none,
       focusedBorder: InputBorder.none,
       textColor: AppTheme.grayAsparagus,
@@ -2846,23 +2865,23 @@ class _EntityDetailsState extends State<EntityDetails> {
   void _submitOutlet(
       _OutletFormState formState, OutletData? model, StateSetter myState) {
     final outlet = OutletData(
-      outletId: model?.outletId ?? 0,
-      outletName: formState.itemName.text,
-      serviceTypeId: formState.serviceType!.id,
-      ownerShipTypeId: formState.ownerShipType!.id,
-      outletTypeId: formState.outletType!.id,
-      serviceType: formState.serviceType!.text,
-      ownerShipType: formState.ownerShipType!.text,
-      outletType: formState.outletType!.text,
-      managerName: formState.managerName.text,
-      emiratesId: formState.emiratesId.text.replaceAll("-", ""),
-      contactNumber: "+9715${formState.mobileNumber.text}",
-      notes: formState.notes.text,
-      newAdded: model == null,
-      inspectionStatusId: model?.inspectionStatusId ?? 0,
-      inspectionId: model?.inspectionId ?? 0,
-      inspectorId: storeUserData.getInt(USER_ID),
-    );
+        outletId: model?.outletId ?? 0,
+        outletName: formState.itemName.text,
+        serviceTypeId: formState.serviceType!.id,
+        ownerShipTypeId: formState.ownerShipType!.id,
+        outletTypeId: formState.outletType!.id,
+        serviceType: formState.serviceType!.text,
+        ownerShipType: formState.ownerShipType!.text,
+        outletType: formState.outletType!.text,
+        managerName: formState.managerName.text,
+        emiratesId: formState.emiratesId.text.replaceAll("-", ""),
+        contactNumber: "+9715${formState.mobileNumber.text}",
+        notes: formState.notes.text,
+        newAdded: model == null,
+        inspectionStatusId: model?.inspectionStatusId ?? 0,
+        inspectionId: model?.inspectionId ?? 0,
+        inspectorId: storeUserData.getInt(USER_ID),
+        Floor: formState.floor.text);
 
     if (model != null) {
       updateOutlet(myState, outlet);
@@ -2906,6 +2925,7 @@ class _EntityDetailsState extends State<EntityDetails> {
       "createdOn": currentTime,
       "modifiedOn": currentTime,
       "modifiedBy": userId,
+      "floor": model.Floor,
     };
   }
 
@@ -3010,14 +3030,17 @@ class _EntityDetailsState extends State<EntityDetails> {
       "createdOn": currentTime,
       "modifiedOn": currentTime,
       "modifiedBy": userId,
+      "floor": model.Floor,
     };
   }
+
 
   void _handleAddOutletResponse(
       String value, StateSetter myState, OutletData model) {
     final data = jsonDecode(value);
 
     if (data["statusCode"] == 200 && data["data"] != null) {
+      debugPrint("data[data] ${data["data"]}");
       _processSuccessfulOutletAdd(myState, model, data["data"]);
       Navigator.of(context).pop();
     } else {

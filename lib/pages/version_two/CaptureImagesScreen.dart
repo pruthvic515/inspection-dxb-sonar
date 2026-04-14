@@ -6,7 +6,6 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:patrol_system/controls/loading_indicator_dialog.dart';
 import 'package:patrol_system/controls/text.dart';
 import 'package:patrol_system/utils/color_const.dart';
 import 'package:video_player/video_player.dart';
@@ -143,7 +142,7 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
       backgroundColor: AppTheme.white,
       appBar: AppBar(
         backgroundColor: AppTheme.white,
-        title: const Text("Capture Images"),
+        title: const Text("Draft Attachments"),
       ),
       body: SafeArea(
         top: false,
@@ -204,7 +203,7 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
                 children: [
                   /// 📸 Image Button
                   Visibility(
-                    visible: !widget.isFromDraft,
+                    visible: !widget.isSelectionMode,
                     child: Expanded(
                       child: GestureDetector(
                         onTap: captureImage,
@@ -231,7 +230,8 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
 
                   /// 🎥 Video Button
                   Visibility(
-                    visible: !widget.isFromDraft, /*&& !widget.isSelectionMode,*/
+                    visible: !widget.isSelectionMode,
+                    /*&& !widget.isSelectionMode,*/
                     child: Expanded(
                       child: GestureDetector(
                         onTap: captureVideo,
@@ -253,30 +253,6 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
                       ),
                     ),
                   ),
-
-                  /*/// ✅ Submit Button
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: selectedPaths.isEmpty ? null : showBulkSubmitPopup,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color: selectedPaths.isEmpty
-                              ? Colors.grey.shade400 // disabled
-                              : AppTheme.colorPrimary,
-                        ),
-                        child: CText(
-                          text: "Submit (${selectedPaths.length})",
-                          textAlign: TextAlign.center,
-                          textColor: AppTheme.white,
-                          fontSize: AppTheme.medium,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: AppTheme.urbanist,
-                        ),
-                      ),
-                    ),
-                  ),*/
                 ],
               ),
             ),
@@ -286,7 +262,6 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
       ),
     );
   }
-
 
   Future<void> removeMultipleImages(List<XFile> images) async {
     for (var image in images) {
@@ -365,6 +340,7 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
         context: context,
         builder: (_) => _LocalVideoPreviewDialog(
           videoPath: image.path,
+          isSelectionMode: widget.isSelectionMode,
           onDelete: () async {
             Navigator.pop(context);
             await removeImage(image);
@@ -408,16 +384,17 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
                       },
                       child: const Text("Delete"),
                     ),
-                    TextButton(
-                      onPressed: () async {
-                        Navigator.pop(context);
+                    if (widget.isSelectionMode)
+                      TextButton(
+                        onPressed: () async {
+                          Navigator.pop(context);
 
-                        // await removeImage(image);
+                          // await removeImage(image);
 
-                        _submitSelection(image); // ✅ return single image
-                      },
-                      child: const Text("Submit"),
-                    ),
+                          _submitSelection(image); // ✅ return single image
+                        },
+                        child: const Text("Submit"),
+                      ),
                   ],
                 ),
               ],
@@ -453,6 +430,7 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
+        backgroundColor: AppTheme.white,
         title: const Text("Are you sure you want to delete?"),
         content: const Text("This action is irreversible."),
         actions: [
@@ -487,11 +465,13 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
 
 class _LocalVideoPreviewDialog extends StatefulWidget {
   final String videoPath;
+  final bool isSelectionMode;
   final VoidCallback onSubmit;
   final Future<void> Function() onDelete;
 
   const _LocalVideoPreviewDialog({
     required this.videoPath,
+    required this.isSelectionMode,
     required this.onSubmit,
     required this.onDelete,
   });
@@ -574,10 +554,11 @@ class _LocalVideoPreviewDialogState extends State<_LocalVideoPreviewDialog> {
                     onPressed: widget.onDelete,
                     child: const Text("Delete"),
                   ),
-                  TextButton(
-                    onPressed: widget.onSubmit,
-                    child: const Text("Submit"),
-                  ),
+                  if (widget.isSelectionMode)
+                    TextButton(
+                      onPressed: widget.onSubmit,
+                      child: const Text("Submit"),
+                    ),
                 ],
               ),
             ],

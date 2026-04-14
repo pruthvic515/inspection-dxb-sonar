@@ -4639,70 +4639,71 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             ],
           ),
           Utils().sizeBoxHeight(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Visibility(
-                  // visible: detail != null && detail!.attachments.isNotEmpty,
-                  child: Center(
+          Center(
+            child: Visibility(
+                // visible: detail != null && detail!.attachments.isNotEmpty,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Get.to(const CaptureImagesScreen(isFromDraft: true));
-                    Get.to(const CaptureImagesScreen(
-                      isFromDraft: false,
-                      isSelectionMode: true,
-                    ))?.then((onValue) async {
-                      debugPrint("onValue $onValue");
-                      if (onValue != null) {
-                        if (!mounted) return;
-                        try {
-                          await cameraImageUpload(null, 9, setState, onValue);
-                          await removeImage(onValue);
-                        } finally {
-                        }
-                      }
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    backgroundColor: AppTheme.colorPrimary,
-                    // minimumSize: const Size(200, 55),
-                  ),
-                  child: CText(
-                    text: "Draft Images",
-                    textColor: AppTheme.white,
-                    fontSize: AppTheme.large,
-                    fontFamily: AppTheme.urbanist,
-                    fontWeight: FontWeight.w700,
-                  ),
+              onPressed: () {
+                Get.to(const CaptureImagesScreen(
+                  isFromDraft: false,
+                  isSelectionMode: true,
+                ))?.then((onValue) async {
+                  debugPrint("onValue $onValue");
+                  if (onValue != null) {
+                    if (!mounted) return;
+                    try {
+                      await cameraImageUpload(null, 9, setState, onValue);
+                      await removeImage(onValue);
+                    } finally {}
+                  }
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
                 ),
-              )),
-              Visibility(
-                  // visible: detail != null && detail!.attachments.isNotEmpty,
-                  child: Center(
+                backgroundColor: AppTheme.colorPrimary,
+                minimumSize: const Size(150, 45),
+
+                // minimumSize: const Size(200, 55),
+              ),
+              child: CText(
+                text: "Draft Attachments",
+                textColor: AppTheme.white,
+                fontSize: AppTheme.medium,
+                fontFamily: AppTheme.urbanist,
+                fontWeight: FontWeight.w600,
+              ),
+            )),
+          ),
+
+          const SizedBox(
+            height: 10,
+          ),
+
+          Center(
+            child: Visibility(
+                // visible: detail != null && detail!.attachments.isNotEmpty,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Get.to(AllAttachmentsScreen(patrolId: inspectionId));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    backgroundColor: AppTheme.colorPrimary,
-                    // minimumSize: const Size(200, 55),
-                  ),
-                  child: CText(
-                    text: "Submitted Images",
-                    textColor: AppTheme.white,
-                    fontSize: AppTheme.large,
-                    fontFamily: AppTheme.urbanist,
-                    fontWeight: FontWeight.w700,
-                  ),
+              onPressed: () {
+                Get.to(AllAttachmentsScreen(patrolId: inspectionId));
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
                 ),
-              )),
-            ],
+                backgroundColor: AppTheme.colorPrimary,
+                minimumSize: const Size(200, 45),
+              ),
+              child: CText(
+                text: "Submitted Attachments",
+                textColor: AppTheme.white,
+                fontSize: AppTheme.medium,
+                fontFamily: AppTheme.urbanist,
+                fontWeight: FontWeight.w600,
+                textAlign: TextAlign.center,
+              ),
+            )),
           ),
         ],
       ),
@@ -4889,7 +4890,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       StateSetter myState, XFile imagePath) async {
     LoadingIndicatorDialog().show(context);
 
-    if (imagePath.path.endsWith("other")) {
+    if (imagePath.path.endsWith(".mp4")) {
       var file = File(imagePath.path);
       await VideoCompress.setLogLevel(0);
       final info = await VideoCompress.compressVideo(

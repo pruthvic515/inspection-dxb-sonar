@@ -115,8 +115,7 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
 
   bool _canEditInspection() {
     return widget.taskId != null &&
-        (outlet.inspectorId == 0 ||
-            outlet.inspectorId == storeUserData.getInt(USER_ID));
+        (outlet.inspectorId == 0 || widget.primary == true);
   }
 
   bool _canCancelInspection() {
