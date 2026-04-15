@@ -15,13 +15,36 @@ class RepresentativeModel {
   });
 
   factory RepresentativeModel.fromJson(Map<String, dynamic> json) {
+    final raw = json['data'];
+    final List<dynamic> rows;
+    if (raw == null) {
+      rows = [];
+    } else if (raw is List) {
+      rows = raw;
+    } else {
+      rows = [raw];
+    }
     return RepresentativeModel(
-      statusCode: json['statusCode'],
+      statusCode: _asInt(json['statusCode']),
       data: List<RepresentativeData>.from(
-          json['data'].map((x) => RepresentativeData.fromJson(x))),
-      message: json['message'],
+        rows.map(
+          (x) => RepresentativeData.fromJson(
+            Map<String, dynamic>.from(x as Map),
+          ),
+
+        ),
+      ),
+      message: json['message']?.toString(),
     );
   }
+}
+
+
+int _asInt(dynamic v, [int fallback = 0]) {
+  if (v == null) return fallback;
+  if (v is int) return v;
+  if (v is double) return v.toInt();
+  return int.tryParse(v.toString()) ?? fallback;
 }
 
 class RepresentativeData {
@@ -48,26 +71,39 @@ class RepresentativeData {
       this.notes,
       this.hasSignature = false});
 
+  static bool _truthy(dynamic v) {
+    if (v == true) return true;
+    if (v == 1 || v == '1') return true;
+    if (v is String && v.trim().toLowerCase() == 'true') return true;
+    return false;
+  }
+
   static bool _signatureFromJson(Map<String, dynamic> json) {
-    if (json['HasSignature'] == true || json['IsSigned'] == true) {
+    if (_truthy(json['HasSignature']) ||
+        _truthy(json['hasSignature']) ||
+        _truthy(json['IsSigned']) ||
+        _truthy(json['isSigned'])) {
       return true;
     }
     final url = json['SignatureUrl'] ?? json['signatureUrl'];
     if (url is String && url.trim().isNotEmpty) return true;
+    final sig = json['Signature'];
+    if (sig is Map && sig.isNotEmpty) return true;
+    if (sig is String && sig.trim().isNotEmpty) return true;
     return false;
   }
 
   factory RepresentativeData.fromJson(Map<String, dynamic> json) {
     return RepresentativeData(
-      entityRepresentativeId: json['EntityRepresentativeId'],
-      inspectionId: json['InspectionId'],
-      typeId: json['TypeId'],
-      name: json['Name'],
-      emiratesId: json['EmiratesId'],
-      phoneNo: json['PhoneNo'],
-      roleId: json['RoleId'],
-      roleName: json['RoleName'] ?? "-",
-      notes: json['Notes'] ?? "-",
+      entityRepresentativeId: _asInt(json['EntityRepresentativeId']),
+      inspectionId: _asInt(json['InspectionId']),
+      typeId: _asInt(json['TypeId']),
+      name: json['Name']?.toString() ?? '',
+      emiratesId: json['EmiratesId']?.toString() ?? '',
+      phoneNo: json['PhoneNo']?.toString() ?? '',
+      roleId: _asInt(json['RoleId']),
+      roleName: json['RoleName']?.toString() ?? "-",
+      notes: json['Notes']?.toString() ?? "-",
       hasSignature: _signatureFromJson(json),
     );
   }

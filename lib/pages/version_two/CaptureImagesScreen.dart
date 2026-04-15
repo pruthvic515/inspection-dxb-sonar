@@ -5,8 +5,10 @@ import 'package:flutter_video_thumbnail_plus/flutter_video_thumbnail_plus.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:patrol_system/controls/text.dart';
+import 'package:patrol_system/database/draft_attachment_store.dart';
 import 'package:patrol_system/utils/color_const.dart';
 import 'package:video_player/video_player.dart';
 
@@ -56,30 +58,35 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
 
     if (image != null) {
-      if (cachedImages.length >= _maxAttachments) {
+      final count = await DraftAttachmentStore.instance.countForUi();
+      if (count >= _maxAttachments) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Max 10 attachments allowed")),
         );
         return;
       }
 
-      final Directory dir = Platform.isAndroid
-          ? await getExternalStorageDirectory().then((value) => value!)
-          : await getApplicationDocumentsDirectory();
+      final Directory dir =
+          await DraftAttachmentStore.instance.draftMediaDirectory();
 
-      final String newPath =
-          "${dir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg";
+      final String newPath = p.join(
+        dir.path,
+        "${DateTime.now().millisecondsSinceEpoch}.jpg",
+      );
 
       final File newImage = await File(image.path).copy(newPath);
+      await DraftAttachmentStore.instance
+          .insertDraft(localPath: newImage.path, kind: 'image');
 
-      setState(() {
-        cachedImages.add(XFile(newImage.path)); // ✅ correct
-      });
+      await loadImages();
     }
   }
 
   Future<void> captureVideo() async {
-    if (cachedImages.length >= _maxAttachments) {
+    final count = await DraftAttachmentStore.instance.countForUi();
+    if (count >= _maxAttachments) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Max 10 attachments allowed")),
       );
@@ -95,45 +102,39 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
       return;
     }
 
-    final Directory dir = Platform.isAndroid
-        ? await getExternalStorageDirectory().then((value) => value!)
-        : await getApplicationDocumentsDirectory();
+    final Directory dir =
+        await DraftAttachmentStore.instance.draftMediaDirectory();
 
-    final String newPath =
-        "${dir.path}/${DateTime.now().millisecondsSinceEpoch}.mp4";
+    final String newPath = p.join(
+      dir.path,
+      "${DateTime.now().millisecondsSinceEpoch}.mp4",
+    );
 
     final File newVideo = await File(video.path).copy(newPath);
 
-    if (!mounted) {
-      return;
-    }
+    await DraftAttachmentStore.instance
+        .insertDraft(localPath: newVideo.path, kind: 'video');
 
-    setState(() {
-      cachedImages.add(XFile(newVideo.path));
-    });
+    await loadImages();
   }
 
   Future<void> loadImages() async {
-    final Directory dir = Platform.isAndroid
-        ? await getExternalStorageDirectory().then((value) => value!)
-        : await getApplicationDocumentsDirectory();
+    final rows = await DraftAttachmentStore.instance.listForUi();
+    final List<XFile> loadedImages = [];
 
-    final files = dir.listSync();
-
-    List<XFile> loadedImages = [];
-
-    for (var file in files) {
-      final lowerPath = file.path.toLowerCase();
-      if (lowerPath.endsWith(".jpg") ||
-          lowerPath.endsWith(".jpeg") ||
-          lowerPath.endsWith(".mp4")) {
-        loadedImages.add(XFile(file.path));
+    for (final row in rows) {
+      if (await File(row.localPath).exists()) {
+        loadedImages.add(XFile(row.localPath));
+      } else {
+        await DraftAttachmentStore.instance.deleteDraft(row.localPath);
       }
     }
 
-    setState(() {
-      cachedImages = loadedImages;
-    });
+    if (mounted) {
+      setState(() {
+        cachedImages = loadedImages;
+      });
+    }
   }
 
   @override
@@ -264,18 +265,11 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
   }
 
   Future<void> removeMultipleImages(List<XFile> images) async {
-    for (var image in images) {
-      final file = File(image.path);
-
-      if (await file.exists()) {
-        await file.delete();
-      }
+    for (final image in images) {
+      await DraftAttachmentStore.instance.deleteDraft(image.path);
     }
-
-    setState(() {
-      cachedImages.removeWhere((img) => selectedPaths.contains(img.path));
-      selectedPaths.clear();
-    });
+    selectedPaths.clear();
+    await loadImages();
   }
 
   bool _isVideoPath(String path) {
@@ -451,15 +445,8 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
   }
 
   Future<void> removeImage(XFile image) async {
-    final file = File(image.path);
-
-    if (await file.exists()) {
-      await file.delete();
-    }
-
-    setState(() {
-      cachedImages.removeWhere((e) => e.path == image.path);
-    });
+    await DraftAttachmentStore.instance.deleteDraft(image.path);
+    await loadImages();
   }
 }
 

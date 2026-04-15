@@ -38,6 +38,7 @@ class EncryptionConfig {
       'api/Department/Task/GetAssignedTaskInspectors',
       'api/Mobile/InspectionDocument/GetAllByInspectionId',
       'api/Mobile/EntityRepresentative/Delete',
+      'api/Mobile/EntityRepresentative/GetInspectionDetail',
       "Mobile/EntityRepresentative/GetInspectionDetail",
       'api/Mobile/ProduectDetail/Delete',
       'api/Mobile/NewOutlet/Delete',

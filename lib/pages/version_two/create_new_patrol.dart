@@ -21,6 +21,7 @@ import 'package:patrol_system/controls/text.dart';
 import 'package:patrol_system/model/known_product_model.dart';
 import 'package:patrol_system/model/outlet_model.dart';
 import 'package:patrol_system/model/witness_model.dart';
+import 'package:patrol_system/database/draft_attachment_store.dart';
 import 'package:patrol_system/pages/version_two/CaptureImagesScreen.dart';
 import 'package:patrol_system/pages/version_two/all_attachments_screen.dart';
 import 'package:patrol_system/pages/version_two/create_agent_employee.dart';
@@ -126,6 +127,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   final concludeNotes = TextEditingController();
   FocusNode concludeFocusNode = FocusNode();
   final Set<int> _signedRepresentativeIds = {};
+  final Set<String> _signedRepresentativeKeys = {};
 
   ///sizes
   var currentHeight = 0.0;
@@ -258,6 +260,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       selectedAEList.clear();
       selectedMMIList.clear();
       _signedRepresentativeIds.clear();
+      _signedRepresentativeKeys.clear();
     });
   }
 
@@ -324,6 +327,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   void processEntityRepresentatives(List<RepresentativeData> representatives) {
+    managerList.clear();
+    witnessList.clear();
     for (var representative in representatives) {
       if (representative.typeId == 1) {
         managerList.add(representative);
@@ -340,11 +345,25 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       ...witnessList.map((e) => e.entityRepresentativeId),
     };
     _signedRepresentativeIds.removeWhere((id) => !ids.contains(id));
+    final keys = {
+      ...managerList.map(_representativeSignatureKey),
+      ...witnessList.map(_representativeSignatureKey),
+    };
+    _signedRepresentativeKeys.removeWhere((key) => !keys.contains(key));
   }
 
   bool _isRepresentativeSigned(RepresentativeData r) {
     return r.hasSignature ||
-        _signedRepresentativeIds.contains(r.entityRepresentativeId);
+        _signedRepresentativeIds.contains(r.entityRepresentativeId) ||
+        _signedRepresentativeKeys.contains(_representativeSignatureKey(r));
+  }
+
+  String _representativeSignatureKey(RepresentativeData r) {
+    final normalizedName = r.name.trim().toLowerCase();
+    final normalizedEmirates = r.emiratesId.replaceAll("-", "").trim();
+    final normalizedPhone =
+        r.phoneNo.replaceAll(RegExp(r'\D'), '');
+    return '$normalizedName|$normalizedEmirates|$normalizedPhone';
   }
 
   bool _allRepresentativesSigned() {
@@ -373,6 +392,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     if (signed == true) {
       setState(() {
         _signedRepresentativeIds.add(id);
+        _signedRepresentativeKeys.add(_representativeSignatureKey(model));
+        model.hasSignature = true;
       });
       getInspectionRepresentative();
     }
@@ -2825,6 +2846,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         textColor: AppTheme.black,
                         fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.medium,
+
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -3995,6 +4017,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     int type,
     MaskTextInputFormatter maskFormatter,
   ) {
+
     final isValid = _isManagerFormValid(controllers);
     final buttonText = model == null ? "Add" : "Update";
     final cameraType = type == 1 ? 4 : 5;
@@ -4316,8 +4339,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Future<void> getInspectionRepresentative() async {
-    clearRepresentativeLists();
-
     if (!await Utils().hasNetwork(context, setState)) return;
     if (!mounted) return;
 
@@ -4325,15 +4346,20 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         "Mobile/EntityRepresentative/GetInspectionDetail?inspectionId=$inspectionId";
     Api().getAPI(context, url).then((value) async {
       LogPrint().log("response : $value");
-      final data = representativeFromJson(value);
-      handleRepresentativeResponse(data);
-    });
-  }
-
-  void clearRepresentativeLists() {
-    setState(() {
-      managerList.clear();
-      witnessList.clear();
+      if (!mounted) return;
+      try {
+        final data = representativeFromJson(value);
+        handleRepresentativeResponse(data);
+      } catch (e, st) {
+        debugPrint("getInspectionRepresentative: $e\n$st");
+        if (!mounted) return;
+        Utils().showAlert(
+          buildContext: context,
+          message:
+              "Could not refresh representatives. Your list was not cleared; try again.",
+          onPressed: () => Navigator.of(context).pop(),
+        );
+      }
     });
   }
 
@@ -4343,18 +4369,26 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     } else {
       handleEmptyRepresentativeResponse(data.message);
       setState(() {
-        _signedRepresentativeIds.clear();
+        managerList.clear();
+        witnessList.clear();
+        _pruneSignedRepresentativeIds();
       });
     }
   }
 
   void categorizeRepresentatives(List<RepresentativeData> representatives) {
     setState(() {
+      managerList.clear();
+      witnessList.clear();
       for (var element in representatives) {
         if (element.typeId == 1) {
           managerList.add(element);
         } else if (element.typeId == 2) {
           witnessList.add(element);
+        }
+        if (element.hasSignature) {
+          _signedRepresentativeIds.add(element.entityRepresentativeId);
+          _signedRepresentativeKeys.add(_representativeSignatureKey(element));
         }
       }
       _pruneSignedRepresentativeIds();
@@ -4651,12 +4685,10 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                   debugPrint("onValue $onValue");
                   if (onValue != null) {
                     if (!mounted) return;
-                    try {
-                      await cameraImageUpload(null, 9, setState, onValue);
-                      await removeImage(onValue);
-                    } finally {}
+                    await cameraImageUpload(null, 9, setState, onValue);
                   }
                 });
+                
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -4839,7 +4871,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           includeAudio: true,
         );
         LogPrint().log(info!.path);
-        uploadImage(
+        await uploadImage(
             http.MultipartFile(
                 'file',
                 File(info.path!).readAsBytes().asStream(),
@@ -4865,7 +4897,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         img.Image compressedImage = img.copyResize(image!, width: 800);
         List<int> compressedBytes = img.encodeJpg(compressedImage, quality: 96);
         if (inspectionId != 0) {
-          uploadImage(
+          await uploadImage(
               http.MultipartFile.fromBytes(
                 'file',
                 compressedBytes,
@@ -4900,7 +4932,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         includeAudio: true,
       );
       LogPrint().log(info!.path);
-      uploadImage(
+      await uploadImage(
           http.MultipartFile('file', File(info.path!).readAsBytes().asStream(),
               File(info.path!).lengthSync(),
               filename: Utils().getFileName(info.path!.split("/").last)),
@@ -4908,7 +4940,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
           categoryId,
           myState,
           "video",
-          info.path!);
+          info.path!,
+          draftLocalPath: imagePath.path);
     } else {
       // LogPrint().log(imagePath.length.toString());
       File file = File(imagePath.path);
@@ -4916,7 +4949,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       img.Image compressedImage = img.copyResize(image!, width: 800);
       List<int> compressedBytes = img.encodeJpg(compressedImage, quality: 96);
       if (inspectionId != 0) {
-        uploadImage(
+        await uploadImage(
             http.MultipartFile.fromBytes(
               'file',
               compressedBytes,
@@ -4926,7 +4959,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
             categoryId,
             myState,
             "image",
-            file.path);
+            file.path,
+            draftLocalPath: imagePath.path);
       } else {
         LoadingIndicatorDialog().dismiss();
       }
@@ -4934,32 +4968,35 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Future<void> removeImage(XFile image) async {
-    final file = File(image.path);
-
-    if (await file.exists()) {
-      await file.delete();
-    }
-
+    await DraftAttachmentStore.instance.deleteDraft(image.path);
     setState(() {});
   }
 
-  void uploadImage(http.MultipartFile media, int? productId, int? categoryId,
-      StateSetter myState, String type, String filePath) {
+  Future<void> uploadImage(http.MultipartFile media, int? productId,
+      int? categoryId, StateSetter myState, String type, String filePath,
+      {String? draftLocalPath}) async {
+    if (categoryId == 9 && draftLocalPath != null) {
+      await DraftAttachmentStore.instance.markUploading(draftLocalPath);
+    }
+    if (!mounted) return;
     final listMedia = [media];
     final map = buildUploadRequestMap(productId, categoryId);
 
-    Api()
-        .callAPIWithFiles(
-            context, "Mobile/InspectionDocument/Create", map, listMedia)
-        .then((value) {
-      try {
-        LoadingIndicatorDialog().dismiss();
-        LogPrint().log(value);
-        handleUploadResponse(value, categoryId, myState, type, filePath);
-      } catch (e) {
-        LoadingIndicatorDialog().dismiss();
+    try {
+      final value = await Api().callAPIWithFiles(
+          context, "Mobile/InspectionDocument/Create", map, listMedia);
+      if (!mounted) return;
+      LoadingIndicatorDialog().dismiss();
+      LogPrint().log(value);
+      await handleUploadResponse(value, categoryId, myState, type, filePath,
+          draftLocalPath: draftLocalPath);
+    } catch (e) {
+      if (mounted) LoadingIndicatorDialog().dismiss();
+      if (categoryId == 9 && draftLocalPath != null) {
+        await DraftAttachmentStore.instance
+            .markFailed(draftLocalPath, e.toString());
       }
-    });
+    }
   }
 
   Map<String, String> buildUploadRequestMap(int? productId, int? categoryId) {
@@ -4975,23 +5012,40 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     return map;
   }
 
-  void handleUploadResponse(String value, int? categoryId, StateSetter myState,
-      String type, String filePath) {
+  Future<void> handleUploadResponse(String value, int? categoryId,
+      StateSetter myState, String type, String filePath,
+      {String? draftLocalPath}) async {
     if (value == "error") {
       showErrorAlert(value);
+      if (categoryId == 9 && draftLocalPath != null) {
+        await DraftAttachmentStore.instance.markFailed(draftLocalPath, value);
+      }
       return;
     }
 
     final json = jsonDecode(value);
     if (json["data"] == null) {
       showErrorAlert(json["message"]);
+      if (categoryId == 9 && draftLocalPath != null) {
+        await DraftAttachmentStore.instance.markFailed(
+            draftLocalPath, json["message"]?.toString());
+      }
       return;
     }
 
-    handleCategorySpecificLogic(
-        json["data"], categoryId, myState, type, filePath);
+    await handleCategorySpecificLogic(
+        json["data"], categoryId, myState, type, filePath,
+        draftLocalPath: draftLocalPath);
+    if (!mounted) return;
     Utils().showSnackBar(context, "Uploaded successfully.");
-    getInspectionDetail();
+    // Emirates ID photo for representatives (manager=4, witness=5). Full
+    // getInspectionDetail runs clearInspectionData and wipes local signature
+    // tracking; refresh representatives only.
+    if (categoryId == 4 || categoryId == 5) {
+      getInspectionRepresentative();
+    } else {
+      getInspectionDetail();
+    }
   }
 
   void showErrorAlert(String message) {
@@ -5003,10 +5057,12 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         });
   }
 
-  void handleCategorySpecificLogic(String data, int? categoryId,
-      StateSetter myState, String type, String filePath) {
+  Future<void> handleCategorySpecificLogic(String data, int? categoryId,
+      StateSetter myState, String type, String filePath,
+      {String? draftLocalPath}) async {
     if (categoryId == 9) {
-      handleCategory9Logic(data, type, filePath);
+      await handleCategory9Logic(data, type, filePath,
+          draftLocalPath: draftLocalPath);
     } else if (categoryId == 1) {
       handleCategory1Logic(data, myState);
     } else {
@@ -5014,13 +5070,21 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     }
   }
 
-  void handleCategory9Logic(String data, String type, String filePath) {
+  Future<void> handleCategory9Logic(String data, String type, String filePath,
+      {String? draftLocalPath}) async {
     if (type == "image") {
       image.add(filePath);
     }
     setState(() {
       attachedLink = data;
     });
+    if (draftLocalPath != null) {
+      await DraftAttachmentStore.instance
+          .removeAfterSuccessfulUpload(draftLocalPath);
+      if (type == "video" && filePath != draftLocalPath) {
+        await DraftAttachmentStore.tryDeleteFile(filePath);
+      }
+    }
     showAttachmentDialog(attachedLink);
   }
 
