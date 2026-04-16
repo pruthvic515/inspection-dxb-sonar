@@ -5,7 +5,7 @@
   "packages": [
     {
       "name": "patrol_system",
-      "version": "1.0.0+18",
+      "version": "1.0.0+19",
       "dependencies": [
         "connectivity_plus",
         "cupertino_icons",

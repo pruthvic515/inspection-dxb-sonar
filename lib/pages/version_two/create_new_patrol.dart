@@ -786,6 +786,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
         backgroundColor: AppTheme.mainBackground,
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(
             children: [
               buildHeader(),
@@ -3444,6 +3445,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
 
   Widget tabFourUI() {
     return SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
