@@ -18,10 +18,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:patrol_system/controls/form_text_field.dart';
 import 'package:patrol_system/controls/loading_indicator_dialog.dart';
 import 'package:patrol_system/controls/text.dart';
+import 'package:patrol_system/database/draft_attachment_store.dart';
 import 'package:patrol_system/model/known_product_model.dart';
 import 'package:patrol_system/model/outlet_model.dart';
 import 'package:patrol_system/model/witness_model.dart';
-import 'package:patrol_system/database/draft_attachment_store.dart';
 import 'package:patrol_system/pages/version_two/CaptureImagesScreen.dart';
 import 'package:patrol_system/pages/version_two/all_attachments_screen.dart';
 import 'package:patrol_system/pages/version_two/create_agent_employee.dart';
@@ -361,8 +361,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   String _representativeSignatureKey(RepresentativeData r) {
     final normalizedName = r.name.trim().toLowerCase();
     final normalizedEmirates = r.emiratesId.replaceAll("-", "").trim();
-    final normalizedPhone =
-        r.phoneNo.replaceAll(RegExp(r'\D'), '');
+    final normalizedPhone = r.phoneNo.replaceAll(RegExp(r'\D'), '');
     return '$normalizedName|$normalizedEmirates|$normalizedPhone';
   }
 
@@ -2353,13 +2352,14 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     required TextEditingController roleName,
     required TextEditingController notes,
   }) {
+    final mobileDigits = _normalizeMobileDigits(mobileNumber.text);
     final data = RepresentativeData(
       entityRepresentativeId: model?.entityRepresentativeId ?? 0,
       inspectionId: inspectionId,
       typeId: type,
       name: name.text,
       emiratesId: emiratesId.text.replaceAll("-", ""),
-      phoneNo: "+9715${mobileNumber.text}",
+      phoneNo: "+9715$mobileDigits",
       roleId: 0,
       roleName: roleName.text,
       notes: notes.text,
@@ -2390,6 +2390,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     required TextEditingController mobileNumber,
     required TextEditingController roleName,
   }) {
+    final mobileDigits = _normalizeMobileDigits(mobileNumber.text);
     if (name.text.isEmpty) {
       showError(context, "Please enter name");
       return false;
@@ -2400,7 +2401,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       return false;
     }
 
-    if (mobileNumber.text.isEmpty || mobileNumber.text.length != 8) {
+    if (mobileDigits.isEmpty || mobileDigits.length != 8) {
       showError(context, "Please enter valid contact number");
       return false;
     }
@@ -2847,7 +2848,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                         textColor: AppTheme.black,
                         fontFamily: AppTheme.urbanist,
                         fontSize: AppTheme.medium,
-
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -3609,6 +3609,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       buildContext: context,
       message: message,
       onPressed: () {
+        DraftAttachmentStore.instance.resetAllDraftData();
         Future.delayed(const Duration(milliseconds: 300), () {
           if (!Get.isRegistered<HomeScreen>()) {
             Get.offAll(() => const HomeScreen());
@@ -3963,13 +3964,22 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     return EmiratesIdValidation.formatFromDigits(id);
   }
 
+  String _normalizeMobileDigits(String input) {
+    return input.replaceAll(RegExp(r'\D'), '');
+  }
+
+  String _extractLocalMobileNumber(String phoneNo) {
+    final digits = _normalizeMobileDigits(phoneNo);
+    return digits.startsWith('9715') ? digits.substring(4) : digits;
+  }
+
   Controllers initControllers(RepresentativeData? model) {
     final controllers = Controllers();
 
     if (model != null) {
       controllers.name.text = model.name;
       controllers.emiratesId.text = formatEmiratesID(model.emiratesId);
-      controllers.mobile.text = model.phoneNo.replaceAll("+9715", "");
+      controllers.mobile.text = _extractLocalMobileNumber(model.phoneNo);
       controllers.role.text = model.roleName ?? "";
       controllers.notes.text = model.notes ?? "";
     }
@@ -3978,9 +3988,10 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   bool _isManagerFormValid(Controllers c) {
+    final mobileDigits = _normalizeMobileDigits(c.mobile.text);
     return c.name.text.isNotEmpty &&
         c.emiratesId.text.length == 18 &&
-        c.mobile.text.length == 8 &&
+        mobileDigits.length == 8 &&
         c.role.text.isNotEmpty;
   }
 
@@ -4019,7 +4030,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     int type,
     MaskTextInputFormatter maskFormatter,
   ) {
-
     final isValid = _isManagerFormValid(controllers);
     final buttonText = model == null ? "Add" : "Update";
     final cameraType = type == 1 ? 4 : 5;
@@ -4111,6 +4121,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 value: controllers.mobile.text,
                 title: 'Mobile Number :',
                 inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(8),
                 ],
                 inputBorder: InputBorder.none,
@@ -4690,7 +4701,6 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                     await cameraImageUpload(null, 9, setState, onValue);
                   }
                 });
-                
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -5029,8 +5039,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     if (json["data"] == null) {
       showErrorAlert(json["message"]);
       if (categoryId == 9 && draftLocalPath != null) {
-        await DraftAttachmentStore.instance.markFailed(
-            draftLocalPath, json["message"]?.toString());
+        await DraftAttachmentStore.instance
+            .markFailed(draftLocalPath, json["message"]?.toString());
       }
       return;
     }

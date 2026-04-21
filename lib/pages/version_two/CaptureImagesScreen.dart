@@ -152,6 +152,22 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
             /// 📸 Capture Button alway show whatever
 
             const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppTheme.colorPrimary.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  "Draft images and videos are temporary. Once any 1 Inspection is completed using draft attachments, all saved media will be automatically removed.",
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
 
             /// 🖼️ Preview Images
             Expanded(

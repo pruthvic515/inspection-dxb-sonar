@@ -227,6 +227,42 @@ CREATE TABLE $table (
     await deleteDraft(localPath);
   }
 
+  /// Completely resets local draft state to first-use conditions.
+  /// - Deletes tracked media files and legacy loose capture files.
+  /// - Clears all rows in [table].
+  /// - Recreates [draftSubDir] as an empty directory.
+  Future<void> resetAllDraftData() async {
+    final db = await database;
+    final prefs = await SharedPreferences.getInstance();
+    final base = await appMediaRoot();
+    final draftDir = Directory(p.join(base.path, draftSubDir));
+
+    final rows = await db.query(table, columns: ['local_path']);
+    for (final row in rows) {
+      final path = row['local_path'] as String?;
+      if (path == null || path.isEmpty) continue;
+      await tryDeleteFile(path);
+    }
+
+    // Remove loose legacy draft captures kept in app root.
+    await for (final entity in base.list(followLinks: false)) {
+      if (entity is! File) continue;
+      if (_looksLikeDraftTimestampFile(entity.path)) {
+        await tryDeleteFile(entity.path);
+      }
+    }
+
+    if (await draftDir.exists()) {
+      await draftDir.delete(recursive: true);
+    }
+
+    await db.delete(table);
+    await draftDir.create(recursive: true);
+
+    // Keep legacy import disabled after reset to preserve clean state.
+    await prefs.setBool(_prefsMigrationKey, true);
+  }
+
   static Future<void> tryDeleteFile(String path) async {
     try {
       final f = File(path);

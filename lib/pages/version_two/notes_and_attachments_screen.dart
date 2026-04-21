@@ -15,6 +15,7 @@ import 'package:video_compress/video_compress.dart';
 
 import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
+import '../../database/draft_attachment_store.dart';
 import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../../model/entity_detail_model.dart';
 import '../../model/outlet_model.dart';
@@ -374,7 +375,8 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
       return;
     }
 
-    await _requestAndroidCameraPermissions(type, productId, categoryId, myState);
+    await _requestAndroidCameraPermissions(
+        type, productId, categoryId, myState);
   }
 
   Future<void> _requestAndroidCameraPermissions(
@@ -409,7 +411,8 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     LogPrint().log("sdk level ${androidInfo.version.sdkInt}");
 
-    final hasStoragePermission = await _checkStoragePermission(androidInfo.version.sdkInt);
+    final hasStoragePermission =
+        await _checkStoragePermission(androidInfo.version.sdkInt);
     LogPrint().log("permission : camera $hasStoragePermission");
 
     cameraUpload(type, productId, categoryId, myState);
@@ -656,6 +659,7 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
         LoadingIndicatorDialog().dismiss();
         var data = jsonDecode(value);
         if (data["statusCode"] == 200 && data["data"] != null) {
+          DraftAttachmentStore.instance.resetAllDraftData();
           Utils().showAlert(
               buildContext: context,
               message: data["message"],
@@ -785,33 +789,34 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
                   builder: (context, setState) {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: [ListView.separated(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        itemCount: reasonList.length,
-                        separatorBuilder: (_, __) => const Divider(height: 1),
-                        itemBuilder: (context, index) {
-                          final reason = reasonList[index];
+                      children: [
+                        ListView.separated(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          itemCount: reasonList.length,
+                          separatorBuilder: (_, __) => const Divider(height: 1),
+                          itemBuilder: (context, index) {
+                            final reason = reasonList[index];
 
-                          return RadioListTile<int>(
-                            contentPadding: EdgeInsets.zero,
-                            value: index,
-                            groupValue: selectedIndex,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedIndex = value ?? -1;
-                              });
-                            },
-                            title: CText(
-                              text: reason["name"],
-                              textColor: AppTheme.black,
-                              fontFamily: AppTheme.urbanist,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          );
-                        },
-                      ),
+                            return RadioListTile<int>(
+                              contentPadding: EdgeInsets.zero,
+                              value: index,
+                              groupValue: selectedIndex,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedIndex = value ?? -1;
+                                });
+                              },
+                              title: CText(
+                                text: reason["name"],
+                                textColor: AppTheme.black,
+                                fontFamily: AppTheme.urbanist,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            );
+                          },
+                        ),
                         Container(
                           margin: const EdgeInsets.only(
                               top: 30, right: 20, left: 20, bottom: 30),
