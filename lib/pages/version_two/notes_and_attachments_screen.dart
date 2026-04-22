@@ -646,6 +646,11 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
     });
   }
 
+  int get _draftAttachmentScopeId {
+    final outletId = widget.outletData?.outletId ?? 0;
+    return outletId > 0 ? outletId : widget.entityId;
+  }
+
   Future<void> completeTask(String notes) async {
     if (await Utils().hasNetwork(context, setState)) {
       if (!mounted) return;
@@ -659,7 +664,8 @@ class _NotesAndAttachmentsScreenState extends State<NotesAndAttachmentsScreen> {
         LoadingIndicatorDialog().dismiss();
         var data = jsonDecode(value);
         if (data["statusCode"] == 200 && data["data"] != null) {
-          DraftAttachmentStore.instance.resetAllDraftData();
+          DraftAttachmentStore.instance
+              .resetAllDraftData(entityId: _draftAttachmentScopeId);
           Utils().showAlert(
               buildContext: context,
               message: data["message"],

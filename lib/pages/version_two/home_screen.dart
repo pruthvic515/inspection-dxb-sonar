@@ -22,7 +22,6 @@ import 'package:patrol_system/utils/utils.dart';
 import '../../encrypteddecrypted/encrypt_and_decrypt.dart';
 import '../../model/entity_detail_model.dart';
 import '../../model/task_model.dart';
-import 'CaptureImagesScreen.dart';
 import 'entity_details.dart';
 import 'inspection_detail_screen.dart';
 import 'inspection_outlet_screen.dart';
@@ -834,13 +833,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    /// 📸 Image Icon (Only for Officer)
+                /*    /// 📸 Image Icon (Only for Officer)
                     if (!storeUserData.getBoolean(IS_AGENT_LOGIN))
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => const CaptureImagesScreen(
-                                isSelectionMode: false,
-                              ));
+                          Utils().showSnackBar(
+                            context,
+                            "Open an entity to manage draft attachments.",
+                          );
                         },
                         child: const Padding(
                           padding: EdgeInsets.only(right: 12),
@@ -850,7 +850,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: AppTheme.white,
                           ),
                         ),
-                      ),
+                      ),*/
                     GestureDetector(
                       onTap: () {
                         Get.to(

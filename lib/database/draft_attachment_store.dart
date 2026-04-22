@@ -10,6 +10,7 @@ import 'package:sqflite/sqflite.dart';
 /// [draftSubDir] or legacy timestamp-named files in the app storage root.
 class DraftAttachmentRow {
   final int id;
+  final int entityId;
   final String localPath;
   final String kind;
   final String status;
@@ -19,6 +20,7 @@ class DraftAttachmentRow {
 
   const DraftAttachmentRow({
     required this.id,
+    required this.entityId,
     required this.localPath,
     required this.kind,
     required this.status,
@@ -30,6 +32,7 @@ class DraftAttachmentRow {
   factory DraftAttachmentRow.fromMap(Map<String, Object?> map) {
     return DraftAttachmentRow(
       id: map['id'] as int,
+      entityId: map['entity_id'] as int,
       localPath: map['local_path'] as String,
       kind: map['kind'] as String,
       status: map['status'] as String,
@@ -45,7 +48,7 @@ class DraftAttachmentStore {
   static final DraftAttachmentStore instance = DraftAttachmentStore._();
 
   static const _dbName = 'patrol_draft_attachments.db';
-  static const _dbVersion = 1;
+  static const _dbVersion = 2;
   static const _prefsMigrationKey = 'draft_attachments_legacy_import_v2';
 
   /// Subfolder for new captures (avoids scanning unrelated files in storage root).
@@ -70,6 +73,7 @@ class DraftAttachmentStore {
         await db.execute('''
 CREATE TABLE $table (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  entity_id INTEGER NOT NULL,
   local_path TEXT NOT NULL UNIQUE,
   kind TEXT NOT NULL,
   status TEXT NOT NULL,
@@ -78,6 +82,22 @@ CREATE TABLE $table (
   last_error TEXT
 )
 ''');
+        await db.execute(
+          'CREATE INDEX idx_draft_attachments_entity_status_created ON $table(entity_id, status, created_at_ms)',
+        );
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute(
+            'ALTER TABLE $table ADD COLUMN entity_id INTEGER',
+          );
+          await db.execute(
+            'DELETE FROM $table WHERE entity_id IS NULL',
+          );
+          await db.execute(
+            'CREATE INDEX IF NOT EXISTS idx_draft_attachments_entity_status_created ON $table(entity_id, status, created_at_ms)',
+          );
+        }
       },
     );
     await _importLegacyLooseCapturesOnce(_db!);
@@ -139,6 +159,7 @@ CREATE TABLE $table (
           : 'image';
       try {
         await db.insert(table, {
+          'entity_id': -1,
           'local_path': filePath,
           'kind': kind,
           'status': 'pending',
@@ -155,28 +176,31 @@ CREATE TABLE $table (
   }
 
   /// Rows shown in draft UI (excludes removed rows; successful uploads delete rows).
-  Future<List<DraftAttachmentRow>> listForUi() async {
+  Future<List<DraftAttachmentRow>> listForUi({required int entityId}) async {
     final db = await database;
     final maps = await db.query(
       table,
-      where: "status IN ('pending', 'failed', 'uploading')",
+      where: "entity_id = ? AND status IN ('pending', 'failed', 'uploading')",
+      whereArgs: [entityId],
       orderBy: 'created_at_ms ASC',
     );
     return maps.map(DraftAttachmentRow.fromMap).toList();
   }
 
-  Future<int> countForUi() async {
-    final list = await listForUi();
+  Future<int> countForUi({required int entityId}) async {
+    final list = await listForUi(entityId: entityId);
     return list.length;
   }
 
   Future<void> insertDraft({
+    required int entityId,
     required String localPath,
     required String kind,
   }) async {
     final db = await database;
     final now = DateTime.now().millisecondsSinceEpoch;
     await db.insert(table, {
+      'entity_id': entityId,
       'local_path': localPath,
       'kind': kind,
       'status': 'pending',
@@ -187,12 +211,12 @@ CREATE TABLE $table (
   }
 
   /// Removes DB row and deletes the file on disk.
-  Future<void> deleteDraft(String localPath) async {
+  Future<void> deleteDraft(String localPath, {required int entityId}) async {
     final db = await database;
     await db.delete(
       table,
-      where: 'local_path = ?',
-      whereArgs: [localPath],
+      where: 'entity_id = ? AND local_path = ?',
+      whereArgs: [entityId, localPath],
     );
     final f = File(localPath);
     if (await f.exists()) {
@@ -200,17 +224,18 @@ CREATE TABLE $table (
     }
   }
 
-  Future<void> markUploading(String localPath) async {
+  Future<void> markUploading(String localPath, {required int entityId}) async {
     final db = await database;
     await db.update(
       table,
       {'status': 'uploading', 'last_error': null},
-      where: 'local_path = ?',
-      whereArgs: [localPath],
+      where: 'entity_id = ? AND local_path = ?',
+      whereArgs: [entityId, localPath],
     );
   }
 
-  Future<void> markFailed(String localPath, String? error) async {
+  Future<void> markFailed(String localPath, String? error,
+      {required int entityId}) async {
     final db = await database;
     await db.update(
       table,
@@ -218,20 +243,21 @@ CREATE TABLE $table (
         'status': 'failed',
         'last_error': error,
       },
-      where: 'local_path = ?',
-      whereArgs: [localPath],
+      where: 'entity_id = ? AND local_path = ?',
+      whereArgs: [entityId, localPath],
     );
   }
 
-  Future<void> removeAfterSuccessfulUpload(String localPath) async {
-    await deleteDraft(localPath);
+  Future<void> removeAfterSuccessfulUpload(String localPath,
+      {required int entityId}) async {
+    await deleteDraft(localPath, entityId: entityId);
   }
 
   /// Completely resets local draft state to first-use conditions.
   /// - Deletes tracked media files and legacy loose capture files.
   /// - Clears all rows in [table].
   /// - Recreates [draftSubDir] as an empty directory.
-  Future<void> resetAllDraftData() async {
+  Future<void> resetAllDraftData( {required int entityId}) async {
     final db = await database;
     final prefs = await SharedPreferences.getInstance();
     final base = await appMediaRoot();

@@ -14,6 +14,7 @@ import '../utils/api.dart';
 import '../utils/store_user_data.dart';
 import '../utils/utils.dart';
 
+
 class Splash extends StatefulWidget {
   const Splash({super.key});
 
@@ -43,7 +44,7 @@ class _SplashState extends State<Splash> {
   }
 
   void _setAppVersion() {
-    storeUserData.setString(LATEST_APP_VERSION, "1.0.9");
+    storeUserData.setString(LATEST_APP_VERSION, "2.0.0");
   }
 
   void _checkNetworkAndInitialize() {

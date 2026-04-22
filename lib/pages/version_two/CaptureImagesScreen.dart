@@ -13,11 +13,13 @@ import 'package:patrol_system/utils/color_const.dart';
 import 'package:video_player/video_player.dart';
 
 class CaptureImagesScreen extends StatefulWidget {
+  final int? entityId;
   final bool isSelectionMode;
   final bool isFromDraft;
 
   const CaptureImagesScreen({
     super.key,
+    this.entityId,
     this.isSelectionMode = false,
     this.isFromDraft = false,
   });
@@ -55,10 +57,12 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
   }
 
   Future<void> captureImage() async {
+    if (widget.entityId == null) return;
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
 
     if (image != null) {
-      final count = await DraftAttachmentStore.instance.countForUi();
+      final count = await DraftAttachmentStore.instance
+          .countForUi(entityId: widget.entityId!);
       if (count >= _maxAttachments) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -76,15 +80,20 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
       );
 
       final File newImage = await File(image.path).copy(newPath);
-      await DraftAttachmentStore.instance
-          .insertDraft(localPath: newImage.path, kind: 'image');
+      await DraftAttachmentStore.instance.insertDraft(
+        entityId: widget.entityId!,
+        localPath: newImage.path,
+        kind: 'image',
+      );
 
       await loadImages();
     }
   }
 
   Future<void> captureVideo() async {
-    final count = await DraftAttachmentStore.instance.countForUi();
+    if (widget.entityId == null) return;
+    final count = await DraftAttachmentStore.instance
+        .countForUi(entityId: widget.entityId!);
     if (count >= _maxAttachments) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -112,21 +121,34 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
 
     final File newVideo = await File(video.path).copy(newPath);
 
-    await DraftAttachmentStore.instance
-        .insertDraft(localPath: newVideo.path, kind: 'video');
+    await DraftAttachmentStore.instance.insertDraft(
+      entityId: widget.entityId!,
+      localPath: newVideo.path,
+      kind: 'video',
+    );
 
     await loadImages();
   }
 
   Future<void> loadImages() async {
-    final rows = await DraftAttachmentStore.instance.listForUi();
+    if (widget.entityId == null) {
+      if (mounted) {
+        setState(() {
+          cachedImages = [];
+        });
+      }
+      return;
+    }
+    final rows =
+        await DraftAttachmentStore.instance.listForUi(entityId: widget.entityId!);
     final List<XFile> loadedImages = [];
 
     for (final row in rows) {
       if (await File(row.localPath).exists()) {
         loadedImages.add(XFile(row.localPath));
       } else {
-        await DraftAttachmentStore.instance.deleteDraft(row.localPath);
+        await DraftAttachmentStore.instance
+            .deleteDraft(row.localPath, entityId: widget.entityId!);
       }
     }
 
@@ -281,8 +303,10 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
   }
 
   Future<void> removeMultipleImages(List<XFile> images) async {
+    if (widget.entityId == null) return;
     for (final image in images) {
-      await DraftAttachmentStore.instance.deleteDraft(image.path);
+      await DraftAttachmentStore.instance
+          .deleteDraft(image.path, entityId: widget.entityId!);
     }
     selectedPaths.clear();
     await loadImages();
@@ -461,7 +485,9 @@ class _CaptureImagesScreenState extends State<CaptureImagesScreen> {
   }
 
   Future<void> removeImage(XFile image) async {
-    await DraftAttachmentStore.instance.deleteDraft(image.path);
+    if (widget.entityId == null) return;
+    await DraftAttachmentStore.instance
+        .deleteDraft(image.path, entityId: widget.entityId!);
     await loadImages();
   }
 }

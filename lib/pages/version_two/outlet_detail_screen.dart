@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:patrol_system/utils/store_user_data.dart';
+
 import '../../controls/form_text_field.dart';
 import '../../controls/loading_indicator_dialog.dart';
 import '../../controls/text.dart';
@@ -13,6 +14,7 @@ import '../../utils/api.dart';
 import '../../utils/color_const.dart';
 import '../../utils/constants.dart';
 import '../../utils/utils.dart';
+import 'CaptureImagesScreen.dart';
 import 'create_new_patrol.dart';
 import 'home_screen.dart';
 
@@ -234,6 +236,27 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
               ],
             ),
           ),
+          if (!_isAgentLogin())
+            Positioned(
+              right: 12,
+              top: 52,
+              child: IconButton(
+                onPressed: () {
+                  Get.to(
+                    () => CaptureImagesScreen(
+                      entityId: outlet.outletId,
+                      isSelectionMode: false,
+                      isFromDraft: false,
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.camera_alt,
+                  color: AppTheme.white,
+                ),
+                tooltip: "Draft attachments",
+              ),
+            ),
         ],
       ),
     );
@@ -306,16 +329,16 @@ class _OutletDetailScreenState extends State<OutletDetailScreen> {
                   _buildDetailRow(
                     "Ownership : ",
                     ownerShipList
-                        .firstWhere((element) =>
-                            element.id == outlet.ownerShipTypeId)
+                        .firstWhere(
+                            (element) => element.id == outlet.ownerShipTypeId)
                         .text,
                   ),
                   const SizedBox(width: 5),
                   _buildDetailRow(
                     "Service Type : ",
                     outletServiceList
-                        .firstWhere((element) =>
-                            element.id == outlet.serviceTypeId)
+                        .firstWhere(
+                            (element) => element.id == outlet.serviceTypeId)
                         .text,
                   ),
                 ],

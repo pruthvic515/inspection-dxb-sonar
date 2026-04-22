@@ -3609,7 +3609,7 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       buildContext: context,
       message: message,
       onPressed: () {
-        DraftAttachmentStore.instance.resetAllDraftData();
+        DraftAttachmentStore.instance.resetAllDraftData(entityId: _draftAttachmentScopeId);
         Future.delayed(const Duration(milliseconds: 300), () {
           if (!Get.isRegistered<HomeScreen>()) {
             Get.offAll(() => const HomeScreen());
@@ -4691,7 +4691,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
                 // visible: detail != null && detail!.attachments.isNotEmpty,
                 child: ElevatedButton(
               onPressed: () {
-                Get.to(const CaptureImagesScreen(
+                Get.to(CaptureImagesScreen(
+                  entityId: widget.entityId,
                   isFromDraft: false,
                   isSelectionMode: true,
                 ))?.then((onValue) async {
@@ -4980,7 +4981,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
   }
 
   Future<void> removeImage(XFile image) async {
-    await DraftAttachmentStore.instance.deleteDraft(image.path);
+    await DraftAttachmentStore.instance
+        .deleteDraft(image.path, entityId: _draftAttachmentScopeId);
     setState(() {});
   }
 
@@ -4988,7 +4990,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       int? categoryId, StateSetter myState, String type, String filePath,
       {String? draftLocalPath}) async {
     if (categoryId == 9 && draftLocalPath != null) {
-      await DraftAttachmentStore.instance.markUploading(draftLocalPath);
+      await DraftAttachmentStore.instance
+          .markUploading(draftLocalPath, entityId: _draftAttachmentScopeId);
     }
     if (!mounted) return;
     final listMedia = [media];
@@ -5005,8 +5008,9 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     } catch (e) {
       if (mounted) LoadingIndicatorDialog().dismiss();
       if (categoryId == 9 && draftLocalPath != null) {
-        await DraftAttachmentStore.instance
-            .markFailed(draftLocalPath, e.toString());
+        await DraftAttachmentStore.instance.markFailed(
+            draftLocalPath, e.toString(),
+            entityId: _draftAttachmentScopeId);
       }
     }
   }
@@ -5030,7 +5034,8 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     if (value == "error") {
       showErrorAlert(value);
       if (categoryId == 9 && draftLocalPath != null) {
-        await DraftAttachmentStore.instance.markFailed(draftLocalPath, value);
+        await DraftAttachmentStore.instance
+            .markFailed(draftLocalPath, value, entityId: _draftAttachmentScopeId);
       }
       return;
     }
@@ -5039,8 +5044,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     if (json["data"] == null) {
       showErrorAlert(json["message"]);
       if (categoryId == 9 && draftLocalPath != null) {
-        await DraftAttachmentStore.instance
-            .markFailed(draftLocalPath, json["message"]?.toString());
+        await DraftAttachmentStore.instance.markFailed(
+          draftLocalPath,
+          json["message"]?.toString(),
+          entityId: _draftAttachmentScopeId,
+        );
       }
       return;
     }
@@ -5091,8 +5099,10 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
       attachedLink = data;
     });
     if (draftLocalPath != null) {
-      await DraftAttachmentStore.instance
-          .removeAfterSuccessfulUpload(draftLocalPath);
+      await DraftAttachmentStore.instance.removeAfterSuccessfulUpload(
+        draftLocalPath,
+        entityId: _draftAttachmentScopeId,
+      );
       if (type == "video" && filePath != draftLocalPath) {
         await DraftAttachmentStore.tryDeleteFile(filePath);
       }
@@ -5111,6 +5121,11 @@ class _CreateNewPatrolState extends State<CreateNewPatrol> {
     myState(() {
       imageAttach = data;
     });
+  }
+
+  int get _draftAttachmentScopeId {
+    final outletId = widget.outletData?.outletId ?? 0;
+    return outletId > 0 ? outletId : widget.entityId;
   }
 
   showAttachmentDialog(String link) {

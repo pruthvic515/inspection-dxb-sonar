@@ -38,6 +38,7 @@ import '../../utils/emirates_id_validation.dart';
 import '../../utils/store_user_data.dart';
 import '../../utils/utils.dart';
 import '../patrol_visits_all.dart';
+import 'CaptureImagesScreen.dart';
 import 'create_new_patrol.dart';
 import 'home_screen.dart';
 import 'inspection_detail_screen.dart';
@@ -510,8 +511,28 @@ class _EntityDetailsState extends State<EntityDetails> {
         if (!isAgentLogin && !hasTaskId) _buildAddLiquorTaskButton(),
         if (!isAgentLogin && widget.completeStatus && widget.category == 1)
           _buildDownloadReportButton(),
+        if (!isAgentLogin) _buildDraftAttachmentsButton(),
         const SizedBox(width: 20),
       ],
+    );
+  }
+
+  Widget _buildDraftAttachmentsButton() {
+    return IconButton(
+      onPressed: () {
+        Get.to(
+          () => CaptureImagesScreen(
+            entityId: widget.entityId,
+            isSelectionMode: false,
+            isFromDraft: false,
+          ),
+        );
+      },
+      icon: const Icon(
+        Icons.camera_alt,
+        color: AppTheme.white,
+      ),
+      tooltip: "Draft attachments",
     );
   }
 
