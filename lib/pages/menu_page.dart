@@ -221,7 +221,7 @@ class _MenuPageState extends State<MenuPage> {
               ),
             ),
           ),
-          Center(
+      /*    Center(
             child: GestureDetector(
               onTap: () {
                 Clipboard.setData(ClipboardData(
@@ -240,7 +240,7 @@ class _MenuPageState extends State<MenuPage> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-          ),
+          ),*/
         ],
       ),
     );
