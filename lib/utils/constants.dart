@@ -28,8 +28,7 @@ const String ASSET_PATH = "assets/images/";
 //  change UAT date 16-10-2025
 // const String baseUrl = "http://4.161.39.155:8092/inspectionApi/";
 // PROD
-const String baseUrl = "https://inspection-api.licensedxb.ae/";
-// const String baseUrl = "https://licensedxb.ae/inspectionapiv2/";
+const String baseUrl = "https://licensedxb.ae/inspectionapiv2/";
 //  change prod date 16-10-2025
 // const String baseUrl = "https://licensedxb.ae/Inspectionapi/";
 
